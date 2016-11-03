@@ -33,15 +33,7 @@ namespace MediBalance
 
         private async void Connect_Click(object sender, RoutedEventArgs e)
         {
-            // Instantiate an instance of the MSBand2, then call working function
-            // **Note: button click method must be "async" and "await" is needed prior to function call
-            //          WILL LOCK UP OTHERWISE
-            try
-            {
-                int a = Int32.Parse(textBox.Text);
-                await band.everything(a, connection_text);
-            }
-            catch (Exception) { connection_text.Text = "Please only enter an integer"; }
+                      
         }
     }
 }

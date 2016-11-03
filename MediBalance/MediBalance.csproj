@@ -98,6 +98,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classes\TestVectors\TestVectors.cs" />
+    <Compile Include="Classes\WiiBalanceBoard\Board.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -115,6 +116,9 @@
     <Content Include="lib\MS_Band\Microsoft.Band.dll" />
     <Content Include="lib\MS_Band\Microsoft.Band.Phone_UAP.dll" />
     <Content Include="lib\MS_Band\Microsoft.Band.Store_UAP.dll" />
+    <Content Include="lib\WiiBalanceBoard\InTheHand.Net.Personal.dll" />
+    <Content Include="lib\WiiBalanceBoard\VJoy.dll" />
+    <Content Include="lib\WiiBalanceBoard\WiimoteLib.dll" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -140,6 +144,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\MS_Band\Google.Protobuf.dll</HintPath>
     </Reference>
+    <Reference Include="InTheHand.Net.Personal, Version=3.5.605.0, Culture=neutral, PublicKeyToken=ea38caa273134499, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\WiiBalanceBoard\InTheHand.Net.Personal.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Band, Version=1.3.20420.1, Culture=neutral, PublicKeyToken=608d7da3159f502b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\MS_Band\Microsoft.Band.dll</HintPath>
@@ -151,6 +159,10 @@
     <Reference Include="Microsoft.Band.Store_UAP, Version=1.3.20420.1, Culture=neutral, PublicKeyToken=608d7da3159f502b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\MS_Band\Microsoft.Band.Store_UAP.dll</HintPath>
+    </Reference>
+    <Reference Include="WiimoteLib, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\WiiBalanceBoard\WiimoteLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
