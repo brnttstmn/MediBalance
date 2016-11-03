@@ -46,7 +46,7 @@ namespace MediBalance
                     return -1;
                 }
                 // Connect to Microsoft Band.
-                using (IBandClient bandClient = await BandClientManager.Instance.ConnectAsync(pairedBands[0]))
+                using (bandClient = await BandClientManager.Instance.ConnectAsync(pairedBands[0]))
                 {
                     bool heartRateConsentGranted;
 
@@ -71,19 +71,19 @@ namespace MediBalance
                         OutputText.Text = "Collecting Samples ...";
 
                         // Subscribe to HeartRate data.
-                        bandClient.SensorManager.AmbientLight.ReadingChanged += async (s, args) =>
+                        bandClient.SensorManager.HeartRate.ReadingChanged += async (s, args) =>
                         {
                             await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                             {
-                                OutputText.Text = string.Format("{0}", args.SensorReading.Brightness.ToString());
+                                OutputText.Text = string.Format("{0}", args.SensorReading.HeartRate.ToString());
                             });
                         };
-                        await bandClient.SensorManager.AmbientLight.StartReadingsAsync();
+                        await bandClient.SensorManager.HeartRate.StartReadingsAsync();
 
 
                         // Receive HeartRate data for a while, then stop the subscription.
                         await Task.Delay(TimeSpan.FromSeconds(RunTime));
-                        await bandClient.SensorManager.AmbientLight.StopReadingsAsync();
+                        await bandClient.SensorManager.HeartRate.StopReadingsAsync();
 
                         OutputText.Text = string.Format("Finished Sampling");
                         return 0;
@@ -183,36 +183,27 @@ namespace MediBalance
          * 
          * **Notes: This portion does not work. errors out saying object has been removed--NEEDS WORK 
          */
-        public async Task<int> startRead()
+        public async Task<int> startRead(int RunTime, TextBlock OutputText)
         {
-            // Ensure MS Band is Connected
-            if (bandClient == null) { await ConnectAsync(); }
-
-            using (bandClient)
+             using (bandClient)
             {
-                // Local Variable
-                bool heartRateConsentGranted;
+                // Subscribe to HeartRate data.
+                bandClient.SensorManager.HeartRate.ReadingChanged += async (s, args) =>
+                {
+                    await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        OutputText.Text = string.Format("{0}", args.SensorReading.HeartRate.ToString());
+                    });
+                };
+                await bandClient.SensorManager.HeartRate.StartReadingsAsync();
 
-                // Ensure Heartrate Sensor Permissions
-                // Ask for Permission if needed
-                if (bandClient.SensorManager.HeartRate.GetCurrentUserConsent() == UserConsent.Granted)
-                {
-                    heartRateConsentGranted = true;
-                }
-                else
-                {
-                    heartRateConsentGranted = await bandClient.SensorManager.HeartRate.RequestUserConsentAsync();
-                }
-                // Return Permission status
-                if (!heartRateConsentGranted)
-                {
-                    return -1;
-                }
-                else
-                {
-                    await bandClient.SensorManager.HeartRate.StartReadingsAsync();
-                    return 0;
-                }
+
+                // Receive HeartRate data for a while, then stop the subscription.
+                await Task.Delay(TimeSpan.FromSeconds(RunTime));
+                await bandClient.SensorManager.HeartRate.StopReadingsAsync();
+
+                OutputText.Text = string.Format("Finished Sampling");
+                return 0;
             }
         }
 
