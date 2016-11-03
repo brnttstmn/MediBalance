@@ -89,6 +89,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="lib\MS_Band\Microsoft.Band.Phone_UAP.pri" />
+    <None Include="lib\MS_Band\Microsoft.Band.Store_UAP.pri" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +100,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MSBand2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -107,8 +110,10 @@
     <None Include="MediBalance_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="lib\MS_Band\Google.Protobuf.dll" />
     <Content Include="lib\MS_Band\Microsoft.Band.dll" />
     <Content Include="lib\MS_Band\Microsoft.Band.Phone_UAP.dll" />
+    <Content Include="lib\MS_Band\Microsoft.Band.Store_UAP.dll" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -127,6 +132,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="Google.Protobuf, Version=3.0.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\MS_Band\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Band, Version=1.3.20420.1, Culture=neutral, PublicKeyToken=608d7da3159f502b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\MS_Band\Microsoft.Band.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Band.Phone_UAP, Version=1.3.20420.1, Culture=neutral, PublicKeyToken=608d7da3159f502b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\MS_Band\Microsoft.Band.Phone_UAP.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Band.Store_UAP, Version=1.3.20420.1, Culture=neutral, PublicKeyToken=608d7da3159f502b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\MS_Band\Microsoft.Band.Store_UAP.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
