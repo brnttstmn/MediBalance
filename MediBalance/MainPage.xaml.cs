@@ -31,8 +31,11 @@ namespace MediBalance
 
         private async void Connect_Click(object sender, RoutedEventArgs e)
         {
-            MSBand2 band = new MSBand2();
-            await band.everything(20, connection_text);
+            // Instantiate an instance of the MSBand2, then call working function
+            // **Note: button click method must be "async" and "await" is needed prior to function call
+            //          WILL LOCK UP OTHERWISE
+                MSBand2 band = new MSBand2();
+                await band.everything(20, connection_text);
         }
     }
 }
