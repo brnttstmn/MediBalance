@@ -98,7 +98,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classes\TestVectors\TestVectors.cs" />
-    <Compile Include="Classes\WiiBalanceBoard\Board.cs" />
+    <Compile Include="Classes\WiiBalanceBoard\ActionManager.cs" />
+    <Compile Include="Classes\WiiBalanceBoard\InputManager.cs" />
+    <Compile Include="Classes\WiiBalanceBoard\Program.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
