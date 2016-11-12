@@ -120,7 +120,7 @@
     <Content Include="lib\MS_Band\Microsoft.Band.Store_UAP.dll" />
     <Content Include="lib\WiiBalanceBoard\InTheHand.Net.Personal.dll" />
     <Content Include="lib\WiiBalanceBoard\VJoy.dll" />
-    <Content Include="lib\WiiBalanceBoard\WiimoteLib.dll" />
+    <Content Include="lib\WiiBalanceBoard\WiimoteLibUni.dll" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -162,9 +162,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\MS_Band\Microsoft.Band.Store_UAP.dll</HintPath>
     </Reference>
-    <Reference Include="WiimoteLib, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="WiimoteLibUni, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\WiiBalanceBoard\WiimoteLib.dll</HintPath>
+      <HintPath>lib\WiiBalanceBoard\WiimoteLibUni.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.Band;
+using WiimoteLibUni;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -26,6 +27,8 @@ namespace MediBalance
     {
         MSBand2 band = new MSBand2();
 
+        
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -33,7 +36,25 @@ namespace MediBalance
 
         private async void Connect_Click(object sender, RoutedEventArgs e)
         {
-                      
+            connection_text.Text = "Connecting...";
+            //await
+
+
+        }
+
+        private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void connection_text_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

@@ -9,8 +9,10 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Button x:Name="Connect_Button" Content="Connect" HorizontalAlignment="Left" Margin="79,151,0,0" VerticalAlignment="Top" Click="Connect_Click"/>
-        <TextBlock x:Name="connection_text" HorizontalAlignment="Left" Margin="159,163,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+        <TextBlock x:Name="connection_text" HorizontalAlignment="Left" Margin="159,163,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" SelectionChanged="connection_text_SelectionChanged"/>
         <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="10,151,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="18"/>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Margin="50,10,0,0" TextWrapping="Wrap" Text="MediBalance Wii Board and MSBand" VerticalAlignment="Top" TextChanged="textBox1_TextChanged"/>
+        <TextBox x:Name="textBox2" HorizontalAlignment="Left" Margin="0,114,0,0" TextWrapping="Wrap" Text="MS Band Heart Rate" VerticalAlignment="Top" Width="164" TextChanged="textBox2_TextChanged"/>
 
     </Grid>
 </Page>
