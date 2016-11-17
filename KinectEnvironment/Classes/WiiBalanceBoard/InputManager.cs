@@ -5,8 +5,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Forms;
+using System.Threading;
 
-namespace MediBalance.Classes.WiiBalanceBoard
+
+namespace InputManager
 {
         public class Keyboard
         {
@@ -576,4 +579,4 @@ namespace MediBalance.Classes.WiiBalanceBoard
             }
         }
     }
-}
+
