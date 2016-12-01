@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediBalance", "MediBalance\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectEnvironment", "KinectEnvironment\KinectEnvironment.csproj", "{B9297C8F-983F-40FF-ADFD-A963018D6AA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiiBalanceWalker", "..\..\..\Downloads\WiiBalanceWalker_v0.4\WiiBalanceWalker_v0.4\WiiBalanceWalker_v0.4_Source_VS2010\WiiBalanceWalker_v0.4\WiiBalanceWalker\WiiBalanceWalker.csproj", "{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiiBalanceWalker", "WiiBalanceWalker\WiiBalanceWalker.csproj", "{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
