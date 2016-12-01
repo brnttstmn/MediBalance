@@ -23,7 +23,7 @@ namespace MediBalance
          * Class Variables
          */
         private IBandClient bandClient=null;
-
+        public string Hb;
         /*
         * TSK Everything(int time, TextBlock OutputText):
         *  This method takes in an interger time and a textblock. The method will run for the given time
@@ -69,13 +69,15 @@ namespace MediBalance
                     {
                         OutputText.Text = "Connected!";
                         OutputText.Text = "Collecting Samples ...";
-
+                        
                         // Subscribe to HeartRate data.
                         bandClient.SensorManager.HeartRate.ReadingChanged += async (s, args) =>
                         {
                             await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                             {
                                 OutputText.Text = string.Format("{0}", args.SensorReading.HeartRate.ToString());
+
+                                Hb += string.Format("{0}", args.SensorReading.HeartRate.ToString()) + ", ";
                             });
                         };
                         await bandClient.SensorManager.HeartRate.StartReadingsAsync();
