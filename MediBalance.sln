@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediBalance", "MediBalance\MediBalance.csproj", "{E7DA3A14-DBDC-41AA-94FD-395FD2E41EBA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectEnvironment", "KinectEnvironment\KinectEnvironment.csproj", "{B9297C8F-983F-40FF-ADFD-A963018D6AA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiiBalanceWalker", "WiiBalanceWalker\WiiBalanceWalker.csproj", "{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,22 @@ Global
 		{B9297C8F-983F-40FF-ADFD-A963018D6AA2}.Release|x64.Build.0 = Release|Any CPU
 		{B9297C8F-983F-40FF-ADFD-A963018D6AA2}.Release|x86.ActiveCfg = Release|Any CPU
 		{B9297C8F-983F-40FF-ADFD-A963018D6AA2}.Release|x86.Build.0 = Release|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Debug|ARM.Build.0 = Debug|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Debug|x64.Build.0 = Debug|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Debug|x86.ActiveCfg = Debug|x86
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Debug|x86.Build.0 = Debug|x86
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Release|ARM.ActiveCfg = Release|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Release|ARM.Build.0 = Release|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Release|x64.ActiveCfg = Release|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Release|x64.Build.0 = Release|Any CPU
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Release|x86.ActiveCfg = Release|x86
+		{6BAAAAB3-54E0-4D21-A891-1CD69CEB36AF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
