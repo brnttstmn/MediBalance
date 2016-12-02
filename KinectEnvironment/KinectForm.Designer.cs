@@ -89,18 +89,18 @@
             this.label40 = new System.Windows.Forms.Label();
             this.txtRightShoulderX = new System.Windows.Forms.Label();
             this.label42 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
+            this.txtHeadZ = new System.Windows.Forms.Label();
+            this.txtHeadY = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
-            this.label26 = new System.Windows.Forms.Label();
+            this.txtHeadX = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
             this.label35 = new System.Windows.Forms.Label();
-            this.label37 = new System.Windows.Forms.Label();
-            this.label38 = new System.Windows.Forms.Label();
-            this.label41 = new System.Windows.Forms.Label();
+            this.txtNeckZ = new System.Windows.Forms.Label();
+            this.txtNeckX = new System.Windows.Forms.Label();
+            this.txtNeckY = new System.Windows.Forms.Label();
             this.txtLeftFootZ = new System.Windows.Forms.Label();
             this.txtLeftFootY = new System.Windows.Forms.Label();
             this.label63 = new System.Windows.Forms.Label();
@@ -749,25 +749,25 @@
             this.label42.TabIndex = 40;
             this.label42.Text = "Right Shoulder X:";
             // 
-            // label3
+            // txtHeadZ
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(365, 148);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(18, 25);
-            this.label3.TabIndex = 75;
-            this.label3.Text = ".";
+            this.txtHeadZ.AutoSize = true;
+            this.txtHeadZ.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtHeadZ.Location = new System.Drawing.Point(365, 148);
+            this.txtHeadZ.Name = "txtHeadZ";
+            this.txtHeadZ.Size = new System.Drawing.Size(18, 25);
+            this.txtHeadZ.TabIndex = 75;
+            this.txtHeadZ.Text = ".";
             // 
-            // label8
+            // txtHeadY
             // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(364, 123);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(18, 25);
-            this.label8.TabIndex = 74;
-            this.label8.Text = ".";
+            this.txtHeadY.AutoSize = true;
+            this.txtHeadY.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtHeadY.Location = new System.Drawing.Point(364, 123);
+            this.txtHeadY.Name = "txtHeadY";
+            this.txtHeadY.Size = new System.Drawing.Size(18, 25);
+            this.txtHeadY.TabIndex = 74;
+            this.txtHeadY.Text = ".";
             // 
             // label20
             // 
@@ -789,15 +789,15 @@
             this.label25.TabIndex = 72;
             this.label25.Text = "Head Y:";
             // 
-            // label26
+            // txtHeadX
             // 
-            this.label26.AutoSize = true;
-            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label26.Location = new System.Drawing.Point(364, 98);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(18, 25);
-            this.label26.TabIndex = 71;
-            this.label26.Text = ".";
+            this.txtHeadX.AutoSize = true;
+            this.txtHeadX.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtHeadX.Location = new System.Drawing.Point(364, 98);
+            this.txtHeadX.Name = "txtHeadX";
+            this.txtHeadX.Size = new System.Drawing.Size(18, 25);
+            this.txtHeadX.TabIndex = 71;
+            this.txtHeadX.Text = ".";
             // 
             // label29
             // 
@@ -839,35 +839,35 @@
             this.label35.TabIndex = 67;
             this.label35.Text = "Neck X:";
             // 
-            // label37
+            // txtNeckZ
             // 
-            this.label37.AutoSize = true;
-            this.label37.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label37.Location = new System.Drawing.Point(361, 59);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(18, 25);
-            this.label37.TabIndex = 66;
-            this.label37.Text = ".";
+            this.txtNeckZ.AutoSize = true;
+            this.txtNeckZ.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNeckZ.Location = new System.Drawing.Point(361, 59);
+            this.txtNeckZ.Name = "txtNeckZ";
+            this.txtNeckZ.Size = new System.Drawing.Size(18, 25);
+            this.txtNeckZ.TabIndex = 66;
+            this.txtNeckZ.Text = ".";
             // 
-            // label38
+            // txtNeckX
             // 
-            this.label38.AutoSize = true;
-            this.label38.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label38.Location = new System.Drawing.Point(361, 9);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(18, 25);
-            this.label38.TabIndex = 65;
-            this.label38.Text = ".";
+            this.txtNeckX.AutoSize = true;
+            this.txtNeckX.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNeckX.Location = new System.Drawing.Point(361, 9);
+            this.txtNeckX.Name = "txtNeckX";
+            this.txtNeckX.Size = new System.Drawing.Size(18, 25);
+            this.txtNeckX.TabIndex = 65;
+            this.txtNeckX.Text = ".";
             // 
-            // label41
+            // txtNeckY
             // 
-            this.label41.AutoSize = true;
-            this.label41.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label41.Location = new System.Drawing.Point(361, 34);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(18, 25);
-            this.label41.TabIndex = 64;
-            this.label41.Text = ".";
+            this.txtNeckY.AutoSize = true;
+            this.txtNeckY.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNeckY.Location = new System.Drawing.Point(361, 34);
+            this.txtNeckY.Name = "txtNeckY";
+            this.txtNeckY.Size = new System.Drawing.Size(18, 25);
+            this.txtNeckY.TabIndex = 64;
+            this.txtNeckY.Text = ".";
             // 
             // txtLeftFootZ
             // 
@@ -1270,18 +1270,18 @@
             this.Controls.Add(this.label76);
             this.Controls.Add(this.txtLeftHipX);
             this.Controls.Add(this.label78);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label8);
+            this.Controls.Add(this.txtHeadZ);
+            this.Controls.Add(this.txtHeadY);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.label25);
-            this.Controls.Add(this.label26);
+            this.Controls.Add(this.txtHeadX);
             this.Controls.Add(this.label29);
             this.Controls.Add(this.label31);
             this.Controls.Add(this.label32);
             this.Controls.Add(this.label35);
-            this.Controls.Add(this.label37);
-            this.Controls.Add(this.label38);
-            this.Controls.Add(this.label41);
+            this.Controls.Add(this.txtNeckZ);
+            this.Controls.Add(this.txtNeckX);
+            this.Controls.Add(this.txtNeckY);
             this.Controls.Add(this.txtRightWristZ);
             this.Controls.Add(this.txtRightWristY);
             this.Controls.Add(this.label14);
@@ -1415,18 +1415,18 @@
         private System.Windows.Forms.Label label40;
         private System.Windows.Forms.Label txtRightShoulderX;
         private System.Windows.Forms.Label label42;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label txtHeadZ;
+        private System.Windows.Forms.Label txtHeadY;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Label txtHeadX;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Label label32;
         private System.Windows.Forms.Label label35;
-        private System.Windows.Forms.Label label37;
-        private System.Windows.Forms.Label label38;
-        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.Label txtNeckZ;
+        private System.Windows.Forms.Label txtNeckX;
+        private System.Windows.Forms.Label txtNeckY;
         private System.Windows.Forms.Label txtLeftFootZ;
         private System.Windows.Forms.Label txtLeftFootY;
         private System.Windows.Forms.Label label63;

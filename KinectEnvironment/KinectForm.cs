@@ -200,6 +200,14 @@ namespace KinectEnvironment
                             txtMidSpineY.Text = midspine.Position.Y.ToString("#.##");
                             txtMidSpineZ.Text = midspine.Position.Z.ToString("#.##");
 
+                            txtNeckX.Text = neck.Position.X.ToString("#.##");
+                            txtNeckY.Text = neck.Position.Y.ToString("#.##");
+                            txtNeckZ.Text = neck.Position.Z.ToString("#.##");
+
+                            txtHeadX.Text = head.Position.X.ToString("#.##");
+                            txtHeadY.Text = head.Position.Y.ToString("#.##");
+                            txtHeadZ.Text = head.Position.Z.ToString("#.##");
+
                             txtLeftShoulderX.Text = shoulderleft.Position.X.ToString("#.##");
                             txtLeftShoulderY.Text = shoulderleft.Position.Y.ToString("#.##");
                             txtLeftShoulderZ.Text = shoulderleft.Position.Z.ToString("#.##");
