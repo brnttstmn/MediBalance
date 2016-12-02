@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediBalance", "MediBalance\MediBalance.csproj", "{E7DA3A14-DBDC-41AA-94FD-395FD2E41EBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSBand", "MediBalance\MSBand.csproj", "{E7DA3A14-DBDC-41AA-94FD-395FD2E41EBA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectEnvironment", "KinectEnvironment\KinectEnvironment.csproj", "{B9297C8F-983F-40FF-ADFD-A963018D6AA2}"
 EndProject
