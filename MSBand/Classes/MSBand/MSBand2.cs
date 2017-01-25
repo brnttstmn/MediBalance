@@ -32,7 +32,7 @@ namespace MediBalance
         *  **Note: Currently only running one sensor at a time (It can run all but not sure how we should output it...)
         * 
         */
-        public async Task<int> everything(int RunTime, TextBlock OutputText)
+        public async Task<int> everything(int RunTime, TextBlock OutputText,List<string> samples)
         {
             OutputText.Text = "Connecting...";
             OutputText.Visibility = Visibility.Visible;
@@ -77,7 +77,7 @@ namespace MediBalance
                             {
                                 OutputText.Text = string.Format("{0}", args.SensorReading.HeartRate.ToString());
 
-                                Hb += string.Format("{0}", args.SensorReading.HeartRate.ToString()) + ", ";
+                                samples.Add("{0}".ToString() + ": " + DateTime.Now.ToString("hh:mm:ss:fff tt"));
                             });
                         };
                         await bandClient.SensorManager.HeartRate.StartReadingsAsync();

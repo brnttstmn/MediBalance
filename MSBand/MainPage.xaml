@@ -8,9 +8,11 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Button x:Name="Connect_Button" Content="Connect" HorizontalAlignment="Left" Margin="79,151,0,0" VerticalAlignment="Top" Click="Connect_Click"/>
-        <TextBlock x:Name="connection_text" HorizontalAlignment="Left" Margin="159,163,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="10,151,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="18"/>
+        <Button x:Name="Connect_Button" Content="Connect" HorizontalAlignment="Left" Margin="143,187,0,0" VerticalAlignment="Top" Click="Connect_Click"/>
+        <TextBlock x:Name="connection_text" HorizontalAlignment="Left" Margin="79,224,0,0" TextWrapping="Wrap" Text="This is a MS Band Test Application. To start, input a time in seconds, then click connect." VerticalAlignment="Top" Height="250" Width="213" TextAlignment="Center"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="143,150,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="75"/>
+        <CheckBox x:Name="debug_checkbox" Content="DEBUG" HorizontalAlignment="Left" Margin="230,150,0,0" VerticalAlignment="Top" Checked="checkBox_Checked"/>
+        <TextBlock x:Name="textBlock" Margin="10,43,0,0" Text="Microsoft Band" VerticalAlignment="Top" Height="28" Width="340" FontSize="21.333" TextWrapping="WrapWholeWords" TextAlignment="Center"/>
 
     </Grid>
 </Page>
