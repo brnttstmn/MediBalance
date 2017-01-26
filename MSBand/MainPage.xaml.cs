@@ -18,6 +18,7 @@ using Microsoft.Band;
 using Windows.Networking;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
+using System.Collections;
 
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -36,10 +37,6 @@ namespace MediBalance
             this.InitializeComponent();
         }
 
-        private void checkBox_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         /// <Main Method>
         /// This will be the main method of this module.
@@ -49,14 +46,22 @@ namespace MediBalance
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
             int time;
+            var preload = new bool[4] {false,false,false,false};
+            var control = new BitArray(preload);           
+            var c = new Dictionary<string, int>() { {"hr", 0 }, {"gsr",1}, {"ls",2},{"debug",3}};
 
             // Only run if provide time is an integer
             if (Int32.TryParse(textBox.Text, out time))
             {
-                // Check if Debug box is checked
-                if (debug_checkbox.IsChecked == false) { run_band(time, connection_text); }
-                else { sim_band(time); }
-                
+                // Check for Config
+                if (debug_checkbox.IsChecked == true) { control[c["debug"]] = true; }
+                if (hr_checkBox.IsChecked == true) { control[c["hr"]] = true; }
+                if (gsr_checkBox.IsChecked == true) { control[c["gsr"]] = true; }
+                if (ls_checkBox.IsChecked == true) { control[c["ls"]] = true; }
+
+                if (control[c["debug"]]) { sim_band(time, control, c); }
+                else { run_band(time, control, c, connection_text); }
+
             }
             // Inform user that function requires integers
             else { connection_text.Text = "Please only enter intergers."; }
@@ -67,21 +72,28 @@ namespace MediBalance
         /// </summary>
         /// <param name="time"></param>
         /// <param name="connection_text"></param>
-        private async void run_band(int time, TextBlock connection_text) {
+        private async void run_band(int time, BitArray control, Dictionary<string, int> map, TextBlock connection_text) {
 
-            // Declar Objects
+            // Declare Objects
             MSBand2 band = new MSBand2();
             var samples = new List<string>();
+            int stat;
 
+            connection_text.Text = "Connecting...";
+            stat = await band.everything(time, samples, control, map, connection_text);
 
-            await band.everything(time, connection_text, samples);
+            if (stat == 0) { connection_text.Text += string.Format("\nFinished Sampling"); }
+            if (stat==-1){ connection_text.Text = "Microsoft Band cannot be found. Check Connection"; }
+            if (stat == -2) { connection_text.Text = "Access to the heart rate sensor is denied."; }
+            
+
         }
 
         /// <DEBUG: Simulated Band>
         /// This method is a simulation of the band
         /// </summary>
         /// <param name="time"></param>
-        private async void sim_band(int time)
+        private async void sim_band(int time, BitArray control, Dictionary<string, int> map)
         {
             // Declare Objects
             var test = new TestVectors.TestBand();
@@ -100,6 +112,26 @@ namespace MediBalance
                 samples.Add(hr[i].ToString() + ": " + DateTime.Now.ToString("hh:mm:ss:fff tt"));
                 connection_text.Text += samples[i]+'\n';
             }
+        }
+
+        private void checkBox_Checked_hr(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void checkBox_Checked_gsr(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void checkBox_Checked_ls(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void checkBox_Checked_debug(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
