@@ -38,6 +38,7 @@ namespace WiiBalanceWalker
         public FormMain()
         {
             InitializeComponent(); //Starts the program
+            //Logging();
         }
 
         private void FormMain_Load(object sender, EventArgs e)
@@ -188,7 +189,7 @@ namespace WiiBalanceWalker
             this.BeginInvoke(new Action(() => InfoUpdate()));
         }
 
-        private void InfoUpdate()
+        private void InfoUpdate() //This does all of the data collection!
         {
             if (wiiDevice.WiimoteState.ExtensionType != ExtensionType.BalanceBoard)
             {
@@ -196,8 +197,10 @@ namespace WiiBalanceWalker
                 return;
             }
 
-            // Get the current raw sensor KG values.
-
+            // Get the current raw sensor Lb values.
+            /* 
+             This needs to be saved for output to the TCP/IP stuff!!!!
+             */
             var rwWeight      = wiiDevice.WiimoteState.BalanceBoardState.WeightLb;
 
             var rwTopLeft     = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.TopLeft;
@@ -219,6 +222,7 @@ namespace WiiBalanceWalker
             label_rwTR.Text = rwTopRight.ToString("0.0");
             label_rwBL.Text = rwBottomLeft.ToString("0.0");
             label_rwBR.Text = rwBottomRight.ToString("0.0");
+            Logging(label_rwWT.Text);
 
             // Prevent negative values by tracking lowest possible value and making it a zero based offset.
 
@@ -396,6 +400,18 @@ namespace WiiBalanceWalker
                 joyDevice.SetYAxis(0, (short)joyY);
                 joyDevice.Update(0);
             }
+        }
+
+        public void Logging(string newlines) //This is where the data is logged
+        {
+            // Writes string to a file.append mode is enabled so that the log
+            // lines get appended to test.txt instead of wiping content and writing log
+           // string newlines = "Shit. \r\n Goes \r\n Right \r\n Here!";
+
+            System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\Brent\\Desktop\\test.txt", true);
+            file.WriteLine(newlines);
+
+            file.Close();
         }
 
         private void checkBox_EnableJoystick_CheckedChanged(object sender, EventArgs e)
