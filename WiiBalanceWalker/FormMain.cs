@@ -37,7 +37,7 @@ namespace WiiBalanceWalker
 
         public FormMain()
         {
-            InitializeComponent();
+            InitializeComponent(); //Starts the program
         }
 
         private void FormMain_Load(object sender, EventArgs e)
@@ -72,6 +72,9 @@ namespace WiiBalanceWalker
 
             checkBox_EnableJoystick.Checked = Properties.Settings.Default.EnableJoystick;
         }
+        /*
+         So the next 4 classes are (1) Left and Right (2) Front and Back (3) Left and Right Modifier and (4) Front and Back Modifier. It has a save function put in place.
+        */
 
         private void numericUpDown_TLR_ValueChanged(object sender, EventArgs e)
         {
@@ -195,12 +198,12 @@ namespace WiiBalanceWalker
 
             // Get the current raw sensor KG values.
 
-            var rwWeight      = wiiDevice.WiimoteState.BalanceBoardState.WeightKg;
+            var rwWeight      = wiiDevice.WiimoteState.BalanceBoardState.WeightLb;
 
-            var rwTopLeft     = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesKg.TopLeft;
-            var rwTopRight    = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesKg.TopRight;
-            var rwBottomLeft  = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesKg.BottomLeft;
-            var rwBottomRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesKg.BottomRight;
+            var rwTopLeft     = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.TopLeft;
+            var rwTopRight    = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.TopRight;
+            var rwBottomLeft  = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomLeft;
+            var rwBottomRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomRight;
 
             // The alternative .SensorValuesRaw is not adjusted with 17KG and 34KG calibration data, but does that make for better or worse control?
             //
