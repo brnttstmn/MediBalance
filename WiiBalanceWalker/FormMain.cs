@@ -37,7 +37,8 @@ namespace WiiBalanceWalker
 
         public FormMain()
         {
-            InitializeComponent();
+            InitializeComponent(); //Starts the program
+            //Logging();
         }
 
         private void FormMain_Load(object sender, EventArgs e)
@@ -72,6 +73,9 @@ namespace WiiBalanceWalker
 
             checkBox_EnableJoystick.Checked = Properties.Settings.Default.EnableJoystick;
         }
+        /*
+         So the next 4 classes are (1) Left and Right (2) Front and Back (3) Left and Right Modifier and (4) Front and Back Modifier. It has a save function put in place.
+        */
 
         private void numericUpDown_TLR_ValueChanged(object sender, EventArgs e)
         {
@@ -185,7 +189,7 @@ namespace WiiBalanceWalker
             this.BeginInvoke(new Action(() => InfoUpdate()));
         }
 
-        private void InfoUpdate()
+        private void InfoUpdate() //This does all of the data collection!
         {
             if (wiiDevice.WiimoteState.ExtensionType != ExtensionType.BalanceBoard)
             {
@@ -193,14 +197,16 @@ namespace WiiBalanceWalker
                 return;
             }
 
-            // Get the current raw sensor KG values.
+            // Get the current raw sensor Lb values.
+            /* 
+             This needs to be saved for output to the TCP/IP stuff!!!!
+             */
+            var rwWeight      = wiiDevice.WiimoteState.BalanceBoardState.WeightLb;
 
-            var rwWeight      = wiiDevice.WiimoteState.BalanceBoardState.WeightKg;
-
-            var rwTopLeft     = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesKg.TopLeft;
-            var rwTopRight    = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesKg.TopRight;
-            var rwBottomLeft  = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesKg.BottomLeft;
-            var rwBottomRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesKg.BottomRight;
+            var rwTopLeft     = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.TopLeft;
+            var rwTopRight    = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.TopRight;
+            var rwBottomLeft  = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomLeft;
+            var rwBottomRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomRight;
 
             // The alternative .SensorValuesRaw is not adjusted with 17KG and 34KG calibration data, but does that make for better or worse control?
             //
@@ -216,6 +222,7 @@ namespace WiiBalanceWalker
             label_rwTR.Text = rwTopRight.ToString("0.0");
             label_rwBL.Text = rwBottomLeft.ToString("0.0");
             label_rwBR.Text = rwBottomRight.ToString("0.0");
+            Logging(label_rwWT.Text);
 
             // Prevent negative values by tracking lowest possible value and making it a zero based offset.
 
@@ -393,6 +400,18 @@ namespace WiiBalanceWalker
                 joyDevice.SetYAxis(0, (short)joyY);
                 joyDevice.Update(0);
             }
+        }
+
+        public void Logging(string newlines) //This is where the data is logged
+        {
+            // Writes string to a file.append mode is enabled so that the log
+            // lines get appended to test.txt instead of wiping content and writing log
+           // string newlines = "Shit. \r\n Goes \r\n Right \r\n Here!";
+
+            System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\Brent\\Desktop\\test.txt", true);
+            file.WriteLine(newlines);
+
+            file.Close();
         }
 
         private void checkBox_EnableJoystick_CheckedChanged(object sender, EventArgs e)
