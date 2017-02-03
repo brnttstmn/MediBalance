@@ -15,8 +15,10 @@ namespace BackEnd
     class Program
     {
         // Instantiate Named Pipes
-        static NamedPipeServerStream kServer = new NamedPipeServerStream("kinect", PipeDirection.InOut);
+        static NamedPipeServerStream kServer = new NamedPipeServerStream("tokinect", PipeDirection.InOut);
+        static NamedPipeClientStream kClient = new NamedPipeClientStream(".", "fromkinect", PipeDirection.InOut);
         static NamedPipeServerStream bServer = new NamedPipeServerStream("board", PipeDirection.InOut);
+        static NamedPipeClientStream bClient = new NamedPipeClientStream(".", "fromboard", PipeDirection.InOut);
 
         /// <summary>
         /// Main Program
@@ -24,8 +26,14 @@ namespace BackEnd
         /// <param name="args"></param>
         static void Main(string[] args)
         {
+            // Start Devices
             runPrograms();
-            server(kServer);
+
+            // Start Servers
+            server(kServer, kClient);
+
+            Console.WriteLine("Press any key to exit");
+            Console.ReadKey();
         }
 
         /// <summary>
@@ -34,34 +42,42 @@ namespace BackEnd
         static void runPrograms()
         {
             Process.Start("C:\\Users\\dcnie\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
-            Process.Start("C:\\Users\\dcnie\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
+            //Process.Start("C:\\Users\\dcnie\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
         }
 
         /// <summary>
         /// server: takes a stream and makes it a listening server
         /// </summary>
         /// <param name="xStream"></param>
-        static void server(NamedPipeServerStream xStream)
+        static void server(NamedPipeServerStream server, NamedPipeClientStream client)
         {
             // Setup Objects
-            var message = "";
+            var message = "start";
+            var s = new Stopwatch();
 
             // Waiting for Connection
             Console.WriteLine("Waiting for connection...");
-            xStream.WaitForConnection();
-            Console.WriteLine("Conected!");
+            server.WaitForConnection();
+            client.Connect();
+            Console.WriteLine("Conected.");
 
             // Instantiate Stream reader and Writers
-            var write = new StreamWriter(xStream) { AutoFlush = true };
-            var read = new StreamReader(xStream);
+            var sw = new StreamWriter(server) { AutoFlush = true };
+            var sr = new StreamReader(client);
 
-            message = Console.ReadLine();
-            write.WriteLine(message);
+            sw.WriteLine(message);
 
-            // Close Out Program
-            Console.WriteLine("Press any key to exit");
-            Console.ReadLine();
-            xStream.Close();
+            s.Start();
+            while (s.Elapsed < TimeSpan.FromSeconds(15))
+            {
+                var line = sr.ReadLine();
+                if (message != null) { Console.WriteLine(line); }         
+            }
+
+            // Close Out Connection
+            client.Close();
+            server.Close();
         }
+        
     }
 }

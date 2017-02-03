@@ -1,23 +1,24 @@
 ﻿using System;
-using System.Windows.Forms;
 using Microsoft.Kinect;
 using System.Text;
 using System.IO.Pipes;
-using System.Net;
-using System.Net.Sockets;
 using System.Security.Principal;
 using System.IO;
 using System.Threading;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace KinectEnvironment
 {
     class Program
     {
-        static NamedPipeClientStream kClient = new NamedPipeClientStream(".", "kinect", PipeDirection.InOut, PipeOptions.None, TokenImpersonationLevel.Impersonation);
-        KinectSensor kinectSensor = KinectSensor.GetDefault();
-        BodyFrameReader bodyframeReader = null;
-        Body[] bodies = null;
-        StringBuilder csv = new StringBuilder();
+        static string timeFormat = "HH:mm:ss:fff";
+        static NamedPipeClientStream kClient = new NamedPipeClientStream(".", "tokinect", PipeDirection.InOut);
+        static NamedPipeServerStream kServer = new NamedPipeServerStream("fromkinect", PipeDirection.InOut);
+        static StreamWriter sw = null;
+        static StreamReader sr = null;
+        static int count = 0;
+
 
         /// <summary>
         /// The main entry point for the application.
@@ -31,11 +32,16 @@ namespace KinectEnvironment
 
             // Connect to Pipe
             kClient.Connect();
+            kServer.WaitForConnection();
+            sr = new StreamReader(kClient);
+            sw = new StreamWriter(kServer);
 
             // Run until told to exit
-            while (run) {
+            while (run)
+            {
 
                 // Listen for command
+                Console.WriteLine("Listening");
                 command = listen();
                 Console.WriteLine(command);
 
@@ -55,19 +61,24 @@ namespace KinectEnvironment
                         run = true;
                         break;
                 }
+                //temporary. needs debugging
+                run = false;
             }
 
             // Close Pipe Connection -- Terminate program
             kClient.Close();
+            kServer.Close();
+
+            Console.WriteLine("Press Enter to Continue...");
+            Console.ReadLine();
         }
         static string listen()
         {
-            var read = new StreamReader(kClient);
             var message = "";
 
             while (true)
             {
-                message = read.ReadLine();
+                message = sr.ReadLine();
                 if (message != null)
                 {
                     return message;
@@ -76,13 +87,106 @@ namespace KinectEnvironment
             }
         }
 
-        static void start() { }
+        static void start()
+        {
+            // Create Objects
+            KinectSensor kinectSensor = KinectSensor.GetDefault();
+            BodyFrameReader bodyframeReader = null;
+            
 
-        static void test() {
+            // Start Kinect
+            kinectSensor.Open();
+
+            // Track Changes
+            bodyframeReader = kinectSensor.BodyFrameSource.OpenReader();
+            if (bodyframeReader != null)
+            {
+                bodyframeReader.FrameArrived += BodyframeReader_FrameArrived;
+            }
+
+            // Wait for 15s
+            for (int i = 15; i > 0; i--)
+            {
+                Console.WriteLine(i);
+                Thread.Sleep(1000);
+            }
+
+            // Close Kinect Connection
+            kinectSensor.Close();
+        }
+
+        static void test()
+        {
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new KinectForm());
         }
-    }
 
+        private static void BodyframeReader_FrameArrived(object sender, BodyFrameArrivedEventArgs e)
+        {
+            Body[] person = null;
+            bool dataReceived = false;
+
+            using (BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
+            {
+                if (bodyFrame != null)
+                {
+                    if (person == null)
+                    {
+                        person = new Body[bodyFrame.BodyCount];
+                    }
+
+                    bodyFrame.GetAndRefreshBodyData(person);
+                    dataReceived = true;
+                }
+
+                if (dataReceived)
+                {
+                    foreach (Body part in person)
+                    {
+                        if (part.IsTracked)
+                        {
+                            IReadOnlyDictionary<JointType, Joint> joints = part.Joints;
+
+                            Joint spinebase = joints[JointType.SpineBase];
+                            Joint midspine = joints[JointType.SpineMid];
+                            Joint neck = joints[JointType.Neck];
+                            Joint head = joints[JointType.Head];
+                            Joint shoulderleft = joints[JointType.ShoulderLeft];
+                            Joint elbowleft = joints[JointType.ElbowLeft];
+                            Joint wristleft = joints[JointType.WristLeft];
+                            Joint handleft = joints[JointType.HandLeft];
+                            Joint shoulderright = joints[JointType.ShoulderRight];
+                            Joint elbowright = joints[JointType.ElbowRight];
+                            Joint wristright = joints[JointType.WristRight];
+                            Joint handright = joints[JointType.HandRight];
+                            Joint hipleft = joints[JointType.HipLeft];
+                            Joint kneeleft = joints[JointType.KneeLeft];
+                            Joint footleft = joints[JointType.FootLeft];
+                            Joint hipright = joints[JointType.HipRight];
+                            Joint kneeright = joints[JointType.KneeRight];
+                            Joint footright = joints[JointType.FootRight];
+
+                            var jointName = new Dictionary<Joint, string>()
+                            {
+                                {spinebase, "spinebase"}, { midspine, "midspine"}, {neck, "neck"}, {head,"head"}, {shoulderleft,"shoulderleft"},
+                                {elbowleft,"elbowleft"}, {wristleft, "wristleft"}, {handleft,"handleft"}, {shoulderright,"shoulderright"},
+                                {elbowright,"elbowright"}, {wristright,"wristright"}, {handright,"handright"}, {hipleft,"hipleft"},
+                                {kneeleft,"kneeleft"}, {footleft,"footleft"}, {hipright,"hipright"}, {kneeright,"kneeright"}, {footright,"footright"}
+                            };
+
+                            foreach (KeyValuePair<Joint, string> joint in jointName)
+                            {
+                                var newLine = string.Format("{0},{1},{2},{3},{4};", DateTime.Now.ToString(timeFormat),joint.Value,
+                                joint.Key.Position.X.ToString(), joint.Key.Position.Y.ToString(),
+                                joint.Key.Position.Z.ToString());
+                                sw.WriteLine(newLine);
+                                Console.WriteLine(newLine);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
