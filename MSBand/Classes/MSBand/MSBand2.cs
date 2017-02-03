@@ -20,6 +20,7 @@ namespace MediBalance
 {
     class MSBand2
     {
+        string timeFormat = "HH:mm:ss:fff";
         /*
          * Class Variables
          */
@@ -81,8 +82,8 @@ namespace MediBalance
                         {
                             await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                             {
-                                OutputText.Text += string.Format("\nhr,{1},{0};", args.SensorReading.HeartRate.ToString(), DateTime.Now.ToString("hh:mm:ss:fff tt"));
-                                samples.Add(string.Format("\nhr,{1},{0};", args.SensorReading.HeartRate.ToString(), DateTime.Now.ToString("hh:mm:ss:fff tt")));
+                                OutputText.Text += string.Format("\nhr,{1},{0};", args.SensorReading.HeartRate.ToString(), DateTime.Now.ToString(timeFormat));
+                                samples.Add(string.Format("\nhr,{1},{0};", args.SensorReading.HeartRate.ToString(), DateTime.Now.ToString(timeFormat)));
                             });
                         };
                         await bandClient.SensorManager.HeartRate.StartReadingsAsync();
@@ -94,8 +95,8 @@ namespace MediBalance
                         {
                             await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                             {
-                                OutputText.Text += string.Format("\ngsr,{1},{0};", args.SensorReading.Resistance, DateTime.Now.ToString("hh:mm:ss:fff tt"));
-                                samples.Add(string.Format("\ngsr,{1},{0};", args.SensorReading.Resistance, DateTime.Now.ToString("hh:mm:ss:fff tt")));
+                                OutputText.Text += string.Format("\ngsr,{1},{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat));
+                                samples.Add(string.Format("\ngsr,{1},{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat)));
                             });
                         };
                         await bandClient.SensorManager.Gsr.StartReadingsAsync();
@@ -107,8 +108,8 @@ namespace MediBalance
                         {
                             await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                             {
-                                OutputText.Text += string.Format("\nlight,{1},{0};", args.SensorReading.Brightness, DateTime.Now.ToString("hh:mm:ss:fff tt"));
-                                samples.Add(string.Format("\nlight,{1},{0};", args.SensorReading.Brightness, DateTime.Now.ToString("hh:mm:ss:fff tt")));
+                                OutputText.Text += string.Format("\nlight,{1},{0};", args.SensorReading.Brightness, DateTime.Now.ToString(timeFormat));
+                                samples.Add(string.Format("\nlight,{1},{0};", args.SensorReading.Brightness, DateTime.Now.ToString(timeFormat)));
                             });
                         };
                         await bandClient.SensorManager.AmbientLight.StartReadingsAsync();
