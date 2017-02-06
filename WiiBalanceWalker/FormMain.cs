@@ -216,13 +216,14 @@ namespace WiiBalanceWalker
             //var rwBottomRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesRaw.BottomRight - wiiDevice.WiimoteState.BalanceBoardState.CalibrationInfo.Kg0.BottomRight;
 
             // Show the raw sensor values.
-
+            string Timing = DateTime.Now.ToString("HH:mm:ss:fff");
             label_rwWT.Text = rwWeight.ToString("0.0");
             label_rwTL.Text = rwTopLeft.ToString("0.0");
             label_rwTR.Text = rwTopRight.ToString("0.0");
             label_rwBL.Text = rwBottomLeft.ToString("0.0");
             label_rwBR.Text = rwBottomRight.ToString("0.0");
-            Logging(label_rwWT.Text);
+
+            //Logging(Timing,label_rwWT.Text);
 
             // Prevent negative values by tracking lowest possible value and making it a zero based offset.
 
@@ -284,11 +285,14 @@ namespace WiiBalanceWalker
             var owrTopRight    = owrPercentage * owTopRight;
             var owrBottomLeft  = owrPercentage * owBottomLeft;
             var owrBottomRight = owrPercentage * owBottomRight;
-
+            /*
+             OFFSET Weight ratio Values
+             */
             label_owrTL.Text = owrTopLeft.ToString("0.0");
             label_owrTR.Text = owrTopRight.ToString("0.0");
             label_owrBL.Text = owrBottomLeft.ToString("0.0");
             label_owrBR.Text = owrBottomRight.ToString("0.0");
+            Logging(Timing, label_rwWT.Text, label_owrTL.Text, label_owrTR.Text, label_owrBL.Text, label_owrBR.Text);
 
             // Calculate balance ratio.
 
@@ -402,14 +406,19 @@ namespace WiiBalanceWalker
             }
         }
 
-        public void Logging(string newlines) //This is where the data is logged
+        public void Logging(string timing, string weight, string TopLeft, string TopRight, string BottomLeft, string BottomRight) //This is where the data is logged
         {
             // Writes string to a file.append mode is enabled so that the log
             // lines get appended to test.txt instead of wiping content and writing log
-           // string newlines = "Shit. \r\n Goes \r\n Right \r\n Here!";
+           // string newlines = "\r\n Shit \r\n Goes \r\n Right \r\n Here!";
 
             System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\Brent\\Desktop\\test.txt", true);
-            file.WriteLine(newlines);
+            file.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
+            file.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
+            file.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
+            file.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
+            file.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
+            //file.WriteLine(newlines);
 
             file.Close();
         }
