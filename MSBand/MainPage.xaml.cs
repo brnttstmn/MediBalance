@@ -30,7 +30,8 @@ namespace MediBalance
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        
+        string timeFormat = "HH:mm:ss:fff";
+
 
         public MainPage()
         {
@@ -109,7 +110,7 @@ namespace MediBalance
             // Simulate Wait Time
             for (int i = 0; i < hr.Count; i++) {
                 await Task.Delay(1000);
-                samples.Add(hr[i].ToString() + ": " + DateTime.Now.ToString("hh:mm:ss:fff tt"));
+                samples.Add(hr[i].ToString() + ": " + DateTime.Now.ToString(timeFormat));
                 connection_text.Text += samples[i]+'\n';
             }
         }
