@@ -12,7 +12,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows.Forms;
-using VJoyLibrary;
+//using VJoyLibrary;
 using WiimoteLib;
 
 namespace WiiBalanceWalker
@@ -25,7 +25,7 @@ namespace WiiBalanceWalker
         ActionList actionList = new ActionList();
         Wiimote wiiDevice     = new Wiimote();
         DateTime jumpTime     = DateTime.UtcNow;
-        VJoy joyDevice        = null;
+     //  VJoy joyDevice        = null;
 
         bool setCenterOffset = false;                                             
 
@@ -49,7 +49,7 @@ namespace WiiBalanceWalker
 
             // Setup a timer which prevents a VJoy popup message.
 
-            joyResetTimer.Elapsed += new ElapsedEventHandler(joyResetTimer_Elapsed);
+//            joyResetTimer.Elapsed += new ElapsedEventHandler(joyResetTimer_Elapsed);
 
             // Load trigger settings.
 
@@ -114,7 +114,7 @@ namespace WiiBalanceWalker
 
         private void button_BluetoothAddDevice_Click(object sender, EventArgs e)
         {
-            var form = new FormBluetooth();
+            var form = new FormBluetooth(); //trigger new bluetooth form for connection
             form.ShowDialog(this);
         }
 
@@ -222,8 +222,6 @@ namespace WiiBalanceWalker
             label_rwTR.Text = rwTopRight.ToString("0.0");
             label_rwBL.Text = rwBottomLeft.ToString("0.0");
             label_rwBR.Text = rwBottomRight.ToString("0.0");
-
-            //Logging(Timing,label_rwWT.Text);
 
             // Prevent negative values by tracking lowest possible value and making it a zero based offset.
 
@@ -424,45 +422,45 @@ namespace WiiBalanceWalker
             file.Close();
         }
 
-        private void checkBox_EnableJoystick_CheckedChanged(object sender, EventArgs e)
-        {
-            // Start joystick emulator.
+        //private void checkBox_EnableJoystick_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    // Start joystick emulator.
 
-            try
-            {
-                joyDevice = new VJoy();
-                joyDevice.Initialize();
-                joyDevice.Reset();
-                joyDevice.Update(0);
-            }
-            catch (Exception ex)
-            {
-                // VJoy.DLL missing from .EXE folder or project built as 'Any CPU' and DLL is 32-bit only.
+        //    try
+        //    {
+        //        joyDevice = new VJoy();
+        //        joyDevice.Initialize();
+        //        joyDevice.Reset();
+        //        joyDevice.Update(0);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // VJoy.DLL missing from .EXE folder or project built as 'Any CPU' and DLL is 32-bit only.
 
-                infoUpdateTimer.Enabled = false;
-                MessageBox.Show(ex.Message, "VJoy Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+        //        infoUpdateTimer.Enabled = false;
+        //        MessageBox.Show(ex.Message, "VJoy Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
 
-            joyResetTimer.Enabled = true;
+        //    joyResetTimer.Enabled = true;
 
-            // Show reminder ( if not being changed by load settings ) and save settings.
+        //    // Show reminder ( if not being changed by load settings ) and save settings.
 
-            var isChecked = ((CheckBox)sender).Checked;
-            if (isChecked)
-            {
-                if (Properties.Settings.Default.EnableJoystick == false)
-                {
-                    MessageBox.Show("Actions still apply! Set 'Do Nothing' for any movement conflicts.\r\n\r\nRequires Headsoft VJoy driver to be installed.", "Reminder", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            Properties.Settings.Default.EnableJoystick = isChecked;
-            Properties.Settings.Default.Save();
-        }
+        //    var isChecked = ((CheckBox)sender).Checked;
+        //    if (isChecked)
+        //    {
+        //        if (Properties.Settings.Default.EnableJoystick == false)
+        //        {
+        //            MessageBox.Show("Actions still apply! Set 'Do Nothing' for any movement conflicts.\r\n\r\nRequires Headsoft VJoy driver to be installed.", "Reminder", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        }
+        //    }
+        //    Properties.Settings.Default.EnableJoystick = isChecked;
+        //    Properties.Settings.Default.Save();
+        //}
 
-        void joyResetTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            joyDevice.Initialize();
-        }
+        //void joyResetTimer_Elapsed(object sender, ElapsedEventArgs e)
+        //{
+        //    joyDevice.Initialize();
+        //}
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
