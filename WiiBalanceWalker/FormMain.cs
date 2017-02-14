@@ -14,6 +14,7 @@ using System.Timers;
 using System.Windows.Forms;
 //using VJoyLibrary;
 using WiimoteLib;
+using System.Diagnostics;
 
 namespace WiiBalanceWalker
 {
@@ -412,14 +413,28 @@ namespace WiiBalanceWalker
            // string newlines = "\r\n Shit \r\n Goes \r\n Right \r\n Here!";
 
             System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\Brent\\Desktop\\test.txt", true);
-            file.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
-            file.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
-            file.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
-            file.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
-            file.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
+            //file.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
+            //file.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
+            //file.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
+            //file.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
+            //file.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
+            var stop = new Stopwatch();
+            stop.Start();
+
+            while (stop.Elapsed < TimeSpan.FromSeconds(10))
+            {
+                Console.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
+                Console.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
+                Console.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
+                Console.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
+                Console.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
+                //Console.ReadKey();
+            }
+            
+
             //file.WriteLine(newlines);
 
-            file.Close();
+           // file.Close();
         }
 
         //private void checkBox_EnableJoystick_CheckedChanged(object sender, EventArgs e)
