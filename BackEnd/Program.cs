@@ -30,18 +30,20 @@ namespace BackEnd
             runPrograms();
 
             // Connect Pipes
-            //kinect.start_client();
+            kinect.start_client();
             board.start_client();
-            //string command = "start";
-            //kinect.sendcommand(command);
+            string command = "start";
+            kinect.sendcommand(command);
 
 
             var line = "";
+            var line2 = "";
             int i = 0;
             while (i < 1000000)
             {
                 //Thread.Sleep(500);
-                //line = kinect.read.ReadLine();
+                line2 = kinect.read.ReadLine();
+                if (line2 != null) { Console.WriteLine(line2); }
                 line = board.read.ReadLine();
                 if (line != null) { Console.WriteLine(line); }
                 //else { Console.WriteLine("Error"); }
@@ -58,7 +60,7 @@ namespace BackEnd
         /// </summary>
         static void runPrograms()
         {
-          //  Process.Start("C:\\Users\\dcnie\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
+            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
             Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
         }
     }

@@ -13,10 +13,10 @@ using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows.Forms;
 using WiimoteLib;
-using System.Diagnostics;
+//using System.Diagnostics;
 using System.IO.Pipes;
 using System.IO;
-using System.Threading;
+//using System.Threading;
 using System.Collections.Generic;
 
 namespace WiiBalanceWalker
