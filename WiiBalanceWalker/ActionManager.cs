@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using InputManager;
+//using InputManager;
 
 namespace WiiBalanceWalker
 {
@@ -26,7 +26,7 @@ namespace WiiBalanceWalker
         int                 inputAmount;
         int                 inputType;
         Keys                inputKeys;
-        Mouse.MouseKeys     inputMouseKeys;
+      //  Mouse.MouseKeys     inputMouseKeys;
         System.Timers.Timer inputTimer      = new System.Timers.Timer() { Interval = 2, Enabled = false };
 
         public ActionItem(string settingName, ComboBox controlType, NumericUpDown controlAmount)
@@ -48,10 +48,10 @@ namespace WiiBalanceWalker
 
             // Add mouse button options to control.
 
-            foreach (Mouse.MouseKeys item in Enum.GetValues(typeof(Mouse.MouseKeys)))
-            {
-                controlType.Items.Add(new ItemWithText(item, "Mouse Hold " + item));
-            }
+            //foreach (Mouse.MouseKeys item in Enum.GetValues(typeof(Mouse.MouseKeys)))
+            //{
+            //    controlType.Items.Add(new ItemWithText(item, "Mouse Hold " + item));
+            //}
 
             // Add keyboard options to control.
 
@@ -71,7 +71,7 @@ namespace WiiBalanceWalker
             controlAmount.Value = inputAmount;
 
 
-            inputTimer.Elapsed += new System.Timers.ElapsedEventHandler(inputTimer_Elapsed);
+           // inputTimer.Elapsed += new System.Timers.ElapsedEventHandler(inputTimer_Elapsed);
 
         }
 
@@ -89,11 +89,11 @@ namespace WiiBalanceWalker
                 inputKeys = (Keys)itemWithText.Item;
                 inputType = 1;
             }
-            else if (itemTypeName == "MouseKeys")
-            {
-                inputType = 2;
-                inputMouseKeys = (Mouse.MouseKeys)itemWithText.Item;
-            }
+            //else if (itemTypeName == "MouseKeys")
+            //{
+            //    inputType = 2;
+            //    inputMouseKeys = (Mouse.MouseKeys)itemWithText.Item;
+            //}
             else if (itemTypeName == "String")
             {
                 var itemText = (String)itemWithText.Item;
@@ -117,18 +117,18 @@ namespace WiiBalanceWalker
             Save();
         }
 
-        void inputTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            switch (inputType)
-            {
-                case 3:
-                    Mouse.MoveRelative(inputAmount, 0);
-                    break;
-                case 4:
-                    Mouse.MoveRelative(0, inputAmount);
-                    break;
-            }
-        }
+        //void inputTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        //{
+        //    switch (inputType)
+        //    {
+        //        case 3:
+        //            Mouse.MoveRelative(inputAmount, 0);
+        //            break;
+        //        case 4:
+        //            Mouse.MoveRelative(0, inputAmount);
+        //            break;
+        //    }
+        //}
 
         public void Start()
         {
@@ -138,23 +138,23 @@ namespace WiiBalanceWalker
             if (this.IsActive) return;
             this.IsActive = true;
 
-            switch (inputType)
-            {
-                case 0:
-                    return;
-                case 1:
-                    Keyboard.KeyDown(inputKeys);
-                    break;
-                case 2:
-                    Mouse.ButtonDown(inputMouseKeys);
-                    break;
-                case 3:
-                    inputTimer.Enabled = true;
-                    break;
-                case 4:
-                    inputTimer.Enabled = true;
-                    break;
-            }
+            //switch (inputType)
+            //{
+            //    case 0:
+            //        return;
+            //    case 1:
+            //        Keyboard.KeyDown(inputKeys);
+            //        break;
+            //    case 2:
+            //        Mouse.ButtonDown(inputMouseKeys);
+            //        break;
+            //    case 3:
+            //        inputTimer.Enabled = true;
+            //        break;
+            //    case 4:
+            //        inputTimer.Enabled = true;
+            //        break;
+            //}
         }
 
         public void Stop()
@@ -162,23 +162,23 @@ namespace WiiBalanceWalker
             if (!this.IsActive) return;
             this.IsActive = false;
 
-            switch (inputType)
-            {
-                case 0:
-                    return;
-                case 1:
-                    Keyboard.KeyUp(inputKeys);
-                    break;
-                case 2:
-                    Mouse.ButtonUp(inputMouseKeys);
-                    break;
-                case 3:
-                    inputTimer.Enabled = false;
-                    break;
-                case 4:
-                    inputTimer.Enabled = false;
-                    break;
-            }
+            //switch (inputType)
+            //{
+            //    case 0:
+            //        return;
+            //    case 1:
+            //        Keyboard.KeyUp(inputKeys);
+            //        break;
+            //    case 2:
+            //        Mouse.ButtonUp(inputMouseKeys);
+            //        break;
+            //    case 3:
+            //        inputTimer.Enabled = false;
+            //        break;
+            //    case 4:
+            //        inputTimer.Enabled = false;
+            //        break;
+            //}
         }
 
         public void Save()

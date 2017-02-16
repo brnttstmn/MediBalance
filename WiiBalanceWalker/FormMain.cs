@@ -12,8 +12,9 @@ using System;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows.Forms;
-using VJoyLibrary;
+//using VJoyLibrary;
 using WiimoteLib;
+using System.Diagnostics;
 
 namespace WiiBalanceWalker
 {
@@ -25,7 +26,7 @@ namespace WiiBalanceWalker
         ActionList actionList = new ActionList();
         Wiimote wiiDevice     = new Wiimote();
         DateTime jumpTime     = DateTime.UtcNow;
-        VJoy joyDevice        = null;
+     //  VJoy joyDevice        = null;
 
         bool setCenterOffset = false;                                             
 
@@ -49,7 +50,7 @@ namespace WiiBalanceWalker
 
             // Setup a timer which prevents a VJoy popup message.
 
-            joyResetTimer.Elapsed += new ElapsedEventHandler(joyResetTimer_Elapsed);
+//            joyResetTimer.Elapsed += new ElapsedEventHandler(joyResetTimer_Elapsed);
 
             // Load trigger settings.
 
@@ -60,18 +61,18 @@ namespace WiiBalanceWalker
 
             // Link up form controls with action settings.
 
-            actionList.Left          = new ActionItem("Left",          comboBox_AL,  numericUpDown_AL);
-            actionList.Right         = new ActionItem("Right",         comboBox_AR,  numericUpDown_AR);
-            actionList.Forward       = new ActionItem("Forward",       comboBox_AF,  numericUpDown_AF);
-            actionList.Backward      = new ActionItem("Backward",      comboBox_AB,  numericUpDown_AB);
-            actionList.Modifier      = new ActionItem("Modifier",      comboBox_AM,  numericUpDown_AM);
-            actionList.Jump          = new ActionItem("Jump",          comboBox_AJ,  numericUpDown_AJ);
-            actionList.DiagonalLeft  = new ActionItem("DiagonalLeft",  comboBox_ADL, numericUpDown_ADL);
-            actionList.DiagonalRight = new ActionItem("DiagonalRight", comboBox_ADR, numericUpDown_ADR);
+          //  actionList.Left          = new ActionItem("Left",          comboBox_AL,  numericUpDown_AL);
+           //// actionList.Right         = new ActionItem("Right",         comboBox_AR,  numericUpDown_AR);
+           //// actionList.Forward       = new ActionItem("Forward",       comboBox_AF,  numericUpDown_AF);
+           // actionList.Backward      = new ActionItem("Backward",      comboBox_AB,  numericUpDown_AB);
+           // actionList.Modifier      = new ActionItem("Modifier",      comboBox_AM,  numericUpDown_AM);
+           // actionList.Jump          = new ActionItem("Jump",          comboBox_AJ,  numericUpDown_AJ);
+           // actionList.DiagonalLeft  = new ActionItem("DiagonalLeft",  comboBox_ADL, numericUpDown_ADL);
+           // actionList.DiagonalRight = new ActionItem("DiagonalRight", comboBox_ADR, numericUpDown_ADR);
 
             // Load joystick preference.
 
-            checkBox_EnableJoystick.Checked = Properties.Settings.Default.EnableJoystick;
+            //checkBox_EnableJoystick.Checked = Properties.Settings.Default.EnableJoystick;
         }
         /*
          So the next 4 classes are (1) Left and Right (2) Front and Back (3) Left and Right Modifier and (4) Front and Back Modifier. It has a save function put in place.
@@ -114,7 +115,7 @@ namespace WiiBalanceWalker
 
         private void button_BluetoothAddDevice_Click(object sender, EventArgs e)
         {
-            var form = new FormBluetooth();
+            var form = new FormBluetooth(); //trigger new bluetooth form for connection
             form.ShowDialog(this);
         }
 
@@ -201,11 +202,11 @@ namespace WiiBalanceWalker
             /* 
              This needs to be saved for output to the TCP/IP stuff!!!!
              */
-            var rwWeight      = wiiDevice.WiimoteState.BalanceBoardState.WeightLb;
+            var rwWeight = wiiDevice.WiimoteState.BalanceBoardState.WeightLb;
 
-            var rwTopLeft     = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.TopLeft;
-            var rwTopRight    = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.TopRight;
-            var rwBottomLeft  = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomLeft;
+            var rwTopLeft = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.TopLeft;
+            var rwTopRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.TopRight;
+            var rwBottomLeft = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomLeft;
             var rwBottomRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomRight;
 
             // The alternative .SensorValuesRaw is not adjusted with 17KG and 34KG calibration data, but does that make for better or worse control?
@@ -223,22 +224,20 @@ namespace WiiBalanceWalker
             label_rwBL.Text = rwBottomLeft.ToString("0.0");
             label_rwBR.Text = rwBottomRight.ToString("0.0");
 
-            //Logging(Timing,label_rwWT.Text);
-
             // Prevent negative values by tracking lowest possible value and making it a zero based offset.
 
-            if (rwTopLeft     < naCorners) naCorners = rwTopLeft;
-            if (rwTopRight    < naCorners) naCorners = rwTopRight;
-            if (rwBottomLeft  < naCorners) naCorners = rwBottomLeft;
+            if (rwTopLeft < naCorners) naCorners = rwTopLeft;
+            if (rwTopRight < naCorners) naCorners = rwTopRight;
+            if (rwBottomLeft < naCorners) naCorners = rwBottomLeft;
             if (rwBottomRight < naCorners) naCorners = rwBottomRight;
 
             // Negative total weight is reset to zero as jumping or lifting the board causes negative spikes, which would break 'in use' checks.
 
-            var owWeight      = rwWeight < 0f ? 0f : rwWeight;
+            var owWeight = rwWeight < 0f ? 0f : rwWeight;
 
-            var owTopLeft     = rwTopLeft     -= naCorners;
-            var owTopRight    = rwTopRight    -= naCorners;
-            var owBottomLeft  = rwBottomLeft  -= naCorners;
+            var owTopLeft = rwTopLeft -= naCorners;
+            var owTopRight = rwTopRight -= naCorners;
+            var owBottomLeft = rwBottomLeft -= naCorners;
             var owBottomRight = rwBottomRight -= naCorners;
 
             // Get offset that would make current values the center of mass.
@@ -249,9 +248,9 @@ namespace WiiBalanceWalker
 
                 var rwHighest = Math.Max(Math.Max(rwTopLeft, rwTopRight), Math.Max(rwBottomLeft, rwBottomRight));
 
-                oaTopLeft     = rwHighest - rwTopLeft;
-                oaTopRight    = rwHighest - rwTopRight;
-                oaBottomLeft  = rwHighest - rwBottomLeft;
+                oaTopLeft = rwHighest - rwTopLeft;
+                oaTopRight = rwHighest - rwTopRight;
+                oaBottomLeft = rwHighest - rwBottomLeft;
                 oaBottomRight = rwHighest - rwBottomRight;
             }
 
@@ -259,31 +258,31 @@ namespace WiiBalanceWalker
 
             if (owWeight > 0f)
             {
-                owTopLeft     += oaTopLeft;
-                owTopRight    += oaTopRight;
-                owBottomLeft  += oaBottomLeft;
+                owTopLeft += oaTopLeft;
+                owTopRight += oaTopRight;
+                owBottomLeft += oaBottomLeft;
                 owBottomRight += oaBottomRight;
             }
             else
             {
-                owTopLeft     = 0;
-                owTopRight    = 0;
-                owBottomLeft  = 0;
+                owTopLeft = 0;
+                owTopRight = 0;
+                owBottomLeft = 0;
                 owBottomRight = 0;
             }
 
             label_owWT.Text = owWeight.ToString("0.0");
-            label_owTL.Text = owTopLeft.ToString("0.0")     + "\r\n" + oaTopLeft.ToString("0.0");
-            label_owTR.Text = owTopRight.ToString("0.0")    + "\r\n" + oaTopRight.ToString("0.0");
-            label_owBL.Text = owBottomLeft.ToString("0.0")  + "\r\n" + oaBottomLeft.ToString("0.0");
+            label_owTL.Text = owTopLeft.ToString("0.0") + "\r\n" + oaTopLeft.ToString("0.0");
+            label_owTR.Text = owTopRight.ToString("0.0") + "\r\n" + oaTopRight.ToString("0.0");
+            label_owBL.Text = owBottomLeft.ToString("0.0") + "\r\n" + oaBottomLeft.ToString("0.0");
             label_owBR.Text = owBottomRight.ToString("0.0") + "\r\n" + oaBottomRight.ToString("0.0");
 
             // Calculate each weight ratio.
 
-            var owrPercentage  = 100 / (owTopLeft + owTopRight + owBottomLeft + owBottomRight);
-            var owrTopLeft     = owrPercentage * owTopLeft;
-            var owrTopRight    = owrPercentage * owTopRight;
-            var owrBottomLeft  = owrPercentage * owBottomLeft;
+            var owrPercentage = 100 / (owTopLeft + owTopRight + owBottomLeft + owBottomRight);
+            var owrTopLeft = owrPercentage * owTopLeft;
+            var owrTopRight = owrPercentage * owTopRight;
+            var owrBottomLeft = owrPercentage * owBottomLeft;
             var owrBottomRight = owrPercentage * owBottomRight;
             /*
              OFFSET Weight ratio Values
@@ -314,21 +313,21 @@ namespace WiiBalanceWalker
 
             // Convert sensor values into actions.
 
-            var sendLeft          = false;
-            var sendRight         = false;
-            var sendForward       = false;
-            var sendBackward      = false;
-            var sendModifier      = false;
-            var sendJump          = false;
-            var sendDiagonalLeft  = false;
+            var sendLeft = false;
+            var sendRight = false;
+            var sendForward = false;
+            var sendBackward = false;
+            var sendModifier = false;
+            var sendJump = false;
+            var sendDiagonalLeft = false;
             var sendDiagonalRight = false;
 
-            if (brX < (float)(50 - numericUpDown_TLR.Value)) sendLeft     = true;
-            if (brX > (float)(50 + numericUpDown_TLR.Value)) sendRight    = true;
-            if (brY < (float)(50 - numericUpDown_TFB.Value)) sendForward  = true;
+            if (brX < (float)(50 - numericUpDown_TLR.Value)) sendLeft = true;
+            if (brX > (float)(50 + numericUpDown_TLR.Value)) sendRight = true;
+            if (brY < (float)(50 - numericUpDown_TFB.Value)) sendForward = true;
             if (brY > (float)(50 + numericUpDown_TFB.Value)) sendBackward = true;
 
-            if      (brX < (float)(50 - numericUpDown_TMLR.Value)) sendModifier = true;
+            if (brX < (float)(50 - numericUpDown_TMLR.Value)) sendModifier = true;
             else if (brX > (float)(50 + numericUpDown_TMLR.Value)) sendModifier = true;
             else if (brY < (float)(50 - numericUpDown_TMFB.Value)) sendModifier = true;
             else if (brY > (float)(50 + numericUpDown_TMFB.Value)) sendModifier = true;
@@ -348,63 +347,64 @@ namespace WiiBalanceWalker
 
             if (!sendLeft && !sendRight && !sendForward && !sendBackward && brDF > 15)
             {
-                if (brDL > brDR) sendDiagonalLeft  = true;
-                else             sendDiagonalRight = true;
+                if (brDL > brDR) sendDiagonalLeft = true;
+                else sendDiagonalRight = true;
             }
 
             // Display actions.
 
             label_Status.Text = "Result: ";
 
-            if (sendForward)       label_Status.Text += "Forward";
-            if (sendLeft)          label_Status.Text += "Left";
-            if (sendBackward)      label_Status.Text += "Backward";
-            if (sendRight)         label_Status.Text += "Right";
-            if (sendModifier)      label_Status.Text += " + Modifier";
-            if (sendJump)          label_Status.Text += "Jump";
-            if (sendDiagonalLeft)  label_Status.Text += "Diagonal Left";
+            if (sendForward) label_Status.Text += "Forward";
+            if (sendLeft) label_Status.Text += "Left";
+            if (sendBackward) label_Status.Text += "Backward";
+            if (sendRight) label_Status.Text += "Right";
+            if (sendModifier) label_Status.Text += " + Modifier";
+            if (sendJump) label_Status.Text += "Jump";
+            if (sendDiagonalLeft) label_Status.Text += "Diagonal Left";
             if (sendDiagonalRight) label_Status.Text += "Diagonal Right";
-
-            if (checkBox_DisableActions.Checked) label_Status.Text += " ( DISABLED )";
-
-            // Send actions.
-
-            if (!checkBox_DisableActions.Checked)
-            {
-                if (sendLeft)          actionList.Left.Start();          else actionList.Left.Stop();
-                if (sendRight)         actionList.Right.Start();         else actionList.Right.Stop();
-                if (sendForward)       actionList.Forward.Start();       else actionList.Forward.Stop();
-                if (sendBackward)      actionList.Backward.Start();      else actionList.Backward.Stop();
-                if (sendModifier)      actionList.Modifier.Start();      else actionList.Modifier.Stop();
-                if (sendJump)          actionList.Jump.Start();          else actionList.Jump.Stop();
-                if (sendDiagonalLeft)  actionList.DiagonalLeft.Start();  else actionList.DiagonalLeft.Stop();
-                if (sendDiagonalRight) actionList.DiagonalRight.Start(); else actionList.DiagonalRight.Stop();
-            }
-
-            // Update joystick emulator.
-
-            if (checkBox_EnableJoystick.Checked)
-            {
-                // Uses Int16 ( -32767 to +32767 ) where 0 is the center. Multiplied by 2 because realistic usage is between the 30-70% ratio.
-
-                var joyX = (brX * 655.34 + -32767.0) * 2.0;
-                var joyY = (brY * 655.34 + -32767.0) * 2.0;
-
-                // Limit values to Int16, you cannot just (cast) or Convert.ToIn16() as the value '+ - sign' may invert.
-
-                if (joyX < short.MinValue) joyX = short.MinValue;
-                if (joyY < short.MinValue) joyY = short.MinValue;
-
-                if (joyX > short.MaxValue) joyX = short.MaxValue;
-                if (joyY > short.MaxValue) joyY = short.MaxValue;
-                
-                // Set new values.
-                
-                joyDevice.SetXAxis(0, (short)joyX);
-                joyDevice.SetYAxis(0, (short)joyY);
-                joyDevice.Update(0);
-            }
         }
+
+        //    if (checkBox_DisableActions.Checked) label_Status.Text += " ( DISABLED )";
+
+        //    // Send actions.
+
+        //    if (!checkBox_DisableActions.Checked)
+        //    {
+        //        if (sendLeft)          actionList.Left.Start();          else actionList.Left.Stop();
+        //        if (sendRight)         actionList.Right.Start();         else actionList.Right.Stop();
+        //        if (sendForward)       actionList.Forward.Start();       else actionList.Forward.Stop();
+        //        if (sendBackward)      actionList.Backward.Start();      else actionList.Backward.Stop();
+        //        if (sendModifier)      actionList.Modifier.Start();      else actionList.Modifier.Stop();
+        //        if (sendJump)          actionList.Jump.Start();          else actionList.Jump.Stop();
+        //        if (sendDiagonalLeft)  actionList.DiagonalLeft.Start();  else actionList.DiagonalLeft.Stop();
+        //        if (sendDiagonalRight) actionList.DiagonalRight.Start(); else actionList.DiagonalRight.Stop();
+        //    }
+
+        //    // Update joystick emulator.
+
+        //    if (checkBox_EnableJoystick.Checked)
+        //    {
+        //        // Uses Int16 ( -32767 to +32767 ) where 0 is the center. Multiplied by 2 because realistic usage is between the 30-70% ratio.
+
+        //        var joyX = (brX * 655.34 + -32767.0) * 2.0;
+        //        var joyY = (brY * 655.34 + -32767.0) * 2.0;
+
+        //        // Limit values to Int16, you cannot just (cast) or Convert.ToIn16() as the value '+ - sign' may invert.
+
+        //        if (joyX < short.MinValue) joyX = short.MinValue;
+        //        if (joyY < short.MinValue) joyY = short.MinValue;
+
+        //        if (joyX > short.MaxValue) joyX = short.MaxValue;
+        //        if (joyY > short.MaxValue) joyY = short.MaxValue;
+                
+        //        // Set new values.
+                
+        //        joyDevice.SetXAxis(0, (short)joyX);
+        //        joyDevice.SetYAxis(0, (short)joyY);
+        //        joyDevice.Update(0);
+        //    }
+        //}
 
         public void Logging(string timing, string weight, string TopLeft, string TopRight, string BottomLeft, string BottomRight) //This is where the data is logged
         {
@@ -413,55 +413,69 @@ namespace WiiBalanceWalker
            // string newlines = "\r\n Shit \r\n Goes \r\n Right \r\n Here!";
 
             System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\Brent\\Desktop\\test.txt", true);
-            file.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
-            file.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
-            file.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
-            file.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
-            file.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
+            //file.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
+            //file.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
+            //file.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
+            //file.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
+            //file.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
+            var stop = new Stopwatch();
+            stop.Start();
+
+            while (stop.Elapsed < TimeSpan.FromSeconds(10))
+            {
+                Console.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
+                Console.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
+                Console.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
+                Console.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
+                Console.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
+                //Console.ReadKey();
+            }
+            
+
             //file.WriteLine(newlines);
 
-            file.Close();
+           // file.Close();
         }
 
-        private void checkBox_EnableJoystick_CheckedChanged(object sender, EventArgs e)
-        {
-            // Start joystick emulator.
+        //private void checkBox_EnableJoystick_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    // Start joystick emulator.
 
-            try
-            {
-                joyDevice = new VJoy();
-                joyDevice.Initialize();
-                joyDevice.Reset();
-                joyDevice.Update(0);
-            }
-            catch (Exception ex)
-            {
-                // VJoy.DLL missing from .EXE folder or project built as 'Any CPU' and DLL is 32-bit only.
+        //    try
+        //    {
+        //        joyDevice = new VJoy();
+        //        joyDevice.Initialize();
+        //        joyDevice.Reset();
+        //        joyDevice.Update(0);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // VJoy.DLL missing from .EXE folder or project built as 'Any CPU' and DLL is 32-bit only.
 
-                infoUpdateTimer.Enabled = false;
-                MessageBox.Show(ex.Message, "VJoy Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+        //        infoUpdateTimer.Enabled = false;
+        //        MessageBox.Show(ex.Message, "VJoy Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
 
-            joyResetTimer.Enabled = true;
+        //    joyResetTimer.Enabled = true;
 
-            // Show reminder ( if not being changed by load settings ) and save settings.
+        //    // Show reminder ( if not being changed by load settings ) and save settings.
 
-            var isChecked = ((CheckBox)sender).Checked;
-            if (isChecked)
-            {
-                if (Properties.Settings.Default.EnableJoystick == false)
-                {
-                    MessageBox.Show("Actions still apply! Set 'Do Nothing' for any movement conflicts.\r\n\r\nRequires Headsoft VJoy driver to be installed.", "Reminder", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            Properties.Settings.Default.EnableJoystick = isChecked;
-            Properties.Settings.Default.Save();
-        }
+        //    var isChecked = ((CheckBox)sender).Checked;
+        //    if (isChecked)
+        //    {
+        //        if (Properties.Settings.Default.EnableJoystick == false)
+        //        {
+        //            MessageBox.Show("Actions still apply! Set 'Do Nothing' for any movement conflicts.\r\n\r\nRequires Headsoft VJoy driver to be installed.", "Reminder", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        }
+        //    }
+        //    Properties.Settings.Default.EnableJoystick = isChecked;
+        //    Properties.Settings.Default.Save();
+        //}
 
-        void joyResetTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            joyDevice.Initialize();
-        }
+        //void joyResetTimer_Elapsed(object sender, ElapsedEventArgs e)
+        //{
+        //    joyDevice.Initialize();
+        //}
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
