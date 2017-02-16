@@ -13,8 +13,8 @@ namespace KinectEnvironment
     class Program
     {
         static string timeFormat = "HH:mm:ss:fff";
-        static NamedPipeClientStream kClient = new NamedPipeClientStream(".", "tokinect", PipeDirection.InOut);
-        static NamedPipeServerStream kServer = new NamedPipeServerStream("fromkinect", PipeDirection.InOut);
+        //static NamedPipeClientStream kClient = new NamedPipeClientStream(".", "tokinect", PipeDirection.InOut);
+        static NamedPipeServerStream kServer = new NamedPipeServerStream("kinect", PipeDirection.InOut);
         static StreamWriter sw = null;
         static StreamReader sr = null;
         static int count = 0;
@@ -31,10 +31,10 @@ namespace KinectEnvironment
             bool run = true;
 
             // Connect to Pipe
-            kClient.Connect();
+            //kClient.Connect();
             kServer.WaitForConnection();
-            sr = new StreamReader(kClient);
-            sw = new StreamWriter(kServer);
+            sr = new StreamReader(kServer);
+            sw = new StreamWriter(kServer) { AutoFlush = true };
 
             // Run until told to exit
             while (run)
@@ -66,7 +66,7 @@ namespace KinectEnvironment
             }
 
             // Close Pipe Connection -- Terminate program
-            kClient.Close();
+            //kClient.Close();
             kServer.Close();
 
             Console.WriteLine("Press Enter to Continue...");
@@ -92,7 +92,7 @@ namespace KinectEnvironment
             // Create Objects
             KinectSensor kinectSensor = KinectSensor.GetDefault();
             BodyFrameReader bodyframeReader = null;
-            
+
 
             // Start Kinect
             kinectSensor.Open();
@@ -104,11 +104,13 @@ namespace KinectEnvironment
                 bodyframeReader.FrameArrived += BodyframeReader_FrameArrived;
             }
 
+            int i = 0;
             // Wait for 15s
-            for (int i = 15; i > 0; i--)
+            while (true)
             {
                 Console.WriteLine(i);
                 Thread.Sleep(1000);
+                i++;
             }
 
             // Close Kinect Connection
@@ -177,7 +179,7 @@ namespace KinectEnvironment
 
                             foreach (KeyValuePair<Joint, string> joint in jointName)
                             {
-                                var newLine = string.Format("{0},{1},{2},{3},{4};", DateTime.Now.ToString(timeFormat),joint.Value,
+                                var newLine = string.Format("{0},{1},{2},{3},{4};", DateTime.Now.ToString(timeFormat), joint.Value,
                                 joint.Key.Position.X.ToString(), joint.Key.Position.Y.ToString(),
                                 joint.Key.Position.Z.ToString());
                                 sw.WriteLine(newLine);
