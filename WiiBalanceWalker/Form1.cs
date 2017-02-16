@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 
-namespace KinectEnvironment
+namespace WiiBalanceWalker
 {
     public partial class Form1 : Form
     {
