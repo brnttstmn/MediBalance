@@ -92,7 +92,7 @@
             // button_Connect
             // 
             this.button_Connect.Location = new System.Drawing.Point(261, 117);
-            this.button_Connect.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.button_Connect.Margin = new System.Windows.Forms.Padding(5);
             this.button_Connect.Name = "button_Connect";
             this.button_Connect.Size = new System.Drawing.Size(275, 74);
             this.button_Connect.TabIndex = 0;
@@ -149,9 +149,9 @@
             this.groupBox_RawWeight.Controls.Add(this.label_rwTL);
             this.groupBox_RawWeight.Controls.Add(this.label_rwWT);
             this.groupBox_RawWeight.Location = new System.Drawing.Point(18, 18);
-            this.groupBox_RawWeight.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_RawWeight.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_RawWeight.Name = "groupBox_RawWeight";
-            this.groupBox_RawWeight.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_RawWeight.Padding = new System.Windows.Forms.Padding(5);
             this.groupBox_RawWeight.Size = new System.Drawing.Size(225, 214);
             this.groupBox_RawWeight.TabIndex = 3;
             this.groupBox_RawWeight.TabStop = false;
@@ -205,9 +205,9 @@
             this.groupBox_OffsetWeight.Controls.Add(this.label_owBL);
             this.groupBox_OffsetWeight.Controls.Add(this.label_owBR);
             this.groupBox_OffsetWeight.Location = new System.Drawing.Point(252, 18);
-            this.groupBox_OffsetWeight.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_OffsetWeight.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_OffsetWeight.Name = "groupBox_OffsetWeight";
-            this.groupBox_OffsetWeight.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_OffsetWeight.Padding = new System.Windows.Forms.Padding(5);
             this.groupBox_OffsetWeight.Size = new System.Drawing.Size(225, 214);
             this.groupBox_OffsetWeight.TabIndex = 4;
             this.groupBox_OffsetWeight.TabStop = false;
@@ -270,9 +270,9 @@
             this.groupBox_OffsetWeightRatio.Controls.Add(this.label_owrBL);
             this.groupBox_OffsetWeightRatio.Controls.Add(this.label_owrBR);
             this.groupBox_OffsetWeightRatio.Location = new System.Drawing.Point(486, 18);
-            this.groupBox_OffsetWeightRatio.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_OffsetWeightRatio.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_OffsetWeightRatio.Name = "groupBox_OffsetWeightRatio";
-            this.groupBox_OffsetWeightRatio.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_OffsetWeightRatio.Padding = new System.Windows.Forms.Padding(5);
             this.groupBox_OffsetWeightRatio.Size = new System.Drawing.Size(225, 214);
             this.groupBox_OffsetWeightRatio.TabIndex = 4;
             this.groupBox_OffsetWeightRatio.TabStop = false;
@@ -326,9 +326,9 @@
             this.groupBox_General.Controls.Add(this.button_BluetoothAddDevice);
             this.groupBox_General.Controls.Add(this.button_Connect);
             this.groupBox_General.Location = new System.Drawing.Point(386, 242);
-            this.groupBox_General.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_General.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_General.Name = "groupBox_General";
-            this.groupBox_General.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_General.Padding = new System.Windows.Forms.Padding(5);
             this.groupBox_General.Size = new System.Drawing.Size(560, 210);
             this.groupBox_General.TabIndex = 0;
             this.groupBox_General.TabStop = false;
@@ -337,7 +337,7 @@
             // button_SetCenterOffset
             // 
             this.button_SetCenterOffset.Location = new System.Drawing.Point(23, 40);
-            this.button_SetCenterOffset.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.button_SetCenterOffset.Margin = new System.Windows.Forms.Padding(5);
             this.button_SetCenterOffset.Name = "button_SetCenterOffset";
             this.button_SetCenterOffset.Size = new System.Drawing.Size(207, 43);
             this.button_SetCenterOffset.TabIndex = 2;
@@ -347,8 +347,8 @@
             // 
             // button_ResetDefaults
             // 
-            this.button_ResetDefaults.Location = new System.Drawing.Point(23, 148);
-            this.button_ResetDefaults.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.button_ResetDefaults.Location = new System.Drawing.Point(23, 143);
+            this.button_ResetDefaults.Margin = new System.Windows.Forms.Padding(5);
             this.button_ResetDefaults.Name = "button_ResetDefaults";
             this.button_ResetDefaults.Size = new System.Drawing.Size(207, 43);
             this.button_ResetDefaults.TabIndex = 3;
@@ -359,7 +359,7 @@
             // button_BluetoothAddDevice
             // 
             this.button_BluetoothAddDevice.Location = new System.Drawing.Point(261, 40);
-            this.button_BluetoothAddDevice.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.button_BluetoothAddDevice.Margin = new System.Windows.Forms.Padding(5);
             this.button_BluetoothAddDevice.Name = "button_BluetoothAddDevice";
             this.button_BluetoothAddDevice.Size = new System.Drawing.Size(275, 42);
             this.button_BluetoothAddDevice.TabIndex = 1;
@@ -375,9 +375,9 @@
             this.groupBox_BalanceRatio.Controls.Add(this.label_brDL);
             this.groupBox_BalanceRatio.Controls.Add(this.label_brY);
             this.groupBox_BalanceRatio.Location = new System.Drawing.Point(720, 18);
-            this.groupBox_BalanceRatio.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_BalanceRatio.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_BalanceRatio.Name = "groupBox_BalanceRatio";
-            this.groupBox_BalanceRatio.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_BalanceRatio.Padding = new System.Windows.Forms.Padding(5);
             this.groupBox_BalanceRatio.Size = new System.Drawing.Size(225, 214);
             this.groupBox_BalanceRatio.TabIndex = 5;
             this.groupBox_BalanceRatio.TabStop = false;
@@ -406,9 +406,9 @@
             this.groupBox_BalanceRatioTriggers.Controls.Add(this.label_TFB);
             this.groupBox_BalanceRatioTriggers.Controls.Add(this.label_TLR);
             this.groupBox_BalanceRatioTriggers.Location = new System.Drawing.Point(18, 242);
-            this.groupBox_BalanceRatioTriggers.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_BalanceRatioTriggers.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_BalanceRatioTriggers.Name = "groupBox_BalanceRatioTriggers";
-            this.groupBox_BalanceRatioTriggers.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox_BalanceRatioTriggers.Padding = new System.Windows.Forms.Padding(5);
             this.groupBox_BalanceRatioTriggers.Size = new System.Drawing.Size(358, 210);
             this.groupBox_BalanceRatioTriggers.TabIndex = 1;
             this.groupBox_BalanceRatioTriggers.TabStop = false;
@@ -417,7 +417,7 @@
             // numericUpDown_TMFB
             // 
             this.numericUpDown_TMFB.Location = new System.Drawing.Point(267, 160);
-            this.numericUpDown_TMFB.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.numericUpDown_TMFB.Margin = new System.Windows.Forms.Padding(5);
             this.numericUpDown_TMFB.Maximum = new decimal(new int[] {
             51,
             0,
@@ -441,7 +441,7 @@
             // numericUpDown_TMLR
             // 
             this.numericUpDown_TMLR.Location = new System.Drawing.Point(267, 120);
-            this.numericUpDown_TMLR.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.numericUpDown_TMLR.Margin = new System.Windows.Forms.Padding(5);
             this.numericUpDown_TMLR.Maximum = new decimal(new int[] {
             51,
             0,
@@ -465,7 +465,7 @@
             // numericUpDown_TFB
             // 
             this.numericUpDown_TFB.Location = new System.Drawing.Point(267, 80);
-            this.numericUpDown_TFB.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.numericUpDown_TFB.Margin = new System.Windows.Forms.Padding(5);
             this.numericUpDown_TFB.Maximum = new decimal(new int[] {
             51,
             0,
@@ -489,7 +489,7 @@
             // numericUpDown_TLR
             // 
             this.numericUpDown_TLR.Location = new System.Drawing.Point(267, 40);
-            this.numericUpDown_TLR.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.numericUpDown_TLR.Margin = new System.Windows.Forms.Padding(5);
             this.numericUpDown_TLR.Maximum = new decimal(new int[] {
             51,
             0,
@@ -574,7 +574,7 @@
             this.Controls.Add(this.groupBox_OffsetWeight);
             this.Controls.Add(this.groupBox_RawWeight);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.MaximizeBox = false;
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

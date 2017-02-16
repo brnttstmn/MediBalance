@@ -12,9 +12,12 @@ using System;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows.Forms;
-//using VJoyLibrary;
 using WiimoteLib;
 using System.Diagnostics;
+using System.IO.Pipes;
+using System.IO;
+using System.Threading;
+using System.Collections.Generic;
 
 namespace WiiBalanceWalker
 {
@@ -23,10 +26,14 @@ namespace WiiBalanceWalker
         System.Timers.Timer infoUpdateTimer = new System.Timers.Timer() { Interval = 50,     Enabled = false };
         System.Timers.Timer joyResetTimer   = new System.Timers.Timer() { Interval = 240000, Enabled = false };
 
+        //Piping Goodness
+        static NamedPipeServerStream BoardServer = new NamedPipeServerStream("board", PipeDirection.InOut);
+        static StreamWriter StreamWrite = null;
+        static StreamReader StreamRead = null;
+
         ActionList actionList = new ActionList();
         Wiimote wiiDevice     = new Wiimote();
         DateTime jumpTime     = DateTime.UtcNow;
-     //  VJoy joyDevice        = null;
 
         bool setCenterOffset = false;                                             
 
@@ -38,41 +45,21 @@ namespace WiiBalanceWalker
 
         public FormMain()
         {
-            InitializeComponent(); //Starts the program
-            //Logging();
+            //Starts the program
+            InitializeComponent(); 
         }
 
         private void FormMain_Load(object sender, EventArgs e)
         {
             // Setup a timer which controls the rate at which updates are processed.
-
             infoUpdateTimer.Elapsed += new ElapsedEventHandler(infoUpdateTimer_Elapsed);
 
-            // Setup a timer which prevents a VJoy popup message.
-
-//            joyResetTimer.Elapsed += new ElapsedEventHandler(joyResetTimer_Elapsed);
-
             // Load trigger settings.
-
             numericUpDown_TLR.Value  = Properties.Settings.Default.TriggerLeftRight;
             numericUpDown_TFB.Value  = Properties.Settings.Default.TriggerForwardBackward;
             numericUpDown_TMLR.Value = Properties.Settings.Default.TriggerModifierLeftRight;
             numericUpDown_TMFB.Value = Properties.Settings.Default.TriggerModifierForwardBackward;
 
-            // Link up form controls with action settings.
-
-          //  actionList.Left          = new ActionItem("Left",          comboBox_AL,  numericUpDown_AL);
-           //// actionList.Right         = new ActionItem("Right",         comboBox_AR,  numericUpDown_AR);
-           //// actionList.Forward       = new ActionItem("Forward",       comboBox_AF,  numericUpDown_AF);
-           // actionList.Backward      = new ActionItem("Backward",      comboBox_AB,  numericUpDown_AB);
-           // actionList.Modifier      = new ActionItem("Modifier",      comboBox_AM,  numericUpDown_AM);
-           // actionList.Jump          = new ActionItem("Jump",          comboBox_AJ,  numericUpDown_AJ);
-           // actionList.DiagonalLeft  = new ActionItem("DiagonalLeft",  comboBox_ADL, numericUpDown_ADL);
-           // actionList.DiagonalRight = new ActionItem("DiagonalRight", comboBox_ADR, numericUpDown_ADR);
-
-            // Load joystick preference.
-
-            //checkBox_EnableJoystick.Checked = Properties.Settings.Default.EnableJoystick;
         }
         /*
          So the next 4 classes are (1) Left and Right (2) Front and Back (3) Left and Right Modifier and (4) Front and Back Modifier. It has a save function put in place.
@@ -119,10 +106,16 @@ namespace WiiBalanceWalker
             form.ShowDialog(this);
         }
 
-        private void button_Connect_Click(object sender, EventArgs e)
+        private void button_Connect_Click(object sender, EventArgs e) // This is where the initialization exists
         {
             try
             {
+                // Pipe initialization
+                Console.WriteLine("Connecting this fucking shit.");
+                BoardServer.WaitForConnection();
+                StreamRead = new StreamReader(BoardServer);
+                StreamWrite = new StreamWriter(BoardServer) { AutoFlush = true };
+
                 // Find all connected Wii devices.
 
                 var deviceCollection = new WiimoteCollection();
@@ -186,12 +179,15 @@ namespace WiiBalanceWalker
         void infoUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             // Pass event onto the form GUI thread.
-
             this.BeginInvoke(new Action(() => InfoUpdate()));
         }
 
-        private void InfoUpdate() //This does all of the data collection!
+        /// <summary>
+        /// This does all of the data collection!
+        /// </summary>
+        private void InfoUpdate()
         {
+
             if (wiiDevice.WiimoteState.ExtensionType != ExtensionType.BalanceBoard)
             {
                 label_Status.Text = "DEVICE IS NOT A BALANCE BOARD...";
@@ -199,22 +195,11 @@ namespace WiiBalanceWalker
             }
 
             // Get the current raw sensor Lb values.
-            /* 
-             This needs to be saved for output to the TCP/IP stuff!!!!
-             */
             var rwWeight = wiiDevice.WiimoteState.BalanceBoardState.WeightLb;
-
             var rwTopLeft = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.TopLeft;
             var rwTopRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.TopRight;
             var rwBottomLeft = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomLeft;
             var rwBottomRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomRight;
-
-            // The alternative .SensorValuesRaw is not adjusted with 17KG and 34KG calibration data, but does that make for better or worse control?
-            //
-            //var rwTopLeft     = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesRaw.TopLeft     - wiiDevice.WiimoteState.BalanceBoardState.CalibrationInfo.Kg0.TopLeft;
-            //var rwTopRight    = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesRaw.TopRight    - wiiDevice.WiimoteState.BalanceBoardState.CalibrationInfo.Kg0.TopRight;
-            //var rwBottomLeft  = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesRaw.BottomLeft  - wiiDevice.WiimoteState.BalanceBoardState.CalibrationInfo.Kg0.BottomLeft;
-            //var rwBottomRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesRaw.BottomRight - wiiDevice.WiimoteState.BalanceBoardState.CalibrationInfo.Kg0.BottomRight;
 
             // Show the raw sensor values.
             string Timing = DateTime.Now.ToString("HH:mm:ss:fff");
@@ -225,23 +210,19 @@ namespace WiiBalanceWalker
             label_rwBR.Text = rwBottomRight.ToString("0.0");
 
             // Prevent negative values by tracking lowest possible value and making it a zero based offset.
-
             if (rwTopLeft < naCorners) naCorners = rwTopLeft;
             if (rwTopRight < naCorners) naCorners = rwTopRight;
             if (rwBottomLeft < naCorners) naCorners = rwBottomLeft;
             if (rwBottomRight < naCorners) naCorners = rwBottomRight;
 
             // Negative total weight is reset to zero as jumping or lifting the board causes negative spikes, which would break 'in use' checks.
-
             var owWeight = rwWeight < 0f ? 0f : rwWeight;
-
             var owTopLeft = rwTopLeft -= naCorners;
             var owTopRight = rwTopRight -= naCorners;
             var owBottomLeft = rwBottomLeft -= naCorners;
             var owBottomRight = rwBottomRight -= naCorners;
 
             // Get offset that would make current values the center of mass.
-
             if (setCenterOffset)
             {
                 setCenterOffset = false;
@@ -255,7 +236,6 @@ namespace WiiBalanceWalker
             }
 
             // Keep values only when board is being used, otherwise offsets and small value jitters can trigger unwanted actions.
-
             if (owWeight > 0f)
             {
                 owTopLeft += oaTopLeft;
@@ -278,15 +258,13 @@ namespace WiiBalanceWalker
             label_owBR.Text = owBottomRight.ToString("0.0") + "\r\n" + oaBottomRight.ToString("0.0");
 
             // Calculate each weight ratio.
-
             var owrPercentage = 100 / (owTopLeft + owTopRight + owBottomLeft + owBottomRight);
             var owrTopLeft = owrPercentage * owTopLeft;
             var owrTopRight = owrPercentage * owTopRight;
             var owrBottomLeft = owrPercentage * owBottomLeft;
             var owrBottomRight = owrPercentage * owBottomRight;
-            /*
-             OFFSET Weight ratio Values
-             */
+
+            //OFFSET Weight ratio Values
             label_owrTL.Text = owrTopLeft.ToString("0.0");
             label_owrTR.Text = owrTopRight.ToString("0.0");
             label_owrBL.Text = owrBottomLeft.ToString("0.0");
@@ -294,7 +272,6 @@ namespace WiiBalanceWalker
             Logging(Timing, label_rwWT.Text, label_owrTL.Text, label_owrTR.Text, label_owrBL.Text, label_owrBR.Text);
 
             // Calculate balance ratio.
-
             var brX = owrBottomRight + owrTopRight;
             var brY = owrBottomRight + owrBottomLeft;
 
@@ -302,7 +279,6 @@ namespace WiiBalanceWalker
             label_brY.Text = brY.ToString("0.0");
 
             // Diagonal ratio used for turning on the spot.
-
             var brDL = owrPercentage * (owBottomLeft + owTopRight);
             var brDR = owrPercentage * (owBottomRight + owTopLeft);
             var brDF = Math.Abs(brDL - brDR);
@@ -312,7 +288,6 @@ namespace WiiBalanceWalker
             label_brDF.Text = brDF.ToString("0.0");
 
             // Convert sensor values into actions.
-
             var sendLeft = false;
             var sendRight = false;
             var sendForward = false;
@@ -333,7 +308,6 @@ namespace WiiBalanceWalker
             else if (brY > (float)(50 + numericUpDown_TMFB.Value)) sendModifier = true;
 
             // Detect jump but use a time limit to stop it being active while off the board.
-
             if (owWeight < 1f)
             {
                 if (DateTime.UtcNow.Subtract(jumpTime).Seconds < 2) sendJump = true;
@@ -344,7 +318,6 @@ namespace WiiBalanceWalker
             }
 
             // Check for diagonal pressure only when no other movement actions are active.
-
             if (!sendLeft && !sendRight && !sendForward && !sendBackward && brDF > 15)
             {
                 if (brDL > brDR) sendDiagonalLeft = true;
@@ -352,7 +325,6 @@ namespace WiiBalanceWalker
             }
 
             // Display actions.
-
             label_Status.Text = "Result: ";
 
             if (sendForward) label_Status.Text += "Forward";
@@ -364,6 +336,20 @@ namespace WiiBalanceWalker
             if (sendDiagonalLeft) label_Status.Text += "Diagonal Left";
             if (sendDiagonalRight) label_Status.Text += "Diagonal Right";
         }
+        //static string listen()
+        //{
+        //    var message = "";
+
+        //    while (true)
+        //    {
+        //        message = StreamRead.ReadLine();
+        //        if (message != null)
+        //        {
+        //            return message;
+        //        }
+        //        Thread.Sleep(500);
+        //    }
+        //}
 
         //    if (checkBox_DisableActions.Checked) label_Status.Text += " ( DISABLED )";
 
@@ -397,9 +383,9 @@ namespace WiiBalanceWalker
 
         //        if (joyX > short.MaxValue) joyX = short.MaxValue;
         //        if (joyY > short.MaxValue) joyY = short.MaxValue;
-                
+
         //        // Set new values.
-                
+
         //        joyDevice.SetXAxis(0, (short)joyX);
         //        joyDevice.SetYAxis(0, (short)joyY);
         //        joyDevice.Update(0);
@@ -408,28 +394,37 @@ namespace WiiBalanceWalker
 
         public void Logging(string timing, string weight, string TopLeft, string TopRight, string BottomLeft, string BottomRight) //This is where the data is logged
         {
+            Dictionary<string, string> bdata = new Dictionary<string, string>() {
+                { "RWeight", weight}, {"TopLeft",TopLeft}, {"TopRight", TopRight}, {"BottomLeft",BottomLeft}, {"BottomRight",BottomRight },{"Weight Orientation",label_Status.Text}
+            };
+
             // Writes string to a file.append mode is enabled so that the log
             // lines get appended to test.txt instead of wiping content and writing log
-           // string newlines = "\r\n Shit \r\n Goes \r\n Right \r\n Here!";
+            // string newlines = "\r\n Shit \r\n Goes \r\n Right \r\n Here!";
 
-            System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\Brent\\Desktop\\test.txt", true);
+            // System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\Brent\\Desktop\\test.txt", true);
             //file.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
             //file.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
             //file.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
             //file.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
             //file.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
-            var stop = new Stopwatch();
-            stop.Start();
 
-            while (stop.Elapsed < TimeSpan.FromSeconds(10))
+            foreach (KeyValuePair<string, string> data in bdata)
             {
-                Console.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
-                Console.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
-                Console.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
-                Console.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
-                Console.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
-                //Console.ReadKey();
+                var newLine = string.Format("{0},{1},{2};", timing, data.Key, data.Value);
+                StreamWrite.WriteLine(newLine);
+                Console.WriteLine(newLine);
             }
+
+            //Console.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
+            ////StreamWrite.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
+            //Console.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
+            //Console.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
+            //Console.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
+            //Console.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
+            //Console.WriteLine(timing + "," + "Weight Orientation" + "," + label_Status.Text + ";");
+               // Console.ReadKey();
+            
             
 
             //file.WriteLine(newlines);
@@ -540,5 +535,9 @@ namespace WiiBalanceWalker
 
         }
         //void OnGUI() { GUI.contentColor = ColorDepth.yellow; GUI.Button(new Rect(10, 10, 70, 30), "A button"); }
+        private void Piping()
+        {
+
+        }
     }
 }
