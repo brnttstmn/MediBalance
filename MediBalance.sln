@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectEnvironment", "KinectEnvironment\KinectEnvironment.csproj", "{B9297C8F-983F-40FF-ADFD-A963018D6AA2}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSBand", "MSBand\MSBand.csproj", "{E7DA3A14-DBDC-41AA-94FD-395FD2E41EBA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackEnd", "BackEnd\BackEnd.csproj", "{98DFC8D5-FE80-4527-87F6-FA0DBFD0B0AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tunnel", "Tunnel\Tunnel.csproj", "{45ED531E-0846-4204-B8D8-19C634234E85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +93,22 @@ Global
 		{98DFC8D5-FE80-4527-87F6-FA0DBFD0B0AC}.Release|x64.Build.0 = Release|Any CPU
 		{98DFC8D5-FE80-4527-87F6-FA0DBFD0B0AC}.Release|x86.ActiveCfg = Release|Any CPU
 		{98DFC8D5-FE80-4527-87F6-FA0DBFD0B0AC}.Release|x86.Build.0 = Release|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Debug|ARM.Build.0 = Debug|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Debug|x64.Build.0 = Debug|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Debug|x86.Build.0 = Debug|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Release|ARM.ActiveCfg = Release|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Release|ARM.Build.0 = Release|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Release|x64.ActiveCfg = Release|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Release|x64.Build.0 = Release|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Release|x86.ActiveCfg = Release|Any CPU
+		{45ED531E-0846-4204-B8D8-19C634234E85}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

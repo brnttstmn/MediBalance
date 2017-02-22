@@ -47,9 +47,9 @@ namespace MediBalance
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
             int time;
-            var preload = new bool[4] {false,false,false,false};
-            var control = new BitArray(preload);           
-            var c = new Dictionary<string, int>() { {"hr", 0 }, {"gsr",1}, {"ls",2},{"debug",3}};
+            var preload = new bool[4] { false, false, false, false };
+            var control = new BitArray(preload);
+            var c = new Dictionary<string, int>() { { "hr", 0 }, { "gsr", 1 }, { "ls", 2 }, { "debug", 3 } };
 
             // Only run if provide time is an integer
             if (Int32.TryParse(textBox.Text, out time))
@@ -73,7 +73,8 @@ namespace MediBalance
         /// </summary>
         /// <param name="time"></param>
         /// <param name="connection_text"></param>
-        private async void run_band(int time, BitArray control, Dictionary<string, int> map, TextBlock connection_text) {
+        private async void run_band(int time, BitArray control, Dictionary<string, int> map, TextBlock connection_text)
+        {
 
             // Declare Objects
             MSBand2 band = new MSBand2();
@@ -84,9 +85,9 @@ namespace MediBalance
             stat = await band.everything(time, samples, control, map, connection_text);
 
             if (stat == 0) { connection_text.Text += string.Format("\nFinished Sampling"); }
-            if (stat==-1){ connection_text.Text = "Microsoft Band cannot be found. Check Connection"; }
+            if (stat == -1) { connection_text.Text = "Microsoft Band cannot be found. Check Connection"; }
             if (stat == -2) { connection_text.Text = "Access to the heart rate sensor is denied."; }
-            
+
 
         }
 
@@ -107,12 +108,22 @@ namespace MediBalance
             // Random Number Generator(s)
             await test.heartRate(time, hr);
 
+            Tcp_Client clit = new Tcp_Client();
+            clit.create_socket();
+            clit.connect();
+            //await clit.send("hello world");
+
             // Simulate Wait Time
-            for (int i = 0; i < hr.Count; i++) {
+            for (int i = 0; i < hr.Count; i++)
+            {
                 await Task.Delay(1000);
                 samples.Add(hr[i].ToString() + ": " + DateTime.Now.ToString(timeFormat));
-                connection_text.Text += samples[i]+'\n';
+                connection_text.Text += samples[i] + '\n';
+                await clit.send(samples[i]);
+
+                //string res = await clit.sendit("10.0.0.10", "8001", "hello world");
             }
+            clit.close();
         }
 
         private void checkBox_Checked_hr(object sender, RoutedEventArgs e)
