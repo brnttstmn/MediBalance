@@ -89,6 +89,7 @@ namespace MediBalance
             if (stat == -2) { connection_text.Text = "Access to the heart rate sensor is denied."; }
 
 
+
         }
 
         /// <DEBUG: Simulated Band>

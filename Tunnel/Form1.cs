@@ -45,7 +45,7 @@ namespace Tunnel
 
             try
             {
-                IPAddress ipAd = IPAddress.Parse("10.0.0.10");
+                IPAddress ipAd = IPAddress.Parse("10.109.65.51");
                 // use local m/c IP address, and 
                 // use the same in the client
 

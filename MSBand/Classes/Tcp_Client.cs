@@ -46,7 +46,7 @@ namespace MediBalance
 
         public async void connect()
         {
-            HostName hostName = new HostName("10.0.0.10");
+            HostName hostName = new HostName("10.109.65.51");
             string port = "8001";
 
             try

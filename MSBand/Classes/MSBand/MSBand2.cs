@@ -36,6 +36,10 @@ namespace MediBalance
         */
         public async Task<int> everything(int RunTime,List<string> samples, BitArray control, Dictionary<string, int> map, TextBlock OutputText)
         {
+            Tcp_Client clit = new Tcp_Client();
+            clit.create_socket();
+            clit.connect();
+
             OutputText.Visibility = Visibility.Visible;
             try
             {
@@ -80,10 +84,11 @@ namespace MediBalance
                         // Subscribe to HeartRate data.
                         bandClient.SensorManager.HeartRate.ReadingChanged += async (s, args) =>
                         {
-                            await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                             {
-                                OutputText.Text += string.Format("\nhr,{1},{0};", args.SensorReading.HeartRate.ToString(), DateTime.Now.ToString(timeFormat));
-                                samples.Add(string.Format("\nhr,{1},{0};", args.SensorReading.HeartRate.ToString(), DateTime.Now.ToString(timeFormat)));
+                                OutputText.Text += string.Format("\n{1},Heartrate,{0};", DateTime.Now.ToString(timeFormat), args.SensorReading.HeartRate.ToString());
+                                samples.Add(string.Format("\n{1},Heartrate,{0};", DateTime.Now.ToString(timeFormat), args.SensorReading.HeartRate.ToString()));
+                                await clit.send(string.Format("\n{1},Heartrate,{0};", DateTime.Now.ToString(timeFormat), args.SensorReading.HeartRate.ToString()));
                             });
                         };
                         await bandClient.SensorManager.HeartRate.StartReadingsAsync();

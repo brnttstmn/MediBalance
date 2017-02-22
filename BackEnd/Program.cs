@@ -31,11 +31,11 @@ namespace BackEnd
             runPrograms();
 
             // Connect Pipes
+            board.start_client();
+            kinect.start_client();
             tunnel.start_client();
-            //kinect.start_client();
-            //board.start_client();
             string command = "start";
-            //kinect.sendcommand(command);
+            kinect.sendcommand(command);
 
 
             var line = "";
@@ -45,15 +45,15 @@ namespace BackEnd
             while (i < 1000000)
             {
                 //Thread.Sleep(500);
-                //line2 = kinect.read.ReadLine();
+                line2 = kinect.read.ReadLine();
                 if (line2 != null) { Console.WriteLine(line2); }
-                //line = board.read.ReadLine();
+                line = board.read.ReadLine();
                 if (line != null) { Console.WriteLine(line); }
-                //else { Console.WriteLine("Error"); }
+                else { Console.WriteLine("Error"); }
                 line3 = tunnel.read.ReadLine();
                 if (line3 != null) { Console.WriteLine(line3); }
 
-                Console.WriteLine("Reading ",i);
+                Console.WriteLine("Reading",i);
                 i++;
             }
 
@@ -66,9 +66,10 @@ namespace BackEnd
         /// </summary>
         static void runPrograms()
         {
-            //Process.Start("C:\\Users\\dawson\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
-            //Process.Start("C:\\Users\\dawson\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
-            Process.Start("C:\\Users\\dawson\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
+            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
+            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
+            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
         }
     }
 }
+  
