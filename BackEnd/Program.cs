@@ -46,15 +46,14 @@ namespace BackEnd
             {
                 Thread.Sleep(1000);
                 if (!kinect.read.EndOfStream) { line2 = kinect.read.ReadLine(); }
-                
                 if (! string.IsNullOrWhiteSpace(line2)) { Console.WriteLine(line2); }
-                if (board.read.EndOfStream) { line = board.read.ReadLine(); }
-                
-                if (line != null) { Console.WriteLine(line); }
+
+                if (!board.read.EndOfStream) { line = board.read.ReadLine(); }
+                if (! string.IsNullOrWhiteSpace(line)) { Console.WriteLine(line); }
                 //else { Console.WriteLine("Error"); }
                 
                 if (!tunnel.read.EndOfStream) { line3 = tunnel.read.ReadLine(); }
-                if (line3 != null) { Console.WriteLine(line3); }
+                if (!string.IsNullOrWhiteSpace(line)) { Console.WriteLine(line3); }
 
                 Console.WriteLine("Reading",i);
                 i++;
@@ -69,9 +68,9 @@ namespace BackEnd
         /// </summary>
         static void runPrograms()
         {
-            Process.Start("C:\\Users\\dawson\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
-            Process.Start("C:\\Users\\dawson\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
-            Process.Start("C:\\Users\\dawson\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
+            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
+            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
+            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
         }
     }
 }

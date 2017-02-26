@@ -394,6 +394,8 @@ namespace WiiBalanceWalker
 
         public void Logging(string timing, string weight, string TopLeft, string TopRight, string BottomLeft, string BottomRight) //This is where the data is logged
         {
+            Console.WriteLine("logging");
+
             Dictionary<string, string> bdata = new Dictionary<string, string>() {
                 { "RWeight", weight}, {"TopLeft",TopLeft}, {"TopRight", TopRight}, {"BottomLeft",BottomLeft}, {"BottomRight",BottomRight },{"Weight Orientation",label_Status.Text}
             };
