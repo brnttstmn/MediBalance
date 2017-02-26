@@ -5,18 +5,18 @@
     xmlns:local="using:MediBalance"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Width="567" Height="375.5">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Button x:Name="Connect_Button" Content="Connect" HorizontalAlignment="Left" Margin="15,187,0,0" VerticalAlignment="Top" Click="Connect_Click"/>
-        <TextBlock x:Name="connection_text" HorizontalAlignment="Left" Margin="79,224,0,0" TextWrapping="Wrap" Text="This is a MS Band Test Application. To start, input a time in seconds, then click connect." VerticalAlignment="Top" MaxHeight="360" Width="213" TextAlignment="Center"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="15,150,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="75"/>
-        <CheckBox x:Name="debug_checkbox" Content="DEBUG" HorizontalAlignment="Left" Margin="110,198,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_debug"/>
-        <TextBlock x:Name="textBlock" Margin="10,43,0,0" Text="Microsoft Band" VerticalAlignment="Top" Height="28" Width="340" FontSize="21.333" TextWrapping="WrapWholeWords" TextAlignment="Center"/>
-        <CheckBox x:Name="hr_checkBox" Content="Heart Rate" HorizontalAlignment="Left" Margin="110,71,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_hr"/>
+        <Button x:Name="Connect_Button" Content="Connect" HorizontalAlignment="Left" Margin="15,118,0,0" VerticalAlignment="Top" Click="Connect_Click"/>
+        <TextBlock x:Name="connection_text" HorizontalAlignment="Left" TextWrapping="WrapWholeWords" Text="This is a MS Band Test Application. To start, input a time in seconds, then click connect." VerticalAlignment="Top" MaxHeight="360" Width="230" TextAlignment="Center" Height="270" Margin="312,76,0,0" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="15,76,0,0" TextWrapping="Wrap" Text="500" VerticalAlignment="Top" Width="75" PlaceholderText="Run Time [s]"/>
+        <CheckBox x:Name="debug_checkbox" Content="DEBUG" HorizontalAlignment="Left" Margin="110,167,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_debug" Height="22" Width="71"/>
+        <TextBlock x:Name="textBlock" Margin="169,26,170,308" Text="Microsoft Band" FontSize="24" TextWrapping="WrapWholeWords" TextAlignment="Center" FontWeight="Bold"/>
+        <CheckBox x:Name="hr_checkBox" Content="Heart Rate" HorizontalAlignment="Left" Margin="110,71,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_hr" IsChecked="True"/>
         <CheckBox x:Name="gsr_checkBox" Content="Galvanic Skin Response" HorizontalAlignment="Left" Margin="110,103,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_gsr"/>
         <CheckBox x:Name="ls_checkBox" Content="Light Sensor" HorizontalAlignment="Left" Margin="110,135,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_ls"/>
-        <TextBox x:Name="IP_Box" HorizontalAlignment="Left" Margin="15,583,0,0" TextWrapping="Wrap" Text="Enter IP" VerticalAlignment="Top" Height="5" Width="120" TextChanged="IP_Box_TextChanged"/>
+        <TextBox x:Name="IP_Box" HorizontalAlignment="Left" Margin="15,213,0,0" TextWrapping="Wrap" Text="10.109.73.43" VerticalAlignment="Top" Height="5" Width="131" TextChanged="IP_Box_TextChanged" PlaceholderText="Enter IP Address"/>
 
     </Grid>
 </Page>
