@@ -33,22 +33,25 @@ namespace BackEnd
             // Connect Pipes
             board.start_client();
             kinect.start_client();
-          //  tunnel.start_client();
+            tunnel.start_client();
             string command = "start";
             kinect.sendcommand(command);
 
 
-            int i = 0;
-            while (i < 1000000)
+            int count = 0;
+            while (count < 1000000)
             {
                 //Thread.Sleep(1000);
                 if (!kinect.read.EndOfStream && !string.IsNullOrWhiteSpace(kinect.read.Peek().ToString())) { Console.WriteLine(kinect.read.ReadLine()); }
                 if (!board.read.EndOfStream && !string.IsNullOrWhiteSpace(board.read.Peek().ToString())) { Console.WriteLine(board.read.ReadLine()); }
-                //if (!tunnel.read.EndOfStream && !string.IsNullOrWhiteSpace(tunnel.read.Peek().ToString())) { Console.WriteLine(tunnel.read.ReadLine()); }
+                if (count > 50)
+                {
+                    if (!tunnel.read.EndOfStream && !string.IsNullOrWhiteSpace(tunnel.read.Peek().ToString())) { Console.WriteLine(tunnel.read.ReadLine()); }
+                    count = 0 ;
+                }
 
-
-                Console.WriteLine("Reading",i);
-                i++;
+                Console.WriteLine("Reading {0}",count);
+                count++;
             }
 
             Console.WriteLine("Press any key to exit");
@@ -62,7 +65,7 @@ namespace BackEnd
         {
             Process.Start("C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
             Process.Start("C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
-            //Process.Start("C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
+            Process.Start("C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
         }
     }
 }
