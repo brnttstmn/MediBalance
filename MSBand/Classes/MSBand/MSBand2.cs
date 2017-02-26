@@ -34,11 +34,12 @@ namespace MediBalance
         *  **Note: Currently only running one sensor at a time (It can run all but not sure how we should output it...)
         * 
         */
-        public async Task<int> everything(int RunTime,List<string> samples, BitArray control, Dictionary<string, int> map, TextBlock OutputText)
+        public async Task<int> everything(int RunTime,List<string> samples, BitArray control, Dictionary<string, int> map, TextBlock OutputText, string ipadd)
         {
+
             Tcp_Client clit = new Tcp_Client();
             clit.create_socket();
-            clit.connect();
+            clit.connect(ipadd);
 
             OutputText.Visibility = Visibility.Visible;
             try

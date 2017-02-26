@@ -45,7 +45,12 @@ namespace Tunnel
 
             try
             {
-                IPAddress ipAd = IPAddress.Parse("10.109.65.51");
+                string ipadd = GetLocalIPAddress();
+                data.AppendText(ipadd);
+                IPAddress ipAd = IPAddress.Parse(ipadd);
+                
+                data.AppendText(Environment.NewLine);
+
                 // use local m/c IP address, and 
                 // use the same in the client
 
@@ -119,5 +124,22 @@ namespace Tunnel
         {
 
         }
+
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("Local Ip Address not Found");
+
+        }
+
+
     }
 }

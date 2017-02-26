@@ -16,6 +16,7 @@
         <CheckBox x:Name="hr_checkBox" Content="Heart Rate" HorizontalAlignment="Left" Margin="110,71,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_hr"/>
         <CheckBox x:Name="gsr_checkBox" Content="Galvanic Skin Response" HorizontalAlignment="Left" Margin="110,103,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_gsr"/>
         <CheckBox x:Name="ls_checkBox" Content="Light Sensor" HorizontalAlignment="Left" Margin="110,135,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_ls"/>
+        <TextBox x:Name="IP_Box" HorizontalAlignment="Left" Margin="15,583,0,0" TextWrapping="Wrap" Text="Enter IP" VerticalAlignment="Top" Height="5" Width="120" TextChanged="IP_Box_TextChanged"/>
 
     </Grid>
 </Page>

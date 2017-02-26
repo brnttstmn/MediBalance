@@ -28,6 +28,7 @@ namespace MediBalance
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+    
     public sealed partial class MainPage : Page
     {
         string timeFormat = "HH:mm:ss:fff";
@@ -80,9 +81,9 @@ namespace MediBalance
             MSBand2 band = new MSBand2();
             var samples = new List<string>();
             int stat;
-
+            string ipadd = IP_Box.Text;
             connection_text.Text = "Connecting...";
-            stat = await band.everything(time, samples, control, map, connection_text);
+            stat = await band.everything(time, samples, control, map, connection_text, ipadd);
 
             if (stat == 0) { connection_text.Text += string.Format("\nFinished Sampling"); }
             if (stat == -1) { connection_text.Text = "Microsoft Band cannot be found. Check Connection"; }
@@ -109,9 +110,10 @@ namespace MediBalance
             // Random Number Generator(s)
             await test.heartRate(time, hr);
 
+            string ipadd = IP_Box.Text;
             Tcp_Client clit = new Tcp_Client();
             clit.create_socket();
-            clit.connect();
+            clit.connect(ipadd);
             //await clit.send("hello world");
 
             // Simulate Wait Time
@@ -143,6 +145,11 @@ namespace MediBalance
         }
 
         private void checkBox_Checked_debug(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void IP_Box_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }
