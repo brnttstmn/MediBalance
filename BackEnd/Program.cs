@@ -33,27 +33,19 @@ namespace BackEnd
             // Connect Pipes
             board.start_client();
             kinect.start_client();
-            tunnel.start_client();
+          //  tunnel.start_client();
             string command = "start";
             kinect.sendcommand(command);
 
 
-            var line = "";
-            var line2 = "";
-            var line3 = "";
             int i = 0;
             while (i < 1000000)
             {
-                Thread.Sleep(1000);
-                if (!kinect.read.EndOfStream) { line2 = kinect.read.ReadLine(); }
-                if (! string.IsNullOrWhiteSpace(line2)) { Console.WriteLine(line2); }
+                //Thread.Sleep(1000);
+                if (!kinect.read.EndOfStream && !string.IsNullOrWhiteSpace(kinect.read.Peek().ToString())) { Console.WriteLine(kinect.read.ReadLine()); }
+                if (!board.read.EndOfStream && !string.IsNullOrWhiteSpace(board.read.Peek().ToString())) { Console.WriteLine(board.read.ReadLine()); }
+                //if (!tunnel.read.EndOfStream && !string.IsNullOrWhiteSpace(tunnel.read.Peek().ToString())) { Console.WriteLine(tunnel.read.ReadLine()); }
 
-                if (!board.read.EndOfStream) { line = board.read.ReadLine(); }
-                if (! string.IsNullOrWhiteSpace(line)) { Console.WriteLine(line); }
-                //else { Console.WriteLine("Error"); }
-                
-                if (!tunnel.read.EndOfStream) { line3 = tunnel.read.ReadLine(); }
-                if (!string.IsNullOrWhiteSpace(line)) { Console.WriteLine(line3); }
 
                 Console.WriteLine("Reading",i);
                 i++;
@@ -70,7 +62,7 @@ namespace BackEnd
         {
             Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
             Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
-            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
+            //Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
         }
     }
 }
