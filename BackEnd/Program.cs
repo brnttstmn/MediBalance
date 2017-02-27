@@ -38,20 +38,21 @@ namespace BackEnd
             kinect.sendcommand(command);
 
             bool status = true;
-            List<string> data_list = new List<String>(); 
+            List<string> data_list = new List<String>();
 
+            string data;
             int count = 0;
             int i = 0;
             while (status ==  true)
             {
                 //Thread.Sleep(1000);
-                if (!kinect.read.EndOfStream && !string.IsNullOrWhiteSpace(kinect.read.Peek().ToString())) { data_list.Add(kinect.read.ReadLine()); }
-                if (!board.read.EndOfStream && !string.IsNullOrWhiteSpace(board.read.Peek().ToString())) { data_list.Add(board.read.ReadLine()); }
+                if (!kinect.read.EndOfStream && !string.IsNullOrWhiteSpace(kinect.read.Peek().ToString())) { data = kinect.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
+                if (!board.read.EndOfStream && !string.IsNullOrWhiteSpace(board.read.Peek().ToString())) { data = board.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
                 if (count > 50)
                 {
-                    if (!tunnel.read.EndOfStream && !string.IsNullOrWhiteSpace(tunnel.read.Peek().ToString())) { data_list.Add(tunnel.read.ReadLine()); }
+                    if (!tunnel.read.EndOfStream && !string.IsNullOrWhiteSpace(tunnel.read.Peek().ToString())) { data = tunnel.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
                     count = 0 ;
-                    if (i > 10) status = false;
+                    if (i > 40) status = false;
                     i++;
                 }
                 
