@@ -1,6 +1,6 @@
 ﻿using System;
-//using System.Collections.Generic;
-//using System.IO;
+using System.Collections.Generic;
+using System.IO;
 //using System.IO.MemoryMappedFiles;
 using System.IO.Pipes;
 //using System.Linq;
@@ -37,22 +37,31 @@ namespace BackEnd
             string command = "start";
             kinect.sendcommand(command);
 
+            bool status = true;
+            List<string> data_list = new List<String>(); 
 
             int count = 0;
-            while (count < 1000000)
+            int i = 0;
+            while (status ==  true)
             {
                 //Thread.Sleep(1000);
-                if (!kinect.read.EndOfStream && !string.IsNullOrWhiteSpace(kinect.read.Peek().ToString())) { Console.WriteLine(kinect.read.ReadLine()); }
-                if (!board.read.EndOfStream && !string.IsNullOrWhiteSpace(board.read.Peek().ToString())) { Console.WriteLine(board.read.ReadLine()); }
+                if (!kinect.read.EndOfStream && !string.IsNullOrWhiteSpace(kinect.read.Peek().ToString())) { data_list.Add(kinect.read.ReadLine()); }
+                if (!board.read.EndOfStream && !string.IsNullOrWhiteSpace(board.read.Peek().ToString())) { data_list.Add(board.read.ReadLine()); }
                 if (count > 50)
                 {
-                    if (!tunnel.read.EndOfStream && !string.IsNullOrWhiteSpace(tunnel.read.Peek().ToString())) { Console.WriteLine(tunnel.read.ReadLine()); }
+                    if (!tunnel.read.EndOfStream && !string.IsNullOrWhiteSpace(tunnel.read.Peek().ToString())) { data_list.Add(tunnel.read.ReadLine()); }
                     count = 0 ;
+                    if (i > 10) status = false;
+                    i++;
                 }
-
+                
                 Console.WriteLine("Reading {0}",count);
                 count++;
             }
+
+            string filePath = @"C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\data.csv";
+            //File.OpenWrite(filePath);
+            File.AppendAllLines(filePath, data_list);
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
