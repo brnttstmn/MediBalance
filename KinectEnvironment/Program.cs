@@ -13,7 +13,6 @@ namespace KinectEnvironment
     class Program
     {
         static string timeFormat = "HH:mm:ss:fff";
-        //static NamedPipeClientStream kClient = new NamedPipeClientStream(".", "tokinect", PipeDirection.InOut);
         static NamedPipeServerStream kServer = new NamedPipeServerStream("kinect", PipeDirection.InOut);
         static StreamWriter sw = null;
         static StreamReader sr = null;
@@ -72,6 +71,7 @@ namespace KinectEnvironment
             Console.WriteLine("Press Enter to Continue...");
             Console.ReadLine();
         }
+
         static string listen()
         {
             var message = "";
@@ -108,9 +108,8 @@ namespace KinectEnvironment
             // Wait for 15s
             while (true)
             {
-                Console.WriteLine(i);
+                Console.WriteLine(i++);
                 Thread.Sleep(1000);
-                i++;
             }
 
             // Close Kinect Connection
