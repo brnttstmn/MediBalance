@@ -111,7 +111,7 @@ namespace WiiBalanceWalker
             try
             {
                 // Pipe initialization
-                Console.WriteLine("Connecting this fucking shit.");
+                Console.WriteLine("Connecting....");
                 BoardServer.WaitForConnection();
                 StreamRead = new StreamReader(BoardServer);
                 StreamWrite = new StreamWriter(BoardServer) { AutoFlush = true };
