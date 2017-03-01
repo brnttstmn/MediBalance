@@ -70,26 +70,21 @@ namespace BalanceBoard
                     {
                         var devicePathId = new Regex("e_pid&.*?&(.*?)&").Match(wiiDevice.HIDDevicePath).Groups[1].Value.ToUpper();
                         continue;
-                        //var response = MessageBox.Show("Connect to HID " + devicePathId + " device " + (i + 1) + " of " + deviceCollection.Count + " ?", "Multiple Wii Devices Found", MessageBoxButtons.YesNoCancel);
-                        //if (response == DialogResult.Cancel) return;
-                        //if (response == DialogResult.No) continue;
                     }
 
                     // Connect and send a request to verify it worked.
-
                     wiiDevice.Connect();
                     wiiDevice.SetReportType(InputReport.IRAccel, false); // FALSE = DEVICE ONLY SENDS UPDATES WHEN VALUES CHANGE!
                     wiiDevice.SetLEDs(true, false, false, false);
 
                     // Enable processing of updates.
-
                     infoUpdateTimer.Enabled = true;
                     break;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error... Bitch");
+                Console.WriteLine("Error... you broke it");
                 Console.WriteLine(ex.Message, "Error");
             }
             Console.ReadKey();
