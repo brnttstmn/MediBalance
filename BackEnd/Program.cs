@@ -1,6 +1,6 @@
 ﻿using System;
-//using System.Collections.Generic;
-//using System.IO;
+using System.Collections.Generic;
+using System.IO;
 //using System.IO.MemoryMappedFiles;
 using System.IO.Pipes;
 //using System.Linq;
@@ -33,23 +33,36 @@ namespace BackEnd
             // Connect Pipes
             board.start_client();
             kinect.start_client();
-          //  tunnel.start_client();
+            tunnel.start_client();
             string command = "start";
             kinect.sendcommand(command);
 
+            bool status = true;
+            List<string> data_list = new List<String>();
 
+            string data;
+            int count = 0;
             int i = 0;
-            while (i < 1000000)
+            while (status ==  true)
             {
                 //Thread.Sleep(1000);
-                if (!kinect.read.EndOfStream && !string.IsNullOrWhiteSpace(kinect.read.Peek().ToString())) { Console.WriteLine(kinect.read.ReadLine()); }
-                if (!board.read.EndOfStream && !string.IsNullOrWhiteSpace(board.read.Peek().ToString())) { Console.WriteLine(board.read.ReadLine()); }
-                //if (!tunnel.read.EndOfStream && !string.IsNullOrWhiteSpace(tunnel.read.Peek().ToString())) { Console.WriteLine(tunnel.read.ReadLine()); }
-
-
-                Console.WriteLine("Reading",i);
-                i++;
+                if (!kinect.read.EndOfStream && !string.IsNullOrWhiteSpace(kinect.read.Peek().ToString())) { data = kinect.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
+                if (!board.read.EndOfStream && !string.IsNullOrWhiteSpace(board.read.Peek().ToString())) { data = board.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
+                if (count > 50)
+                {
+                    if (!tunnel.read.EndOfStream && !string.IsNullOrWhiteSpace(tunnel.read.Peek().ToString())) { data = tunnel.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
+                    count = 0 ;
+                    if (i > 40) status = false;
+                    i++;
+                }
+                
+                Console.WriteLine("Reading {0}",count);
+                count++;
             }
+
+            string filePath = @"C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\data.csv";
+            //File.OpenWrite(filePath);
+            File.AppendAllLines(filePath, data_list);
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
@@ -60,9 +73,9 @@ namespace BackEnd
         /// </summary>
         static void runPrograms()
         {
-            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
-            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
-            //Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
+            Process.Start("C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
+            Process.Start("C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
+            Process.Start("C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Tunnel
 
             try
             {
-                string ipadd = "10.109.73.43";// GetLocalIPAddress();
+                string ipadd =  GetLocalIPAddress();
                 data.AppendText(ipadd);
                 IPAddress ipAd = IPAddress.Parse(ipadd);
                 
