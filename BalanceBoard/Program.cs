@@ -5,93 +5,130 @@ using System.Text.RegularExpressions;
 using System.IO.Pipes;
 using System.IO;
 using System.Timers;
+using System.Threading;
 
 namespace BalanceBoard
 {
     class Program
     {
-
         //Piping Goodness
         static NamedPipeServerStream BoardServer = new NamedPipeServerStream("board", PipeDirection.InOut);
-        static System.Timers.Timer infoUpdateTimer = new System.Timers.Timer() { Interval = 50, Enabled = false };
         static StreamWriter StreamWrite = null;
         static StreamReader StreamRead = null;
-        static Wiimote wiiDevice = null;
-        static string Timing = DateTime.Now.ToString("HH:mm:ss:fff");
-        DateTime jumpTime = DateTime.UtcNow;
-        bool setCenterOffset = false;
 
-        float naCorners = 0f;
-        float oaTopLeft = 0f;
-        float oaTopRight = 0f;
-        float oaBottomLeft = 0f;
-        float oaBottomRight = 0f;
+        //Wii Stuff
+        static Wiimote wiiDevice = null;
+        static string Timingformat = "HH:mm:ss:fff";
+        static DateTime jumpTime = DateTime.UtcNow;
+        static bool setCenterOffset = false;
+        static float naCorners = 0f;
+        static float oaTopLeft = 0f;
+        static float oaTopRight = 0f;
+        static float oaBottomLeft = 0f;
+        static float oaBottomRight = 0f;
+        static string status = "";
 
         static void Main(string[] args)
         {
+            var run = true;
+            var command = "";
+            Console.WriteLine("Connecting....");
             connect();
+            Console.WriteLine("Connections complete.");
+            while (run)
+            {
+
+                // Listen for command
+                Console.WriteLine("Listening");
+                command = listen();
+                Console.WriteLine(command);
+
+                // Perform Command
+                switch (command)
+                {
+                    case "start":
+                        start();
+                        break;
+                    //case "test":
+                    //    test();
+                    //    break;
+                    //case "stop":
+                    //    run = false;
+                    //    break;
+                    default:
+                        run = true;
+                        break;
+                }
+                //temporary. needs debugging
+                run = false;
+            }
+        }
+
+        static string listen()
+        {
+            var message = "";
+
+            while (true)
+            {
+                message = StreamRead.ReadLine();
+                if (message != null)
+                {
+                    return message;
+                }
+                Thread.Sleep(500);
+            }
+        }
+
+        static string start()
+        {
+            while (true) { InfoUpdate(); }
         }
 
         private static void connect() // This is where the initialization exists
         {
             try
             {
-                // Pipe initialization
-                Console.WriteLine("Connecting....");
-                //BoardServer.WaitForConnection();
-                //StreamRead = new StreamReader(BoardServer);
-                //StreamWrite = new StreamWriter(BoardServer) { AutoFlush = true };
-                Console.WriteLine("Connected.");
-
-                //Board Setup
+                // Initialize Board Varibles
                 wiiDevice = new Wiimote();
                 var deviceCollection = new WiimoteCollection();
 
-
-                // Find all connected Wii devices.
+                // Check for Connected Board
                 try
                 {
+                    Console.WriteLine("Searching for connected board...");
                     deviceCollection.FindAllWiimotes();
+                    Console.WriteLine("Board Found!");
                 }
-                catch{
+                catch
+                {
+                    Console.WriteLine("No boards are connected...");
                     BluetoothBoard.add_device();
                     deviceCollection.FindAllWiimotes();
                 }
-                
-                Console.WriteLine(deviceCollection.Count);
 
-                for (int i = 0; i < deviceCollection.Count; i++)
-                {
-                    wiiDevice = deviceCollection[i];
+                //Conneect to BalanceBoard
+                wiiDevice = deviceCollection[0];                
+                wiiDevice.Connect();
+                wiiDevice.SetReportType(InputReport.IRAccel, false); // FALSE = DEVICE ONLY SENDS UPDATES WHEN VALUES CHANGE!
+                wiiDevice.SetLEDs(true, false, false, false);
 
-                    // Device type can only be found after connection, so prompt for multiple devices.
-
-                    if (deviceCollection.Count > 1)
-                    {
-                        var devicePathId = new Regex("e_pid&.*?&(.*?)&").Match(wiiDevice.HIDDevicePath).Groups[1].Value.ToUpper();
-                        continue;
-                    }
-
-                    // Connect and send a request to verify it worked.
-                    wiiDevice.Connect();
-                    wiiDevice.SetReportType(InputReport.IRAccel, false); // FALSE = DEVICE ONLY SENDS UPDATES WHEN VALUES CHANGE!
-                    wiiDevice.SetLEDs(true, false, false, false);
-
-                    // Enable processing of updates.
-                    infoUpdateTimer.Enabled = true;
-                    break;
-                }
+                // Start and Connect to Pipe
+                Console.WriteLine("Starting Pipe");
+                BoardServer.WaitForConnection();
+                StreamRead = new StreamReader(BoardServer);
+                StreamWrite = new StreamWriter(BoardServer) { AutoFlush = true };
+                Console.WriteLine("Pipe Connected.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error... you broke it");
                 Console.WriteLine(ex.Message, "Error");
             }
-            Console.ReadKey();
+
         }
 
 
-        private void InfoUpdate()
+        private static void InfoUpdate()
         {
 
             if (wiiDevice.WiimoteState.ExtensionType != ExtensionType.BalanceBoard)
@@ -149,6 +186,7 @@ namespace BalanceBoard
                 owBottomRight = 0;
             }
 
+
             // Show the raw sensor values.
             string Timing = DateTime.Now.ToString("HH:mm:ss:fff");
             var weight = rwWeight.ToString("0.0");
@@ -156,7 +194,6 @@ namespace BalanceBoard
             var topright = rwTopRight.ToString("0.0");
             var bottomeleft = rwBottomLeft.ToString("0.0");
             var bottomright = rwBottomRight.ToString("0.0");
-            Logging(Timing, weight, topleft, topright, bottomeleft, bottomright);
 
             // Calculate each weight ratio.
             var owrPercentage = 100 / (owTopLeft + owTopRight + owBottomLeft + owBottomRight);
@@ -184,6 +221,18 @@ namespace BalanceBoard
             var sendDiagonalLeft = false;
             var sendDiagonalRight = false;
 
+            // Display actions.
+            status = "Result: ";
+
+            if (sendForward) status += "Forward";
+            if (sendLeft) status += "Left";
+            if (sendBackward) status += "Backward";
+            if (sendRight) status += "Right";
+            if (sendModifier) status += " + Modifier";
+            if (sendJump) status += "Jump";
+            if (sendDiagonalLeft) status += "Diagonal Left";
+            if (sendDiagonalRight) status += "Diagonal Right";
+
             // Detect jump but use a time limit to stop it being active while off the board.
             if (owWeight < 1f)
             {
@@ -200,24 +249,24 @@ namespace BalanceBoard
                 if (brDL > brDR) sendDiagonalLeft = true;
                 else sendDiagonalRight = true;
             }
+
+            Logging(Timing, weight, topleft, topright, bottomeleft, bottomright);
         }
 
-        public void Logging(string timing, string weight, string TopLeft, string TopRight, string BottomLeft, string BottomRight) //This is where the data is logged
+        public static void Logging(string timing, string weight, string TopLeft, string TopRight, string BottomLeft, string BottomRight) //This is where the data is logged
         {
             Console.WriteLine("logging");
 
             Dictionary<string, string> bdata = new Dictionary<string, string>() {
-                { "RWeight", weight}, {"TopLeft",TopLeft}, {"TopRight", TopRight}, {"BottomLeft",BottomLeft}, {"BottomRight",BottomRight },{"Weight Orientation",label_Status.Text}
+                { "RWeight", weight}, {"TopLeft",TopLeft}, {"TopRight", TopRight}, {"BottomLeft",BottomLeft}, {"BottomRight",BottomRight },{"Weight Orientation",status}
             };
 
             foreach (KeyValuePair<string, string> data in bdata)
             {
                 var newLine = string.Format("{0},{1},{2};", timing, data.Key, data.Value);
-                StreamWrite.WriteLine(newLine);
+                //StreamWrite.WriteLine(newLine);
                 Console.WriteLine(newLine);
             }
         }
-
-
     }
 }
