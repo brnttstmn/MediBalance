@@ -11,22 +11,15 @@ namespace BalanceBoard
 {
     class Program
     {
-        //Piping Goodness
+        // Pipe Instantiation
         static NamedPipeServerStream BoardServer = new NamedPipeServerStream("board", PipeDirection.InOut);
         static StreamWriter StreamWrite = null;
         static StreamReader StreamRead = null;
 
-        //Wii Stuff
+        // Wii Board
         static Wiimote wiiDevice = null;
         static string Timingformat = "HH:mm:ss:fff";
-        static DateTime jumpTime = DateTime.UtcNow;
-        static bool setCenterOffset = false;
-        static float naCorners = 0f;
-        static float oaTopLeft = 0f;
-        static float oaTopRight = 0f;
-        static float oaBottomLeft = 0f;
-        static float oaBottomRight = 0f;
-        static string status = "";
+
 
         static void Main(string[] args)
         {    
@@ -183,6 +176,14 @@ namespace BalanceBoard
 
         private static List<string> InfoUpdate()
         {
+            DateTime jumpTime = DateTime.UtcNow;
+            bool setCenterOffset = false;
+            float naCorners = 0f;
+            float oaTopLeft = 0f;
+            float oaTopRight = 0f;
+            float oaBottomLeft = 0f;
+            float oaBottomRight = 0f;
+            string status = "";
             var result = new List<string>();
 
             if (wiiDevice.WiimoteState.ExtensionType != ExtensionType.BalanceBoard)
@@ -242,7 +243,7 @@ namespace BalanceBoard
 
 
             // Show the raw sensor values.
-            string Timing = DateTime.Now.ToString("HH:mm:ss:fff");
+            string Timing = DateTime.Now.ToString(Timingformat);
             var weight = rwWeight.ToString("0.0");
             var topleft = rwTopLeft.ToString("0.0");
             var topright = rwTopRight.ToString("0.0");
