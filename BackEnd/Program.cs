@@ -32,10 +32,11 @@ namespace BackEnd
 
             // Connect Pipes
             board.start_client();
-            kinect.start_client();
-            tunnel.start_client();
+            //kinect.start_client();
+            //tunnel.start_client();
             string command = "start";
-            kinect.sendcommand(command);
+            //kinect.sendcommand(command);
+            board.sendcommand(command);
 
             bool status = true;
             List<string> data_list = new List<String>();
@@ -46,11 +47,11 @@ namespace BackEnd
             while (status ==  true)
             {
                 //Thread.Sleep(1000);
-                if (!kinect.read.EndOfStream && !string.IsNullOrWhiteSpace(kinect.read.Peek().ToString())) { data = kinect.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
+                //if (!kinect.read.EndOfStream && !string.IsNullOrWhiteSpace(kinect.read.Peek().ToString())) { data = kinect.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
                 if (!board.read.EndOfStream && !string.IsNullOrWhiteSpace(board.read.Peek().ToString())) { data = board.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
                 if (count > 50)
                 {
-                    if (!tunnel.read.EndOfStream && !string.IsNullOrWhiteSpace(tunnel.read.Peek().ToString())) { data = tunnel.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
+                    //if (!tunnel.read.EndOfStream && !string.IsNullOrWhiteSpace(tunnel.read.Peek().ToString())) { data = tunnel.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
                     count = 0 ;
                     if (i > 40) status = false;
                     i++;

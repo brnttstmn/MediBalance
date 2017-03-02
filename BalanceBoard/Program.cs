@@ -34,6 +34,7 @@ namespace BalanceBoard
             var command = "";
             Console.WriteLine("Connecting....");
             connect();
+            connectPipe();
             Console.WriteLine("Connections complete.");
             while (run)
             {
@@ -81,10 +82,31 @@ namespace BalanceBoard
 
         static string start()
         {
-            while (true) { InfoUpdate(); }
+            while (true)
+            {
+                var a = InfoUpdate();
+                print(a);
+                send(a);
+            }
         }
 
-        private static void connect() // This is where the initialization exists
+        static void print(List<string> data)
+        {
+            foreach (string line in data)
+            {
+                Console.WriteLine(line);
+            }
+        }
+
+        static void send(List<string> data)
+        {
+            foreach (string line in data)
+            {
+                StreamWrite.WriteLine(line);
+            }
+        }
+
+        private static void connect()
         {
             try
             {
@@ -111,13 +133,6 @@ namespace BalanceBoard
                 wiiDevice.Connect();
                 wiiDevice.SetReportType(InputReport.IRAccel, false); // FALSE = DEVICE ONLY SENDS UPDATES WHEN VALUES CHANGE!
                 wiiDevice.SetLEDs(true, false, false, false);
-
-                // Start and Connect to Pipe
-                Console.WriteLine("Starting Pipe");
-                BoardServer.WaitForConnection();
-                StreamRead = new StreamReader(BoardServer);
-                StreamWrite = new StreamWriter(BoardServer) { AutoFlush = true };
-                Console.WriteLine("Pipe Connected.");
             }
             catch (Exception ex)
             {
@@ -127,14 +142,23 @@ namespace BalanceBoard
 
         }
 
+        private static void connectPipe() {
+            // Start and Connect to Pipe
+            Console.WriteLine("Starting Pipe");
+            BoardServer.WaitForConnection();
+            StreamRead = new StreamReader(BoardServer);
+            StreamWrite = new StreamWriter(BoardServer) { AutoFlush = true };
+            Console.WriteLine("Pipe Connected.");
+        }
 
-        private static void InfoUpdate()
+        private static List<string> InfoUpdate()
         {
+            var result = new List<string>();
 
             if (wiiDevice.WiimoteState.ExtensionType != ExtensionType.BalanceBoard)
             {
                 Console.WriteLine("DEVICE IS NOT A BALANCE BOARD...");
-                return;
+                return result;
             }
 
             // Get the current raw sensor Lb values.
@@ -200,7 +224,7 @@ namespace BalanceBoard
             var owrTopLeft = owrPercentage * owTopLeft;
             var owrTopRight = owrPercentage * owTopRight;
             var owrBottomLeft = owrPercentage * owBottomLeft;
-            var owrBottomRight = owrPercentage * owBottomRight;            
+            var owrBottomRight = owrPercentage * owBottomRight;
 
             // Calculate balance ratio.
             var brX = owrBottomRight + owrTopRight;
@@ -224,15 +248,6 @@ namespace BalanceBoard
             // Display actions.
             status = "Result: ";
 
-            if (sendForward) status += "Forward";
-            if (sendLeft) status += "Left";
-            if (sendBackward) status += "Backward";
-            if (sendRight) status += "Right";
-            if (sendModifier) status += " + Modifier";
-            if (sendJump) status += "Jump";
-            if (sendDiagonalLeft) status += "Diagonal Left";
-            if (sendDiagonalRight) status += "Diagonal Right";
-
             // Detect jump but use a time limit to stop it being active while off the board.
             if (owWeight < 1f)
             {
@@ -250,23 +265,24 @@ namespace BalanceBoard
                 else sendDiagonalRight = true;
             }
 
-            Logging(Timing, weight, topleft, topright, bottomeleft, bottomright);
-        }
-
-        public static void Logging(string timing, string weight, string TopLeft, string TopRight, string BottomLeft, string BottomRight) //This is where the data is logged
-        {
-            Console.WriteLine("logging");
+            if (sendForward) status += "Forward";
+            if (sendLeft) status += "Left";
+            if (sendBackward) status += "Backward";
+            if (sendRight) status += "Right";
+            if (sendModifier) status += " + Modifier";
+            if (sendJump) status += "Jump";
+            if (sendDiagonalLeft) status += "Diagonal Left";
+            if (sendDiagonalRight) status += "Diagonal Right";
 
             Dictionary<string, string> bdata = new Dictionary<string, string>() {
-                { "RWeight", weight}, {"TopLeft",TopLeft}, {"TopRight", TopRight}, {"BottomLeft",BottomLeft}, {"BottomRight",BottomRight },{"Weight Orientation",status}
+                { "RWeight", weight}, {"TopLeft",topleft}, {"TopRight", topright}, {"BottomLeft",bottomeleft}, {"BottomRight",bottomright },{"Weight Orientation",status}
             };
 
             foreach (KeyValuePair<string, string> data in bdata)
             {
-                var newLine = string.Format("{0},{1},{2};", timing, data.Key, data.Value);
-                //StreamWrite.WriteLine(newLine);
-                Console.WriteLine(newLine);
+                result.Add(string.Format("{0},{1},{2};", Timing, data.Key, data.Value));
             }
+            return result;
         }
     }
 }
