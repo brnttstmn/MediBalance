@@ -29,16 +29,25 @@ namespace BalanceBoard
         static string status = "";
 
         static void Main(string[] args)
-        {
-            var run = true;
-            var command = "";
+        {    
             Console.WriteLine("Connecting....");
-            connect();
+            connect(); // Check connection to board... Connect board if not already connected
+            run(); // Start listening and performing tasks as assigned from the backend
+            //startDebug(); // Run Local instances
+        }
+
+        static void run()
+        {
+            // Initialize Variables
+            var command = "";
+            var run = true;
+
+            // Connect to Pipe
             connectPipe();
-            Console.WriteLine("Connections complete.");
+
+            // Start Listening to commands
             while (run)
             {
-
                 // Listen for command
                 Console.WriteLine("Listening");
                 command = listen();
@@ -87,6 +96,27 @@ namespace BalanceBoard
                 var a = InfoUpdate();
                 print(a);
                 send(a);
+            }
+        }
+
+        static void startDebug(int mode=1)
+        {
+            List<string> a;
+            switch (mode)
+            {
+                case 0:
+                    start();
+                    while (true)
+                    {
+                        a = InfoUpdate();
+                        print(a);
+                    }
+                default:
+                    a = InfoUpdate();
+                    print(a);
+                    Console.WriteLine("Press any key to continue");
+                    Console.ReadKey();
+                    break;
             }
         }
 
