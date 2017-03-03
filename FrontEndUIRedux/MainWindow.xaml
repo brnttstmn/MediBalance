@@ -5,7 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FrontEndUIRedux"
         mc:Ignorable="d"
-        Title="MediBalance Balance Test Monitor" Height="603" Width="1018">
+        Title="MediBalance Balance Test Monitor" Height="603" Width="1018"
+        Loaded="MainWindow_Loaded"
+        Closing="MainWindow_Closing">
+    <Window.Resources>
+        <SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e" />
+        <SolidColorBrush x:Key="KinectPurpleBrush" Color="#ff52318f" />
+        <SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2" />
+    </Window.Resources>
     <Grid>
         <TextBox x:Name="Seconds" HorizontalAlignment="Right" Height="25" Margin="0,25,854.333,0" TextWrapping="Wrap" Text="Seconds" VerticalAlignment="Top" Width="87" TextChanged="textBox_TextChanged" TextAlignment="Center"/>
         <Label x:Name="RunTime" Content="Run Time:" HorizontalAlignment="Left" Height="25" Margin="8,23,0,0" VerticalAlignment="Top" Width="61"/>
@@ -124,11 +131,9 @@
         </DockPanel>
         <Canvas HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100"/>
         <GroupBox x:Name="groupBox1" Header="Skeletal Data" HorizontalAlignment="Left" Margin="515,50,0,0" VerticalAlignment="Top" Height="300" Width="300">
-            <Canvas HorizontalAlignment="Left" Height="279" VerticalAlignment="Top" Width="290" Margin="0,0,-2.667,-2.333">
-                <Canvas x:Name="canvas" Background="#00FFFFFF" MouseMove="Canvas_MouseMove" Height="259" Width="270" Canvas.Left="10" Canvas.Top="10">
-                    <Polyline x:Name="polyline" Stroke="DarkGreen" StrokeThickness="3"/>
-                </Canvas>
-            </Canvas>
+            <Viewbox Margin="0,0,0.333,-0.333">
+                <Image Source="{Binding ImageSource}" Stretch="UniformToFill" />
+            </Viewbox>
         </GroupBox>
     </Grid>
 </Window>
