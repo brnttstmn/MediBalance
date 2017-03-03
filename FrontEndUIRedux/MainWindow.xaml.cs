@@ -12,6 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+//using System;
+//using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+//using System.Windows;
+//using System.Windows.Media;
+//using System.Windows.Media.Imaging;
+using Microsoft.Kinect;
 
 namespace FrontEndUIRedux
 {
@@ -20,9 +30,50 @@ namespace FrontEndUIRedux
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            InitializeComponent();
+            polyline.Points.Add(e.GetPosition(canvas));
         }
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Connect_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SingleLegRadio_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DoubleLegRadio_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TandemLegRadio_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ExportButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
     }
 }
+
