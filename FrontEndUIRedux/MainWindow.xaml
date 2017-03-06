@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FrontEndUIRedux"
         mc:Ignorable="d"
-        Title="MediBalance Balance Test Monitor" Height="603" Width="1018"
+        Title="MediBalance Balance Test Monitor" Height="603" Width="832.666"
         Loaded="MainWindow_Loaded"
         Closing="MainWindow_Closing">
     <Window.Resources>
@@ -106,11 +106,30 @@
 
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="BoardDataGroupBox" Header="Balance Data" HorizontalAlignment="Left" Margin="279,50,0,0" VerticalAlignment="Top" Height="196" Width="222">
-            <Grid HorizontalAlignment="Left" Height="176" Margin="0,0,-2.667,-3.333" VerticalAlignment="Top" Width="212"/>
+        <GroupBox x:Name="BoardDataGroupBox" Header="Balance Data" HorizontalAlignment="Left" Margin="279,50,0,0" VerticalAlignment="Top" Height="213" Width="222">
+            <Grid HorizontalAlignment="Left" Height="194" Margin="0,0,-2,-4" VerticalAlignment="Top" Width="212">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height=".5*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height=".5*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height=".5*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label x:Name="Top_Left" Content="Top Left" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Height="21"/>
+                <Label x:Name="Top_Right" Content="Top Right" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Height="21" Grid.Column="1"/>
+                <Label x:Name="Bottom_Left" Content="Bottom Left" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Height="21" Margin="0,0.333,0,0" Grid.Row="2"/>
+                <Label x:Name="Bottom_Right" Content="Bottom Right" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Height="21" Margin="0,0.333,0,0" Grid.Row="2" Grid.Column="1"/>
+                <Label x:Name="Weight" Content="Weight" HorizontalAlignment="Left" VerticalAlignment="Top" Width="212" Height="21" Margin="0,43,0,0" Grid.Row="3" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+            </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBox" Header="Biometric Data" HorizontalAlignment="Left" Margin="279,246,0,0" VerticalAlignment="Top" Height="111" Width="222">
-            <Grid HorizontalAlignment="Left" Height="91" Margin="0,0,-2.667,-3" VerticalAlignment="Top" Width="212"/>
+        <GroupBox x:Name="groupBox" Header="Biometric Data" HorizontalAlignment="Left" Margin="279,268,0,0" VerticalAlignment="Top" Height="201" Width="222">
+
         </GroupBox>
         <DockPanel Height="18" LastChildFill="False" VerticalAlignment="Top" Margin="0,0,0.333,0">
             <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" Width="1011">
@@ -131,9 +150,10 @@
         </DockPanel>
         <Canvas HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100"/>
         <GroupBox x:Name="groupBox1" Header="Skeletal Data" HorizontalAlignment="Left" Margin="515,50,0,0" VerticalAlignment="Top" Height="300" Width="300">
-            <Viewbox Margin="0,0,0.333,-0.333">
+            <Viewbox Margin="3,0,-2.667,-0.333">
                 <Image Source="{Binding ImageSource}" Stretch="UniformToFill" />
             </Viewbox>
         </GroupBox>
+        <GroupBox x:Name="Balance_Data" Header="Balance Distribution" HorizontalAlignment="Left" Margin="515,355,0,0" VerticalAlignment="Top" Height="208" Width="300"/>
     </Grid>
 </Window>

@@ -30,6 +30,7 @@ namespace FrontEndUIRedux
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+       
         /// <summary>
         /// Radius of drawn hand circles
         /// </summary>
@@ -524,7 +525,6 @@ namespace FrontEndUIRedux
         //                                                    : Properties.Resources.SensorNotAvailableStatusText;
         //}
 
-
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
 
@@ -545,9 +545,9 @@ namespace FrontEndUIRedux
         {
 
         }
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        public void StartButton_Click(object sender, RoutedEventArgs e)
         {
-
+           
         }
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
