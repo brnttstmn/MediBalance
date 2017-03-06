@@ -11,12 +11,16 @@ namespace BackEnd
     class Pipe
     {
         public NamedPipeClientStream client;
+        public string name;
+        public string path;
         public StreamReader read;
         public StreamWriter write;
 
-        public Pipe(NamedPipeClientStream pipe)
+        public Pipe(string name, NamedPipeClientStream pipe, string path)
         {
             this.client = pipe;
+            this.path = path;
+            this.name = name;
         }
 
         public void start_client()
