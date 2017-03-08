@@ -10,7 +10,8 @@ namespace BackEnd
 {
     class Pipe
     {
-        public NamedPipeClientStream client;
+        public NamedPipeClientStream client = null;
+        public NamedPipeServerStream server = null;
         public string name;
         public string path;
         public StreamReader read;
@@ -23,6 +24,13 @@ namespace BackEnd
             this.name = name;
         }
 
+        public Pipe(string name, NamedPipeServerStream pipe, string path)
+        {
+            this.server = pipe;
+            this.path = path;
+            this.name = name;
+        }
+
         public void start_client()
         {
             // Waiting for Connection
@@ -30,11 +38,24 @@ namespace BackEnd
 
             //server.WaitForConnection();
             this.client.Connect();
-            Console.WriteLine("Conected.");
+            Console.WriteLine("Connected.");
 
-            // Start Streams
-            start_reader();
-            start_writer();
+            start_reader(this.client);
+            start_writer(this.client);
+
+        }
+
+        public void start_server()
+        {
+            // Waiting for Connection
+            Console.WriteLine("Waiting for connection...");
+
+            //server.WaitForConnection();
+            this.server.WaitForConnection();
+            Console.WriteLine("Connected.");
+
+            start_reader(this.server);
+            start_writer(this.server);
 
         }
 
@@ -44,17 +65,28 @@ namespace BackEnd
             client.Close();
         }
 
-        public void start_reader()
+        public void start_reader(NamedPipeClientStream client)
         {
             // Instantiate Stream reader and Writers
-            //var sw = new StreamWriter(client) { AutoFlush = true };
-            this.read = new StreamReader(this.client);
+            this.read = new StreamReader(client);
         }
 
-        public void start_writer()
+        public void start_writer(NamedPipeClientStream client)
         {
             // Instantiate Stream reader and Writers
-            this.write = new StreamWriter(this.client) { AutoFlush = true };
+            this.write = new StreamWriter(client) { AutoFlush = true };
+        }
+
+        public void start_reader(NamedPipeServerStream server)
+        {
+            // Instantiate Stream reader and Writers
+            this.read = new StreamReader(server);
+        }
+
+        public void start_writer(NamedPipeServerStream server)
+        {
+            // Instantiate Stream reader and Writers
+            this.write = new StreamWriter(server) { AutoFlush = true };
         }
 
         public void sendcommand(string command)

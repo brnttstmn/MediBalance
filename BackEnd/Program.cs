@@ -16,9 +16,10 @@ namespace BackEnd
         // Instantiate Named Pipes
         static Pipe kinect = new Pipe("kinect", new NamedPipeClientStream(".", "kinect", PipeDirection.InOut), "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
         static Pipe board = new Pipe("board",new NamedPipeClientStream(".", "board", PipeDirection.InOut), "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\BalanceBoard\\bin\\Debug\\BalanceBoard.exe");
-        static Pipe gui = new Pipe("gui",new NamedPipeClientStream(".", "interface", PipeDirection.InOut), "placeholder");
+        static Pipe gui = new Pipe("gui", new NamedPipeServerStream("interface", PipeDirection.InOut), "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\FrontEndUIRedux\\bin\\Debug\\FrontEndUIRedux.exe");
         static Pipe tunnel = new Pipe("tunnel",new NamedPipeClientStream(".", "tunnel", PipeDirection.InOut), "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
-        static List<Pipe> sensors = new List<Pipe>() {kinect, board, tunnel };
+        static List<Pipe> sensors = new List<Pipe>() { board }; //kinect, board, tunnel
+        static List<Pipe> everything = new List<Pipe>() { board, gui }; //kinect, board, tunnel, gui
 
         static List<string> data_list = new List<String>();
         static string data;
@@ -35,7 +36,8 @@ namespace BackEnd
 
             // Connect Pipes
             connectPipes();
-            startSensors();            
+            startSensors();
+            readSensor();         
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
@@ -71,7 +73,13 @@ namespace BackEnd
         {
             foreach (Pipe sensor in sensors)
             {
-                if (!sensor.read.EndOfStream && !string.IsNullOrWhiteSpace(sensor.read.Peek().ToString())) { data = sensor.read.ReadLine(); data_list.Add(data); Console.WriteLine(data); }
+                if (!sensor.read.EndOfStream && !string.IsNullOrWhiteSpace(sensor.read.Peek().ToString()))
+                {
+                    data = sensor.read.ReadLine();
+                    gui.write.Write(data);
+                    data_list.Add(data);
+                    Console.WriteLine(data);
+                }
             }
         }
 
@@ -81,6 +89,7 @@ namespace BackEnd
             {
                 sensor.start_client();
             }
+            gui.start_server();
         }
 
         static void startSensors()
@@ -96,9 +105,9 @@ namespace BackEnd
         /// </summary>
         static void runPrograms()
         {
-            foreach (Pipe sensor in sensors)
+            foreach (Pipe program in everything)
             {
-                Process.Start(sensor.path);
+                Process.Start(program.path);
             }
         }
     }

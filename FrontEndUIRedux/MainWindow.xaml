@@ -141,7 +141,7 @@
                 </MenuItem>
                 <MenuItem Header="_Connect" Click="Connect_Click">
                     <MenuItem Header="_Band"/>
-                    <MenuItem Header="_Board"/>
+                    <MenuItem Header="_Board" Click="MenuItem_board_Click_1"/>
                     <MenuItem Header="_Kinect"/>
                 </MenuItem>
                 <MenuItem Header="_Help" Click="MenuItem_Click"/>

@@ -27,6 +27,8 @@ namespace BalanceBoard
             connect(); // Check connection to board... Connect board if not already connected
             run(); // Start listening and performing tasks as assigned from the backend
             //startDebug(); // Run Local instances
+            Console.WriteLine("done");
+            Console.ReadKey();
         }
 
         static void run()
@@ -49,7 +51,7 @@ namespace BalanceBoard
                 // Perform Command
                 switch (command)
                 {
-                    case "start":
+                    case "Start":
                         start();
                         break;
                     //case "test":
