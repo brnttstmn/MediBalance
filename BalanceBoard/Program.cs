@@ -24,7 +24,7 @@ namespace BalanceBoard
         static void Main(string[] args)
         {    
             Console.WriteLine("Connecting....");
-            connect(); // Check connection to board... Connect board if not already connected
+             // Check connection to board... Connect board if not already connected
             run(); // Start listening and performing tasks as assigned from the backend
             //startDebug(); // Run Local instances
             Console.WriteLine("done");
@@ -52,6 +52,7 @@ namespace BalanceBoard
                 switch (command)
                 {
                     case "Start":
+                        connect();
                         start();
                         break;
                     //case "test":
@@ -140,17 +141,22 @@ namespace BalanceBoard
                 var deviceCollection = new WiimoteCollection();
 
                 // Check for Connected Board
-                try
+                bool again = true;
+                while (again)
                 {
-                    Console.WriteLine("Searching for connected board...");
-                    deviceCollection.FindAllWiimotes();
-                    Console.WriteLine("Board Found!");
-                }
-                catch
-                {
-                    Console.WriteLine("No boards are connected...");
-                    BluetoothBoard.add_device();
-                    deviceCollection.FindAllWiimotes();
+                    try
+                    {
+                        Console.WriteLine("Searching for connected board...");
+                        deviceCollection.FindAllWiimotes();
+                        Console.WriteLine("Board Found!");
+                        again = false;
+                    }
+                    catch
+                    {
+                        Console.WriteLine("No boards are connected...");
+                        Thread.Sleep(1000);
+                        //BluetoothBoard.add_device();
+                    }
                 }
 
                 //Conneect to BalanceBoard
