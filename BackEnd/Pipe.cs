@@ -10,90 +10,99 @@ namespace BackEnd
 {
     class Pipe
     {
-        public NamedPipeClientStream client = null;
-        public NamedPipeServerStream server = null;
+        private NamedPipeClientStream client = null;
+        private NamedPipeServerStream server = null;
+
+        public object pipe;
         public string name;
         public string path;
         public StreamReader read;
         public StreamWriter write;
 
+        // Constructors
         public Pipe(string name, NamedPipeClientStream pipe, string path)
         {
             this.client = pipe;
+            this.pipe = pipe;
             this.path = path;
             this.name = name;
         }
-
         public Pipe(string name, NamedPipeServerStream pipe, string path)
         {
             this.server = pipe;
+            this.pipe = pipe;
             this.path = path;
             this.name = name;
         }
 
-        public void start_client()
+        // Public Methods
+        public void start(object pipe)
         {
-            // Waiting for Connection
-            Console.WriteLine("Waiting for connection...");
-
-            //server.WaitForConnection();
-            this.client.Connect();
-            Console.WriteLine("Connected.");
-
-            start_reader(this.client);
-            start_writer(this.client);
-
+            if (client == null) { start((NamedPipeServerStream)pipe); }
+            else { start((NamedPipeClientStream)pipe); }
         }
-
-        public void start_server()
+        public void stop(object pipe)
         {
-            // Waiting for Connection
-            Console.WriteLine("Waiting for connection...");
-
-            //server.WaitForConnection();
-            server.WaitForConnection();
-            Console.WriteLine("Connected.");
-
-            start_reader(this.server);
-            start_writer(this.server);
-
+            if (client == null) { stop((NamedPipeServerStream)pipe); }
+            else { stop((NamedPipeClientStream)pipe); }
         }
-
-        public void stop_client(NamedPipeClientStream client)
-        {
-            //Close pipe client        
-            client.Close();
-        }
-
-        public void start_reader(NamedPipeClientStream client)
-        {
-            // Instantiate Stream reader and Writers
-            this.read = new StreamReader(client);
-        }
-
-        public void start_writer(NamedPipeClientStream client)
-        {
-            // Instantiate Stream reader and Writers
-            this.write = new StreamWriter(client) { AutoFlush = true };
-        }
-
-        public void start_reader(NamedPipeServerStream server)
-        {
-            // Instantiate Stream reader and Writers
-            this.read = new StreamReader(server);
-        }
-
-        public void start_writer(NamedPipeServerStream server)
-        {
-            // Instantiate Stream reader and Writers
-            this.write = new StreamWriter(server) { AutoFlush = true };
-        }
-
         public void sendcommand(string command)
         {
             this.write.WriteLine(command);
             Console.WriteLine("Start sent");
         }
+
+        //Private Methods
+        private void start(NamedPipeClientStream client)
+        {
+            // Waiting for Connection
+            Console.WriteLine("Waiting for connection...");
+            client.Connect();
+            Console.WriteLine("Connected.");
+            start_reader(client);
+            start_writer(client);
+        }
+        private void start(NamedPipeServerStream server)
+        {
+            // Waiting for Connection
+            Console.WriteLine("Waiting for connection...");
+            server.WaitForConnection();
+            Console.WriteLine("Connected.");
+            start_reader(server);
+            start_writer(server);
+        }
+        private void stop(NamedPipeClientStream client)
+        {
+            //Close pipe client        
+            client.Close();
+        }
+        private void stop(NamedPipeServerStream server)
+        {
+            //Close pipe client        
+            server.Close();
+        }
+        private void start_reader(NamedPipeClientStream client)
+        {
+            // Instantiate Stream reader and Writers
+            this.read = new StreamReader(client);
+        }
+        private void start_writer(NamedPipeClientStream client)
+        {
+            // Instantiate Stream reader and Writers
+            this.write = new StreamWriter(client) { AutoFlush = true };
+        }
+        private void start_reader(NamedPipeServerStream server)
+        {
+            // Instantiate Stream reader and Writers
+            this.read = new StreamReader(server);
+        }
+        private void start_writer(NamedPipeServerStream server)
+        {
+            // Instantiate Stream reader and Writers
+            this.write = new StreamWriter(server) { AutoFlush = true };
+        }
+
+
 
     }
 }
