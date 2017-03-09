@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
+using System.Globalization;
 
 namespace BackEnd
 {
@@ -25,6 +26,15 @@ namespace BackEnd
         static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui }).ToList();
         static List<string> data_list = new List<String>();
         
+        //Logging and Data Array
+        static string timeFormat = "HH:mm:ss:fff";
+        static int log_length = 30;
+        static int log_interval = 100;
+        static string[] data_array = new string[log_length * log_interval];
+        static DateTime[] time_array = new DateTime[log_length * log_interval];
+        static CultureInfo enUS = new CultureInfo("en-US");
+
+
 
         /// <summary>
         /// Main Program
@@ -122,6 +132,7 @@ namespace BackEnd
             {
                 sensor.sendcommand("Start");
             }
+            populate_time(DateTime.Now); //creates the time array at the start of data collection
         }
 
         /// <summary>
@@ -134,6 +145,56 @@ namespace BackEnd
                 Process.Start(program.path);
             }
         }
+
+        /// <summary>
+        /// Logs a single line of data into the data array
+        /// </summary>
+        static void log_data(string data)
+        {
+            Console.WriteLine("Logging");
+            int compareresult1;
+            int compareresult2;
+            string[] split_data = data.Split(',');
+            string[] split_time = split_data[0].Split(':');
+            //time_compare(, split_data[0]);
+            DateTime start_stamp = DateTime.ParseExact(split_data[0], "HH:mm:ss:fff", enUS);
+            for (int i = 0; i <= 2998; i++)
+            {
+                //Console.WriteLine(i);
+                compareresult1 = DateTime.Compare(start_stamp, time_array[i]); //compares data to lower cell in time array
+                //Console.WriteLine("lower cell is {0}",compareresult1);
+                compareresult2 = DateTime.Compare(start_stamp, time_array[i + 1]); //compares data to upper cell in time array
+                //Console.WriteLine("upper cell is {0}", compareresult2);
+
+                if (compareresult1 > 0 && compareresult2 < 0) // if data is after lower cell but before the uppercell
+                {
+                    data_array[i] = data_array[i] + data;
+                    Console.WriteLine("Placed {1} in cell {0}! of timestamp {2}", i, data, time_array[i].ToString(timeFormat));
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Makes time array for data comparison
+        /// </summary>
+        static void populate_time(DateTime start)
+        {
+
+            time_array[0] = start;
+            string time = time_array[0].ToString(timeFormat);
+            Console.WriteLine("{0}", time);
+            for (int i = 1; i <= 2999; i++)
+            {
+                start = start.AddMilliseconds(log_interval);
+                time_array[i] = start;
+                //time = time_array[i].ToString(timeFormat);
+                //Console.WriteLine("{0}",time);
+            }
+
+        }
+
+
     }
 }
   
