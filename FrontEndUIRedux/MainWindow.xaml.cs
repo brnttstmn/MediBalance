@@ -18,7 +18,7 @@ namespace FrontEndUIRedux
         NamedPipeClientStream guiClient;
         StreamReader read;       
 
-        System.Timers.Timer infoUpdateTimer = new System.Timers.Timer() { Interval = 5, Enabled = false };
+        System.Timers.Timer infoUpdateTimer = new System.Timers.Timer() { Interval = 1, Enabled = false };
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -174,54 +174,58 @@ namespace FrontEndUIRedux
                             HeadY.Text = words[3];
                             HeadZ.Text = words[4];
                             break;
-                    case "shoulderright":
-                        ShoulderRightX.Text = words[2];
-                        ShoulderRightY.Text = words[3];
-                        ShoulderRightZ.Text = words[4];
-                        break;
-                // Brent you didn't finish putting in all of the fields!!!!
-                    //case "elbowright":
-                    //    elbo.Text = words[2];
-                    //    MidSpineY.Text = words[3];
-                    //    MidSpineZ.Text = words[4];
-                    //    break;
-                    //case "handright":
-                    //    NeckX.Text = words[2];
-                    //    NeckY.Text = words[3];
-                    //    NeckZ.Text = words[4];
-                    //    break;
-                    //case "hipleft":
-                    //    SpineBaseX.Text = words[2];
-                    //    SpineBaseY.Text = words[3];
-                    //    SpineBaseZ.Text = words[4];
-                    //    break;
-                    //case "kneeleft":
-                    //    SpineBaseX.Text = words[2];
-                    //    SpineBaseY.Text = words[3];
-                    //    SpineBaseZ.Text = words[4];
-                    //    break;
-                    //case "footleft":
-                    //    MidSpineX.Text = words[2];
-                    //    MidSpineY.Text = words[3];
-                    //    MidSpineZ.Text = words[4];
-                    //    break;
-                    //case "hipright":
-                    //    NeckX.Text = words[2];
-                    //    NeckY.Text = words[3];
-                    //    NeckZ.Text = words[4];
-                    //    break;
-                    //case "kneeright":
-                    //    HeadX.Text = words[2];
-                    //    HeadY.Text = words[3];
-                    //    HeadZ.Text = words[4];
-                    //    break;
-                    //case "footright":
-                    //    HeadX.Text = words[2];
-                    //    HeadY.Text = words[3];
-                    //    HeadZ.Text = words[4];
-                    //    break;
-                    default:
+                        case "shoulderright":
+                            ShoulderRightX.Text = words[2];
+                            ShoulderRightY.Text = words[3];
+                            ShoulderRightZ.Text = words[4];
                             break;
+                        case "elbowright":
+                            ElbowRightX.Text = words[2];
+                            ElbowRightY.Text = words[3];
+                            ElbowRightZ.Text = words[4];
+                            break;
+                        case "handright":
+                            HandRightX.Text = words[2];
+                            HandRightY.Text = words[3];
+                            HandRightZ.Text = words[4];
+                            break;
+                        case "hipleft":
+                            HipLeftX.Text = words[2];
+                            HipLeftY.Text = words[3];
+                            HipLeftZ.Text = words[4];
+                            break;
+                        case "kneeleft":
+                            KneeLeftX.Text = words[2];
+                            KneeLeftY.Text = words[3];
+                            KneeLeftZ.Text = words[4];
+                            break;
+                        case "footleft":
+                            FootLeftX.Text = words[2];
+                            FootLeftY.Text = words[3];
+                            FootLeftZ.Text = words[4];
+                            break;
+                        case "hipright":
+                            HipRightX.Text = words[2];
+                            HipRightY.Text = words[3];
+                            HipRightZ.Text = words[4];
+                            break;
+                        case "kneeright":
+                            KneeRightX.Text = words[2];
+                            KneeRightY.Text = words[3];
+                            KneeRightZ.Text = words[4];
+                            break;
+                        case "footright":
+                            FootRightX.Text = words[2];
+                            FootRightY.Text = words[3];
+                            FootRightZ.Text = words[4];
+                            break;
+                        case "wristright":
+                            WristRightX.Text = words[2];
+                            WristRightY.Text = words[3];
+                            WristRightZ.Text = words[4];
+                            break;
+                    default:
+                                break;
                     }
                 }
             }
