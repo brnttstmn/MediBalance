@@ -13,6 +13,7 @@ namespace BackEnd
         private NamedPipeClientStream client = null;
         private NamedPipeServerStream server = null;
 
+        public bool isClient;
         public object pipe;
         public string name;
         public string path;
@@ -26,6 +27,7 @@ namespace BackEnd
             this.pipe = pipe;
             this.path = path;
             this.name = name;
+            isClient = true;
         }
         public Pipe(string name, NamedPipeServerStream pipe, string path)
         {
@@ -33,23 +35,35 @@ namespace BackEnd
             this.pipe = pipe;
             this.path = path;
             this.name = name;
+            isClient = false;
         }
 
         // Public Methods
         public void start(object pipe)
         {
-            if (client == null) { start((NamedPipeServerStream)pipe); }
+            if (!isClient) { start((NamedPipeServerStream)pipe); }
+            else { start((NamedPipeClientStream)pipe); }
+        }
+        public void start()
+        {
+            if (!isClient) { start((NamedPipeServerStream)pipe); }
             else { start((NamedPipeClientStream)pipe); }
         }
         public void stop(object pipe)
         {
-            if (client == null) { stop((NamedPipeServerStream)pipe); }
+            if (!isClient) { stop((NamedPipeServerStream)pipe); }
             else { stop((NamedPipeClientStream)pipe); }
         }
+        public void stop()
+        {
+            if (!isClient) { stop((NamedPipeServerStream)pipe); }
+            else { stop((NamedPipeClientStream)pipe); }
+        }
+
         public void sendcommand(string command)
         {
             this.write.WriteLine(command);
-            Console.WriteLine("Start sent");
+            Console.WriteLine("sent: " + command);
         }
 
         //Private Methods
@@ -74,12 +88,12 @@ namespace BackEnd
         private void stop(NamedPipeClientStream client)
         {
             //Close pipe client        
-            client.Close();
+            client.Dispose();
         }
         private void stop(NamedPipeServerStream server)
         {
             //Close pipe client        
-            server.Close();
+            server.Dispose();
         }
         private void start_reader(NamedPipeClientStream client)
         {
@@ -101,8 +115,5 @@ namespace BackEnd
             // Instantiate Stream reader and Writers
             this.write = new StreamWriter(server) { AutoFlush = true };
         }
-
-
-
     }
 }
