@@ -37,7 +37,8 @@ namespace BackEnd
             // Connect Pipes
             connectPipes();
             startSensors();
-            readSensor();         
+            while (true) { readSensor(); }
+                    
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();

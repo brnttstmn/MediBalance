@@ -51,7 +51,7 @@ namespace BackEnd
             Console.WriteLine("Waiting for connection...");
 
             //server.WaitForConnection();
-            this.server.WaitForConnection();
+            server.WaitForConnection();
             Console.WriteLine("Connected.");
 
             start_reader(this.server);
