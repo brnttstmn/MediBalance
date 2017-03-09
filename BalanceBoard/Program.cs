@@ -23,11 +23,8 @@ namespace BalanceBoard
 
         static void Main(string[] args)
         {    
-            Console.WriteLine("Connecting....");
-            run();
-            //startDebug(); // Run Local instances
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
+            if (args.Length > 0) { if (args[0] == "Debug") { startDebug(); } }
+            else { run(); }
         }
 
         static void run()
@@ -35,7 +32,7 @@ namespace BalanceBoard
             // Initialize Variables
             var run = true;
 
-            
+            Console.WriteLine("Connecting....");
             while (run)
             {
                 try
