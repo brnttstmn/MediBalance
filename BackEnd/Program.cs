@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipes;
-//using System.Linq;
-//using System.Runtime.InteropServices;
-//using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
@@ -16,13 +11,15 @@ namespace BackEnd
     class Program
     {
         // Instantiate Named Pipes
-        static Pipe kinect = new Pipe("kinect", new NamedPipeClientStream(".", "kinect", PipeDirection.InOut), "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
-        static Pipe board = new Pipe("board", new NamedPipeClientStream(".", "board", PipeDirection.InOut), "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\BalanceBoard\\bin\\Debug\\BalanceBoard.exe");
-        static Pipe gui = new Pipe("gui", new NamedPipeServerStream("interface", PipeDirection.InOut), "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\FrontEndUIRedux\\bin\\Debug\\FrontEndUIRedux.exe");
-        static Pipe tunnel = new Pipe("tunnel", new NamedPipeClientStream(".", "tunnel", PipeDirection.InOut), "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
+        static Pipe kinect = new Pipe("kinect", true, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
+        static Pipe board = new Pipe("board", true, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\BalanceBoard\\bin\\Debug\\BalanceBoard.exe");
+        static Pipe gui = new Pipe("interface", false, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\FrontEndUIRedux\\bin\\Debug\\FrontEndUIRedux.exe");
+        static Pipe tunnel = new Pipe("tunnel", true, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
 
+        
         // Lists
-        static List<Pipe> pipelist = new List<Pipe>() { board, gui }; //kinect, board, tunnel, gui
+        // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
+        static List<Pipe> pipelist = new List<Pipe>() { kinect, board, tunnel, gui }; //kinect, board, tunnel, gui
         static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui }).ToList();
         static List<string> data_list = new List<String>();
         
@@ -99,39 +96,34 @@ namespace BackEnd
                 {
                     foreach (Pipe sensor in sensors)
                     {
-                        if (!sensor.read.EndOfStream && !string.IsNullOrWhiteSpace(sensor.read.Peek().ToString()))
-                        {
-                            line = sensor.read.ReadLine();
-                            if (pipelist.Contains(gui)) { gui.write.WriteLine(line); }
-                            data_list.Add(line);
-                            Console.WriteLine(line);
-                        }
+                        line = sensor.read.ReadLine();
+                        if (pipelist.Contains(gui)) { gui.write.WriteLine(line); }
+                        data_list.Add(line);
+                        Console.WriteLine(line);
                     }
                 }
         }
 
         static void connectPipes()
         {
-            foreach (Pipe pipe in pipelist)
-            {
-                pipe.start(pipe.pipe);
-            }
+            Parallel.ForEach(pipelist, pipe => {
+                pipe.start();
+            });
         }
 
         static void disconnectPipes()
         {
-            foreach (Pipe pipe in pipelist)
-            {
-                pipe.stop(pipe.pipe);
-            }
+            Parallel.ForEach(pipelist, pipe => {
+                pipe.stop();
+            });
         }
 
         static void startSensors()
         {
-            foreach (Pipe sensor in sensors)
-            {
+            Parallel.ForEach(sensors, sensor => {
                 sensor.sendcommand("Start");
-            }
+            });
+
             populate_time(DateTime.Now); //creates the time array at the start of data collection
         }
 
@@ -140,10 +132,9 @@ namespace BackEnd
         /// </summary>
         static void runPrograms()
         {
-            foreach (Pipe program in pipelist)
-            {
+            Parallel.ForEach(pipelist, program => {
                 Process.Start(program.path);
-            }
+            });
         }
 
         /// <summary>
@@ -180,7 +171,6 @@ namespace BackEnd
         /// </summary>
         static void populate_time(DateTime start)
         {
-
             time_array[0] = start;
             string time = time_array[0].ToString(timeFormat);
             Console.WriteLine("{0}", time);
@@ -191,10 +181,7 @@ namespace BackEnd
                 //time = time_array[i].ToString(timeFormat);
                 //Console.WriteLine("{0}",time);
             }
-
         }
-
-
     }
 }
   
