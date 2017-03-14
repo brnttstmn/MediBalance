@@ -16,7 +16,7 @@ namespace KinectEnvironment
         static NamedPipeServerStream kServer = new NamedPipeServerStream("kinect", PipeDirection.InOut);
         static StreamWriter sw = null;
         static StreamReader sr = null;
-        static int count = 0;
+        //static int count = 0;
 
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace KinectEnvironment
                 // Perform Command
                 switch (command)
                 {
-                    case "start":
+                    case "Start":
                         start();
                         break;
                     case "test":
@@ -175,10 +175,10 @@ namespace KinectEnvironment
                                 {elbowright,"elbowright"}, {wristright,"wristright"}, {handright,"handright"}, {hipleft,"hipleft"},
                                 {kneeleft,"kneeleft"}, {footleft,"footleft"}, {hipright,"hipright"}, {kneeright,"kneeright"}, {footright,"footright"}
                             };
-
+                            string timestamp = DateTime.Now.ToString(timeFormat);
                             foreach (KeyValuePair<Joint, string> joint in jointName)
                             {
-                                var newLine = string.Format("{0},{1},{2},{3},{4};", DateTime.Now.ToString(timeFormat), joint.Value,
+                                var newLine = string.Format("{0},{1},{2},{3},{4};", timestamp , joint.Value,
                                 joint.Key.Position.X.ToString(), joint.Key.Position.Y.ToString(),
                                 joint.Key.Position.Z.ToString());
                                 sw.WriteLine(newLine);
