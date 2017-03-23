@@ -19,6 +19,7 @@ using Windows.Networking;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 using System.Collections;
+//using Windows.Task;
 
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -28,16 +29,62 @@ namespace MediBalance
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    
+
     public sealed partial class MainPage : Page
     {
         string timeFormat = "HH:mm:ss:fff";
+        string ipadd = "10.109.137.97";
+        Tcp_Client clit = new Tcp_Client();
+        //clit.create_socket();
+        //clit.connect(ipadd);
+
 
 
         public MainPage()
         {
             this.InitializeComponent();
+            clit.create_socket();
+            clit.connect(ipadd);
+            //Start();
         }
+
+        public async void listen()
+        {
+            //await Task.Delay(TimeSpan.FromSeconds(3))
+            connection_text.Text += "listening";
+            string mess = await clit.read();
+            connection_text.Text += mess;
+            //if (mess == "start") Start();
+
+
+        }
+
+        private void Start()
+        {
+
+            int time;
+            var preload = new bool[4] { false, false, false, false };
+            var control = new BitArray(preload);
+            var c = new Dictionary<string, int>() { { "hr", 0 }, { "gsr", 1 }, { "ls", 2 }, { "debug", 3 } };
+            
+            // Only run if provide time is an integer
+            if (Int32.TryParse(textBox.Text, out time))
+            {
+                // Check for Config
+                if (debug_checkbox.IsChecked == true) { control[c["debug"]] = true; }
+                if (hr_checkBox.IsChecked == true) { control[c["hr"]] = true; }
+                if (gsr_checkBox.IsChecked == true) { control[c["gsr"]] = true; }
+                if (ls_checkBox.IsChecked == true) { control[c["ls"]] = true; }
+
+                if (control[c["debug"]]) { sim_band(time, control, c); }
+                else { run_band(time, control, c, connection_text); }
+
+            }
+            // Inform user that function requires integers
+            else { connection_text.Text = "Please only enter intergers."; }
+        }
+
+
 
 
         /// <Main Method>
@@ -83,7 +130,7 @@ namespace MediBalance
             int stat;
             string ipadd = IP_Box.Text;
             connection_text.Text = "Connecting...";
-            stat = await band.everything(time, samples, control, map, connection_text, ipadd);
+            stat = await band.everything(time, samples, control, map, connection_text, clit);
 
             if (stat == 0) { connection_text.Text += string.Format("\nFinished Sampling"); }
             if (stat == -1) { connection_text.Text = "Microsoft Band cannot be found. Check Connection"; }
@@ -110,10 +157,10 @@ namespace MediBalance
             // Random Number Generator(s)
             await test.heartRate(time, hr);
 
-            string ipadd = IP_Box.Text;
-            Tcp_Client clit = new Tcp_Client();
-            clit.create_socket();
-            clit.connect(ipadd);
+            //string ipadd = IP_Box.Text;
+            //Tcp_Client clit = new Tcp_Client();
+            //clit.create_socket();
+            //clit.connect(ipadd);
             //await clit.send("hello world");
 
             // Simulate Wait Time
@@ -126,7 +173,7 @@ namespace MediBalance
 
                 //string res = await clit.sendit("10.0.0.10", "8001", "hello world");
             }
-            clit.close();
+            //clit.close();
         }
 
         private void checkBox_Checked_hr(object sender, RoutedEventArgs e)

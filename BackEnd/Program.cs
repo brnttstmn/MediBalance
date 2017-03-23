@@ -19,13 +19,13 @@ namespace BackEnd
         
         // Lists
         // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
-        static List<Pipe> pipelist = new List<Pipe>() { kinect, gui }; //kinect, board, tunnel, gui
+        static List<Pipe> pipelist = new List<Pipe>() { tunnel, gui }; //kinect, board, tunnel, gui
         static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui }).ToList();
         static List<string> data_list = new List<String>();
         
         //Logging and Data Array
         static string timeFormat = "HH:mm:ss:fff";
-        static int loglength = 30;
+        static int loglength = 15;
         static int loginterval = 100;
         static string[] data_array = new string[loglength * loginterval];
         static DateTime[] time_array = new DateTime[loglength * loginterval];
@@ -158,7 +158,7 @@ namespace BackEnd
                 string[] splittime = splitdata[0].Split(':');
                 //time_compare(, split_data[0]);
                 DateTime start_time = DateTime.ParseExact(splitdata[0], "HH:mm:ss:fff", enUS);
-                for (int i = 0; i <= 2998; i++)
+                for (int i = 0; i <= ((loglength * loginterval) - 2); i++)
                 {
                     //Console.WriteLine(i);
                     compareresult1 = DateTime.Compare(start_time, time_array[i]); //compares data to lower cell in time array
@@ -202,7 +202,7 @@ namespace BackEnd
             time_array[0] = start;
             string time = time_array[0].ToString(timeFormat);
             Console.WriteLine("{0}", time);
-            for (int i = 1; i <= 2999; i++)
+            for (int i = 1; i <= ((loglength * loginterval) - 1); i++)
             {
                 start = start.AddMilliseconds(loginterval);
                 time_array[i] = start;
