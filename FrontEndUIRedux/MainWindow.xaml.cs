@@ -78,7 +78,7 @@ namespace FrontEndUIRedux
                 guiClient.Connect();
                 read = new StreamReader(guiClient);
                 infoUpdateTimer.Enabled = true;
-                System.Threading.Thread.Sleep(10000);
+                System.Threading.Thread.Sleep(15000);
                 guiClient.Dispose();
                 infoUpdateTimer.Enabled = false;
                 this.Dispatcher.Invoke(() =>

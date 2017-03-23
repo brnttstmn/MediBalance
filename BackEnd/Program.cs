@@ -19,16 +19,16 @@ namespace BackEnd
         
         // Lists
         // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
-        static List<Pipe> pipelist = new List<Pipe>() { kinect, board, tunnel, gui }; //kinect, board, tunnel, gui
+        static List<Pipe> pipelist = new List<Pipe>() { tunnel, gui }; //kinect, board, tunnel, gui
         static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui }).ToList();
         static List<string> data_list = new List<String>();
         
         //Logging and Data Array
         static string timeFormat = "HH:mm:ss:fff";
-        static int log_length = 30;
-        static int log_interval = 100;
-        static string[] data_array = new string[log_length * log_interval];
-        static DateTime[] time_array = new DateTime[log_length * log_interval];
+        static int loglength = 15;
+        static int loginterval = 100;
+        static string[] data_array = new string[loglength * loginterval];
+        static DateTime[] time_array = new DateTime[loglength * loginterval];
         static CultureInfo enUS = new CultureInfo("en-US");
 
 
@@ -60,6 +60,10 @@ namespace BackEnd
                 catch (IOException) { Console.WriteLine("Connection Terminated"); }
                 catch (Exception ex) { Console.WriteLine(ex.ToString()); run = false; }
                 finally { disconnectPipes(); }
+    
+                logdata();
+                printlog();
+               
             }
         }
 
@@ -124,7 +128,7 @@ namespace BackEnd
                 sensor.sendcommand("Start");
             });
 
-            populate_time(DateTime.Now); //creates the time array at the start of data collection
+            populatetime(DateTime.Now); //creates the time array at the start of data collection
         }
 
         /// <summary>
@@ -140,43 +144,67 @@ namespace BackEnd
         /// <summary>
         /// Logs a single line of data into the data array
         /// </summary>
-        static void log_data(string data)
+        static void logdata()
         {
-            Console.WriteLine("Logging");
+            Console.WriteLine("Logging"); //Debugging
             int compareresult1;
             int compareresult2;
-            string[] split_data = data.Split(',');
-            string[] split_time = split_data[0].Split(':');
-            //time_compare(, split_data[0]);
-            DateTime start_stamp = DateTime.ParseExact(split_data[0], "HH:mm:ss:fff", enUS);
-            for (int i = 0; i <= 2998; i++)
+            int misstracker = 0;
+            bool miss;
+            foreach (string data in data_list)
             {
-                //Console.WriteLine(i);
-                compareresult1 = DateTime.Compare(start_stamp, time_array[i]); //compares data to lower cell in time array
-                //Console.WriteLine("lower cell is {0}",compareresult1);
-                compareresult2 = DateTime.Compare(start_stamp, time_array[i + 1]); //compares data to upper cell in time array
-                //Console.WriteLine("upper cell is {0}", compareresult2);
-
-                if (compareresult1 > 0 && compareresult2 < 0) // if data is after lower cell but before the uppercell
+                miss = true;
+                string[] splitdata = data.Split(',');
+                string[] splittime = splitdata[0].Split(':');
+                //time_compare(, split_data[0]);
+                DateTime start_time = DateTime.ParseExact(splitdata[0], "HH:mm:ss:fff", enUS);
+                for (int i = 0; i <= ((loglength * loginterval) - 2); i++)
                 {
-                    data_array[i] = data_array[i] + data;
-                    Console.WriteLine("Placed {1} in cell {0}! of timestamp {2}", i, data, time_array[i].ToString(timeFormat));
-                    return;
+                    //Console.WriteLine(i);
+                    compareresult1 = DateTime.Compare(start_time, time_array[i]); //compares data to lower cell in time array
+                    //Console.WriteLine("lower cell is {0}",compareresult1); //Debugging
+                    compareresult2 = DateTime.Compare(start_time, time_array[i + 1]); //compares data to upper cell in time array
+                    //Console.WriteLine("upper cell is {0}", compareresult2); //Debugging 
+
+                    if (compareresult1 > 0 && compareresult2 < 0) // if data is after lower cell but before the uppercell
+                    {
+                        data_array[i] = data_array[i] + data;
+                        //data_array[i] = string.Format("{0},{1},{2},{3},{4}", data_array[i] , splitdata[1] , splitdata[2] , splitdata[3] , splitdata[4] );
+
+                        Console.WriteLine("Placed {1} in cell {0}! of timestamp {2}", i, data, time_array[i].ToString(timeFormat));
+                        miss = false;
+                    }
+                }
+                if (miss == true)
+                {
+                    Console.WriteLine("Data missed,{0}" , data);
+                    misstracker++;
                 }
             }
+            Console.WriteLine("Logging Finished with {0} errors", misstracker);
         }
 
         /// <summary>
-        /// Makes time array for data comparison
+        /// prints current data log stored in the data array
         /// </summary>
-        static void populate_time(DateTime start)
+        static void printlog()
+        {
+            foreach (string cell in data_array) Console.WriteLine(cell);
+        }
+
+
+
+            /// <summary>
+            /// Makes time array for data comparison
+            /// </summary>
+            static void populatetime(DateTime start)
         {
             time_array[0] = start;
             string time = time_array[0].ToString(timeFormat);
             Console.WriteLine("{0}", time);
-            for (int i = 1; i <= 2999; i++)
+            for (int i = 1; i <= ((loglength * loginterval) - 1); i++)
             {
-                start = start.AddMilliseconds(log_interval);
+                start = start.AddMilliseconds(loginterval);
                 time_array[i] = start;
                 //time = time_array[i].ToString(timeFormat);
                 //Console.WriteLine("{0}",time);
