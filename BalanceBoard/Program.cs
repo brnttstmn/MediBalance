@@ -15,6 +15,7 @@ namespace BalanceBoard
         static NamedPipeServerStream BoardServer;
         static StreamWriter StreamWrite = null;
         static StreamReader StreamRead = null;
+        static bool isConnected = false;
 
         // Wii Board
         static Wiimote wiiDevice = null;
@@ -40,11 +41,11 @@ namespace BalanceBoard
                     // Connect to Pipe
                     connectPipe();
                     listen();
-                    connect();
+                    if (isConnected==false) { connect(); }                    
                     start();
                 }
                 catch (IOException) { Console.WriteLine("Connection Terminated"); }
-                catch(ObjectDisposedException) { Console.WriteLine("Connection Terminated"); }
+                //catch(ObjectDisposedException) { Console.WriteLine("Connection Terminated"); }
                 catch (Exception ex) { Console.WriteLine(ex.ToString()); run = false; }
                 finally { BoardServer.Dispose(); }                
 
@@ -62,7 +63,6 @@ namespace BalanceBoard
                 {
                     return message;
                 }
-                Thread.Sleep(500);
             }
         }
 
@@ -143,8 +143,9 @@ namespace BalanceBoard
                 }
 
                 //Conneect to BalanceBoard
-                wiiDevice = deviceCollection[0];                
+                wiiDevice = deviceCollection[0];      
                 wiiDevice.Connect();
+                isConnected = true;
                 wiiDevice.SetReportType(InputReport.IRAccel, false); // FALSE = DEVICE ONLY SENDS UPDATES WHEN VALUES CHANGE!
                 wiiDevice.SetLEDs(true, false, false, false);
             }
