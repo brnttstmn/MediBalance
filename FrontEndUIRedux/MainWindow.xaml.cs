@@ -15,8 +15,8 @@ namespace FrontEndUIRedux
 {
     public partial class MainWindow : Window
     {
-        NamedPipeClientStream guiClient;
-        StreamReader read;       
+
+        Pipe guiClient = new Pipe("interface", true);    
 
         System.Timers.Timer infoUpdateTimer = new System.Timers.Timer() { Interval = 1, Enabled = false };
 
@@ -71,21 +71,24 @@ namespace FrontEndUIRedux
         }
         public void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            StartButton.IsEnabled = false;
-            Task.Run(() =>
+            if (infoUpdateTimer.Enabled)
             {
-                guiClient = new NamedPipeClientStream(".", "interface", PipeDirection.InOut);
-                guiClient.Connect();
-                read = new StreamReader(guiClient);
-                infoUpdateTimer.Enabled = true;
-                System.Threading.Thread.Sleep(15000);
-                guiClient.Dispose();
                 infoUpdateTimer.Enabled = false;
+                guiClient.stop();
                 this.Dispatcher.Invoke(() =>
                 {
-                    StartButton.IsEnabled = true;
-                });                
-            });
+                    StartButton.Content = "Start";
+                });
+            }
+            else
+            {
+                guiClient.start();
+                infoUpdateTimer.Enabled = true;
+                this.Dispatcher.Invoke(() =>
+                {
+                    StartButton.Content = "Stop";
+                });
+            }
         }
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
@@ -104,10 +107,9 @@ namespace FrontEndUIRedux
 
         void infoUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            var line = read.ReadLine();
             this.Dispatcher.Invoke(() =>
             {
-                if (line != null) { parse(line); }                
+                parse(guiClient.read.ReadLine());
             });
         }
 
