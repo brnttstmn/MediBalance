@@ -45,6 +45,9 @@ namespace FrontEndUIRedux
         /// <param name="e">event arguments</param>
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
+            guiClient.start();
+            guiClient.write.WriteLine("Stop");
+            guiClient.stop();
         }
 
         
@@ -83,6 +86,7 @@ namespace FrontEndUIRedux
             else
             {
                 guiClient.start();
+                guiClient.write.WriteLine("Start");
                 infoUpdateTimer.Enabled = true;
                 this.Dispatcher.Invoke(() =>
                 {

@@ -43,11 +43,11 @@ namespace BackEnd
         static void Main(string[] args)
         {
             run();
-
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
         }
 
+        /// <summary>
+        /// Runs program
+        /// </summary>
         static void run()
         {
             bool run = true;
@@ -57,19 +57,26 @@ namespace BackEnd
                 try
                 {
                     connectPipes();
+                    if (gui.read.ReadLine() == "Stop") { stopPrograms(); return; }
                     startSensors();
                     multiSensorRead();
                 }
                 catch (IOException) { Console.WriteLine("Connection Terminated"); }
                 catch (Exception ex) { Console.WriteLine(ex.ToString()); run = false; }
-                finally { disconnectPipes(); }
+                finally {
+                    disconnectPipes();
+                }
     
                 //logdata();
                 printlog();
-               
+                
             }
         }
 
+        /// <summary>
+        /// Temporary Demo to demonstrate a write to CSV
+        /// </summary>
+        /// <param name="data"></param>
         static void tempdemocsv(string data)
         {
             bool status = true;
@@ -96,6 +103,9 @@ namespace BackEnd
             File.AppendAllLines(filePath, data_list);
         }
 
+        /// <summary>
+        /// Multithread read
+        /// </summary>
         static void multiSensorRead()
         {
             // Create Thread Array and Device Count
@@ -126,6 +136,11 @@ namespace BackEnd
             finally { endConnection = false; }
             throw new IOException();
         }
+
+        /// <summary>
+        /// Single Pipe read. Exits gracefully on pipe closing.
+        /// </summary>
+        /// <param name="sensor"></param>
         static void readSensor(Pipe sensor)
         {
             try
@@ -142,6 +157,9 @@ namespace BackEnd
             catch (ObjectDisposedException) { }
         }
 
+        /// <summary>
+        /// Connects to all pipes
+        /// </summary>
         static void connectPipes()
         {
             Parallel.ForEach(pipelist, pipe => {
@@ -149,6 +167,9 @@ namespace BackEnd
             });
         }
 
+        /// <summary>
+        /// Disconnects from all pipes
+        /// </summary>
         static void disconnectPipes()
         {
             Parallel.ForEach(pipelist, pipe => {
@@ -156,6 +177,9 @@ namespace BackEnd
             });
         }
 
+        /// <summary>
+        /// Sends start signal to all Sensors
+        /// </summary>
         static void startSensors()
         {
             Parallel.ForEach(sensors, sensor => {
@@ -173,6 +197,22 @@ namespace BackEnd
             Parallel.ForEach(pipelist, program => {
                 Process.Start(program.path);
             });
+        }
+
+        /// <summary>
+        /// Kills all processes
+        /// </summary>
+        static void stopPrograms()
+        {
+            foreach (Pipe program in pipelist)
+            {
+                char[] del = { '\\', '.' };
+                string name = program.path.Split(del)[program.path.Split(del).Length-2];
+                foreach (var process in Process.GetProcessesByName(name))
+                {
+                    process.Kill();
+                }
+            }
         }
 
         /// <summary>
@@ -226,24 +266,22 @@ namespace BackEnd
             foreach (string cell in data_array) Console.WriteLine(cell);
         }
 
-
-
-            /// <summary>
-            /// Makes time array for data comparison
-            /// </summary>
-            static void populatetime(DateTime start)
+        /// <summary>
+        /// Makes time array for data comparison
+        /// </summary>
+        static void populatetime(DateTime start)
+    {
+        time_array[0] = start;
+        string time = time_array[0].ToString(timeFormat);
+        Console.WriteLine("{0}", time);
+        for (int i = 1; i <= ((loglength * loginterval) - 1); i++)
         {
-            time_array[0] = start;
-            string time = time_array[0].ToString(timeFormat);
-            Console.WriteLine("{0}", time);
-            for (int i = 1; i <= ((loglength * loginterval) - 1); i++)
-            {
-                start = start.AddMilliseconds(loginterval);
-                time_array[i] = start;
-                //time = time_array[i].ToString(timeFormat);
-                //Console.WriteLine("{0}",time);
-            }
+            start = start.AddMilliseconds(loginterval);
+            time_array[i] = start;
+            //time = time_array[i].ToString(timeFormat);
+            //Console.WriteLine("{0}",time);
         }
+    }
     }
 }
   
