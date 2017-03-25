@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Pipes;
+using System.Threading;
 
 namespace BackEnd
 {
@@ -11,6 +12,7 @@ namespace BackEnd
         private NamedPipeServerStream server = null;
         private StreamReader streamRead;
         private StreamWriter streamWrite;
+        private Thread readWriteThread;
 
         // Public
         public bool isClient { get; }
@@ -20,6 +22,7 @@ namespace BackEnd
         // Accessors
         public StreamReader read { get { return streamRead; } }
         public StreamWriter write { get { return streamWrite; } }
+        public Thread thread { get { return readWriteThread; } }
 
         // Constructors
         public Pipe(string name, bool isClient, string path)
@@ -50,6 +53,14 @@ namespace BackEnd
         {
             this.write.WriteLine(command);
             Console.WriteLine("sent: " + command);
+        }
+        public void startThread(ThreadStart start)
+        {
+            readWriteThread = new Thread(start);
+        }
+        public void stopThread(ThreadStart thread)
+        {
+            readWriteThread.Abort();
         }
 
         //Private Methods
