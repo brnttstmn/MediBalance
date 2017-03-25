@@ -45,6 +45,7 @@ namespace FrontEndUIRedux
         /// <param name="e">event arguments</param>
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
+            guiClient.stop();
             guiClient.start();
             guiClient.write.WriteLine("Stop");
             guiClient.stop();
