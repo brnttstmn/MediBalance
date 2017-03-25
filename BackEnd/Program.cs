@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
 using System.Globalization;
+using System.Threading;
 
 namespace BackEnd
 {
@@ -15,15 +16,17 @@ namespace BackEnd
         static Pipe board = new Pipe("board", true, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\BalanceBoard\\bin\\Debug\\BalanceBoard.exe");
         static Pipe gui = new Pipe("interface", false, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\FrontEndUIRedux\\bin\\Debug\\FrontEndUIRedux.exe");
         static Pipe tunnel = new Pipe("tunnel", true, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe");
+        static Pipe testapp = new Pipe("testapp", true, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\testapp\\bin\\Debug\\testapp.exe");
+        static Pipe testapp2 = new Pipe("testapp2", true, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\testapp2\\bin\\Debug\\testapp2.exe");
 
-        
         // Lists
         // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
-        static List<Pipe> pipelist = new List<Pipe>() { tunnel, gui }; //kinect, board, tunnel, gui
+        static List<Pipe> pipelist = new List<Pipe>() { testapp,testapp2, gui }; //kinect, board, tunnel, gui
         static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui }).ToList();
         static List<string> data_list = new List<String>();
-        
+
         //Logging and Data Array
+        static bool endConnection = false;
         static string timeFormat = "HH:mm:ss:fff";
         static int loglength = 15;
         static int loginterval = 100;
@@ -55,13 +58,13 @@ namespace BackEnd
                 {
                     connectPipes();
                     startSensors();
-                    readSensors();
+                    multiSensorRead();
                 }
                 catch (IOException) { Console.WriteLine("Connection Terminated"); }
                 catch (Exception ex) { Console.WriteLine(ex.ToString()); run = false; }
                 finally { disconnectPipes(); }
     
-                logdata();
+                //logdata();
                 printlog();
                
             }
@@ -93,19 +96,50 @@ namespace BackEnd
             File.AppendAllLines(filePath, data_list);
         }
 
-        static void readSensors()
+        static void multiSensorRead()
         {
-                string line;
-                while (true)
+            // Create Thread Array and Device Count
+            Thread[] threads = new Thread[sensors.Count];
+            var sensorAndThreads = sensors.Zip(threads, (s, t) => new { Sensor = s, sThread = t });
+
+            // Create Threads per device
+            Parallel.ForEach(sensors, sensor => {
+                sensor.startThread(() => readSensor(sensor));
+            });
+
+            // Run Threads untill exception
+            try
+            {
+                while (!endConnection)
                 {
-                    foreach (Pipe sensor in sensors)
+                    Parallel.ForEach(sensors, sensor =>
                     {
-                        line = sensor.read.ReadLine();
-                        if (pipelist.Contains(gui)) { gui.write.WriteLine(line); }
-                        data_list.Add(line);
-                        Console.WriteLine(line);
-                    }
+                        if (!sensor.thread.IsAlive)
+                        {
+                            sensor.startThread(() => readSensor(sensor));
+                            sensor.thread.Start();
+                        }
+                    });
                 }
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            finally { endConnection = false; }
+            throw new IOException();
+        }
+        static void readSensor(Pipe sensor)
+        {
+            try
+            {
+                var line = sensor.read.ReadLine();
+                if (line != "/n")
+                {
+                    gui.write.WriteLine(line);
+                    data_list.Add(line);
+                    Console.WriteLine(line);
+                }
+            }
+            catch (IOException) { endConnection = true; }
+            catch (ObjectDisposedException) { }
         }
 
         static void connectPipes()
