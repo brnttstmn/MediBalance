@@ -18,7 +18,8 @@ namespace FrontEndUIRedux
 
         Pipe guiClient = new Pipe("interface", true);    
 
-        System.Timers.Timer infoUpdateTimer = new System.Timers.Timer() { Interval = 1, Enabled = false };
+        Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
+        Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -36,6 +37,7 @@ namespace FrontEndUIRedux
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             infoUpdateTimer.Elapsed += new ElapsedEventHandler(infoUpdateTimer_Elapsed);
+            infoResetTimer.Elapsed += new ElapsedEventHandler(infoResetTimer_Elapsed);
         }
 
         /// <summary>
@@ -86,6 +88,7 @@ namespace FrontEndUIRedux
             if (infoUpdateTimer.Enabled)
             {
                 infoUpdateTimer.Enabled = false;
+                infoResetTimer.Enabled = true;
                 guiClient.stop();
                 this.Dispatcher.Invoke(() =>
                 {
@@ -244,7 +247,79 @@ namespace FrontEndUIRedux
                     }
                 }
             }
+        private void infoResetTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            infoResetTimer.Enabled = false;
+            this.Dispatcher.Invoke(() =>
+            {
+                reset();
+            });
+            
         }
+        private void reset()
+        {
+            string blank = "";
+            RWeight.Content = blank;
+            TLeft.Content = blank;
+            TRight.Content = blank;
+            BRight.Content = blank;
+            BLeft.Content = blank;
+            SpineBaseX.Text = blank;
+            SpineBaseY.Text = blank;
+            SpineBaseZ.Text = blank;
+            MidSpineX.Text = blank;
+            MidSpineY.Text = blank;
+            MidSpineZ.Text = blank;
+            NeckX.Text = blank;
+            NeckY.Text = blank;
+            NeckZ.Text = blank;
+            ShoulderLeftX.Text = blank;
+            ShoulderLeftY.Text = blank;
+            ShoulderLeftZ.Text = blank;
+            ElbowLeftX.Text = blank;
+            ElbowLeftY.Text = blank;
+            ElbowLeftZ.Text = blank;
+            WristLeftX.Text = blank;
+            WristLeftY.Text = blank;
+            WristLeftZ.Text = blank;
+            HandLeftX.Text = blank;
+            HandLeftY.Text = blank;
+            HandLeftZ.Text = blank;
+            HeadX.Text = blank;
+            HeadY.Text = blank;
+            HeadZ.Text = blank;
+            ShoulderRightX.Text = blank;
+            ShoulderRightY.Text = blank;
+            ShoulderRightZ.Text = blank;
+            ElbowRightX.Text = blank;
+            ElbowRightY.Text = blank;
+            ElbowRightZ.Text = blank;
+            HandRightX.Text = blank;
+            HandRightY.Text = blank;
+            HandRightZ.Text = blank;
+            HipLeftX.Text = blank;
+            HipLeftY.Text = blank;
+            HipLeftZ.Text = blank;
+            KneeLeftX.Text = blank;
+            KneeLeftY.Text = blank;
+            KneeLeftZ.Text = blank;
+            FootLeftX.Text = blank;
+            FootLeftY.Text = blank;
+            FootLeftZ.Text = blank;
+            HipRightX.Text = blank;
+            HipRightY.Text = blank;
+            HipRightZ.Text = blank;
+            KneeRightX.Text = blank;
+            KneeRightY.Text = blank;
+            KneeRightZ.Text = blank;
+            FootRightX.Text = blank;
+            FootRightY.Text = blank;
+            FootRightZ.Text = blank;
+            WristRightX.Text = blank;
+            WristRightY.Text = blank;
+            WristRightZ.Text = blank;
+        }
+    }
 
     }
 
