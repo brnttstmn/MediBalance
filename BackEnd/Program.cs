@@ -51,6 +51,7 @@ namespace BackEnd
         static void run()
         {
             bool run = true;
+            stopPrograms();
             runPrograms();
             while (run)
             {
