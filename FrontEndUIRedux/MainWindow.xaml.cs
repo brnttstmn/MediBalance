@@ -16,10 +16,11 @@ namespace FrontEndUIRedux
     public partial class MainWindow : Window
     {
 
-        Pipe guiClient = new Pipe("interface", true);    
+        Pipe guiClient = new Pipe("interface", true);
 
         Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
         Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
+        Timer initalLoadTimer = new Timer() { Interval = 1500, Enabled = true };
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -38,6 +39,7 @@ namespace FrontEndUIRedux
         {
             infoUpdateTimer.Elapsed += new ElapsedEventHandler(infoUpdateTimer_Elapsed);
             infoResetTimer.Elapsed += new ElapsedEventHandler(infoResetTimer_Elapsed);
+            initalLoadTimer.Elapsed += new ElapsedEventHandler(initalLoadTimer_Elapsed);
         }
 
         /// <summary>
@@ -47,21 +49,24 @@ namespace FrontEndUIRedux
         /// <param name="e">event arguments</param>
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
-            try {
+            try
+            {
                 try
                 {
                     guiClient.stop();
                 }
                 catch (Exception) { }
-                finally {
+                finally
+                {
                     guiClient.start();
                     guiClient.write.WriteLine("Stop");
-                    guiClient.stop(); }
+                    guiClient.stop();
+                }
             }
             catch (Exception) { }
         }
 
-        
+
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -69,7 +74,7 @@ namespace FrontEndUIRedux
         }
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
         private void SingleLegRadio_Checked(object sender, RoutedEventArgs e)
         {
@@ -92,6 +97,7 @@ namespace FrontEndUIRedux
                 guiClient.stop();
                 this.Dispatcher.Invoke(() =>
                 {
+                    StartButton.IsEnabled = false;
                     StartButton.Content = "Start";
                 });
             }
@@ -133,128 +139,129 @@ namespace FrontEndUIRedux
         {
             char[] delim = { ',', ';' };
             string[] words = line.Split(delim);
-                if (words.Length > 2)
+            if (words.Length > 2)
+            {
+                switch (words[1])
                 {
-                    switch (words[1])
-                    {
-                        case "RWeight":
-                            RWeight.Content = words[2];
-                            break;
-                        case "TopLeft":
-                            TLeft.Content = words[2];
-                            break;
-                        case "TopRight":
-                            TRight.Content = words[2];
-                            break;
-                        case "BottomRight":
-                            BRight.Content = words[2];
-                            break;
-                        case "BottomLeft":
-                            BLeft.Content = words[2];
-                            break;
-                        case "spinebase":
-                            SpineBaseX.Text = words[2];
-                            SpineBaseY.Text = words[3];
-                            SpineBaseZ.Text = words[4];
+                    case "RWeight":
+                        RWeight.Content = words[2];
                         break;
-                        case "midspine":
-                            MidSpineX.Text = words[2];
-                            MidSpineY.Text = words[3];
-                            MidSpineZ.Text = words[4];
-                            break;
-                        case "neck":
-                            NeckX.Text = words[2];
-                            NeckY.Text = words[3];
-                            NeckZ.Text = words[4];
-                            break;
-                        case "shoulderleft":
-                            ShoulderLeftX.Text = words[2];
-                            ShoulderLeftY.Text = words[3];
-                            ShoulderLeftZ.Text = words[4];
-                            break;
-                        case "elbowleft":
-                            ElbowLeftX.Text = words[2];
-                            ElbowLeftY.Text = words[3];
-                            ElbowLeftZ.Text = words[4];
-                            break;
-                        case "wristleft":
-                            WristLeftX.Text = words[2];
-                            WristLeftY.Text = words[3];
-                            WristLeftZ.Text = words[4];
-                            break;
-                        case "handleft":
-                            HandLeftX.Text = words[2];
-                            HandLeftY.Text = words[3];
-                            HandLeftZ.Text = words[4];
-                            break;
-                        case "head":
-                            HeadX.Text = words[2];
-                            HeadY.Text = words[3];
-                            HeadZ.Text = words[4];
-                            break;
-                        case "shoulderright":
-                            ShoulderRightX.Text = words[2];
-                            ShoulderRightY.Text = words[3];
-                            ShoulderRightZ.Text = words[4];
-                            break;
-                        case "elbowright":
-                            ElbowRightX.Text = words[2];
-                            ElbowRightY.Text = words[3];
-                            ElbowRightZ.Text = words[4];
-                            break;
-                        case "handright":
-                            HandRightX.Text = words[2];
-                            HandRightY.Text = words[3];
-                            HandRightZ.Text = words[4];
-                            break;
-                        case "hipleft":
-                            HipLeftX.Text = words[2];
-                            HipLeftY.Text = words[3];
-                            HipLeftZ.Text = words[4];
-                            break;
-                        case "kneeleft":
-                            KneeLeftX.Text = words[2];
-                            KneeLeftY.Text = words[3];
-                            KneeLeftZ.Text = words[4];
-                            break;
-                        case "footleft":
-                            FootLeftX.Text = words[2];
-                            FootLeftY.Text = words[3];
-                            FootLeftZ.Text = words[4];
-                            break;
-                        case "hipright":
-                            HipRightX.Text = words[2];
-                            HipRightY.Text = words[3];
-                            HipRightZ.Text = words[4];
-                            break;
-                        case "kneeright":
-                            KneeRightX.Text = words[2];
-                            KneeRightY.Text = words[3];
-                            KneeRightZ.Text = words[4];
-                            break;
-                        case "footright":
-                            FootRightX.Text = words[2];
-                            FootRightY.Text = words[3];
-                            FootRightZ.Text = words[4];
-                            break;
-                        case "wristright":
-                            WristRightX.Text = words[2];
-                            WristRightY.Text = words[3];
-                            WristRightZ.Text = words[4];
-                            break;
+                    case "TopLeft":
+                        TLeft.Content = words[2];
+                        break;
+                    case "TopRight":
+                        TRight.Content = words[2];
+                        break;
+                    case "BottomRight":
+                        BRight.Content = words[2];
+                        break;
+                    case "BottomLeft":
+                        BLeft.Content = words[2];
+                        break;
+                    case "spinebase":
+                        SpineBaseX.Text = words[2];
+                        SpineBaseY.Text = words[3];
+                        SpineBaseZ.Text = words[4];
+                        break;
+                    case "midspine":
+                        MidSpineX.Text = words[2];
+                        MidSpineY.Text = words[3];
+                        MidSpineZ.Text = words[4];
+                        break;
+                    case "neck":
+                        NeckX.Text = words[2];
+                        NeckY.Text = words[3];
+                        NeckZ.Text = words[4];
+                        break;
+                    case "shoulderleft":
+                        ShoulderLeftX.Text = words[2];
+                        ShoulderLeftY.Text = words[3];
+                        ShoulderLeftZ.Text = words[4];
+                        break;
+                    case "elbowleft":
+                        ElbowLeftX.Text = words[2];
+                        ElbowLeftY.Text = words[3];
+                        ElbowLeftZ.Text = words[4];
+                        break;
+                    case "wristleft":
+                        WristLeftX.Text = words[2];
+                        WristLeftY.Text = words[3];
+                        WristLeftZ.Text = words[4];
+                        break;
+                    case "handleft":
+                        HandLeftX.Text = words[2];
+                        HandLeftY.Text = words[3];
+                        HandLeftZ.Text = words[4];
+                        break;
+                    case "head":
+                        HeadX.Text = words[2];
+                        HeadY.Text = words[3];
+                        HeadZ.Text = words[4];
+                        break;
+                    case "shoulderright":
+                        ShoulderRightX.Text = words[2];
+                        ShoulderRightY.Text = words[3];
+                        ShoulderRightZ.Text = words[4];
+                        break;
+                    case "elbowright":
+                        ElbowRightX.Text = words[2];
+                        ElbowRightY.Text = words[3];
+                        ElbowRightZ.Text = words[4];
+                        break;
+                    case "handright":
+                        HandRightX.Text = words[2];
+                        HandRightY.Text = words[3];
+                        HandRightZ.Text = words[4];
+                        break;
+                    case "hipleft":
+                        HipLeftX.Text = words[2];
+                        HipLeftY.Text = words[3];
+                        HipLeftZ.Text = words[4];
+                        break;
+                    case "kneeleft":
+                        KneeLeftX.Text = words[2];
+                        KneeLeftY.Text = words[3];
+                        KneeLeftZ.Text = words[4];
+                        break;
+                    case "footleft":
+                        FootLeftX.Text = words[2];
+                        FootLeftY.Text = words[3];
+                        FootLeftZ.Text = words[4];
+                        break;
+                    case "hipright":
+                        HipRightX.Text = words[2];
+                        HipRightY.Text = words[3];
+                        HipRightZ.Text = words[4];
+                        break;
+                    case "kneeright":
+                        KneeRightX.Text = words[2];
+                        KneeRightY.Text = words[3];
+                        KneeRightZ.Text = words[4];
+                        break;
+                    case "footright":
+                        FootRightX.Text = words[2];
+                        FootRightY.Text = words[3];
+                        FootRightZ.Text = words[4];
+                        break;
+                    case "wristright":
+                        WristRightX.Text = words[2];
+                        WristRightY.Text = words[3];
+                        WristRightZ.Text = words[4];
+                        break;
                     default:
-                                break;
-                    }
+                        break;
                 }
             }
+        }
         private void infoResetTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             infoResetTimer.Enabled = false;
             this.Dispatcher.Invoke(() =>
             {
                 reset();
+                StartButton.IsEnabled = true;
             });
-            
+
         }
         private void reset()
         {
@@ -318,6 +325,15 @@ namespace FrontEndUIRedux
             WristRightX.Text = blank;
             WristRightY.Text = blank;
             WristRightZ.Text = blank;
+        }
+
+        private void initalLoadTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                StartButton.IsEnabled = true;
+            });
+            
         }
     }
 
