@@ -15,97 +15,33 @@ namespace FrontEndUIRedux
 {
     public partial class MainWindow : Window
     {
-
+        // Create Pipe Objects
         static Pipe guiClient = new Pipe("interface", true);
         static Pipe guiCommands = new Pipe("frominterface", true);
         Pipe[] pipes = { guiClient, guiCommands };
 
+        // Set Timers
         Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
         Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
         Timer initalLoadTimer = new Timer() { Interval = 1500, Enabled = true };
         string message = "";
 
-        /// <summary>
-        /// Initializes a new instance of the MainWindow class.
-        /// </summary>
-        public MainWindow()
-        {
-            this.InitializeComponent();
-        }
-
-        /// <summary>
-        /// Execute start up tasks
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            infoUpdateTimer.Elapsed += new ElapsedEventHandler(infoUpdateTimer_Elapsed);
-            infoResetTimer.Elapsed += new ElapsedEventHandler(infoResetTimer_Elapsed);
-            initalLoadTimer.Elapsed += new ElapsedEventHandler(initalLoadTimer_Elapsed);
-        }
-
-        /// <summary>
-        /// Execute shutdown tasks
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
-        private void MainWindow_Closing(object sender, CancelEventArgs e)
-        {
-            stopPrograms();
-        }
-
-
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void Connect_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void SingleLegRadio_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void DoubleLegRadio_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void TandemLegRadio_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
+        // Button Presses
         public void StartButton_Click(object sender, RoutedEventArgs e)
         {
             if (infoUpdateTimer.Enabled)
             {
-                infoUpdateTimer.Enabled = false;
-                infoResetTimer.Enabled = true;
-                foreach (Pipe pipe in pipes) { pipe.stop(); }
-                this.Dispatcher.Invoke(() =>
-                {
-                    StartButton.IsEnabled = false;
-                    ExportButton.IsEnabled = false;
-                    StartButton.Content = "Start";
-                });
+                stop();
             }
             else
             {
-                foreach (Pipe pipe in pipes) { pipe.start(); }
-                guiClient.write.WriteLine("Start");
-                infoUpdateTimer.Enabled = true;
-                this.Dispatcher.Invoke(() =>
-                {
-                    StartButton.Content = "Stop";
-                    ExportButton.IsEnabled = true;
-                });
+                start();
             }
         }
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
+            guiCommands.start();
             Dictionary<string,bool> stances = new Dictionary<string, bool>(){
                 { "SingleLegStanceRadio", SingleLegStanceRadio.IsChecked == true },
                 { "DoubleLegStanceRadio", DoubleLegStanceRadio.IsChecked == true },
@@ -116,24 +52,113 @@ namespace FrontEndUIRedux
             foreach(KeyValuePair<string,bool> stance in stances) { if (stance.Value) { guiCommands.write.WriteLine(stance.Key); } }
             
         }
-        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
 
-        }
-        private void MenuItem_board_Click_1(object sender, RoutedEventArgs e)
-        {
-            BoardWindow popup = new BoardWindow();
-            popup.ShowDialog();
-        }
 
-        void infoUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+
+
+
+        // Methods
+        private void start()
         {
+            //foreach (Pipe pipe in pipes) { pipe.start(); }
+            guiClient.start();
+            guiClient.write.WriteLine("Start");
+            infoUpdateTimer.Enabled = true;
             this.Dispatcher.Invoke(() =>
             {
-                parse(guiClient.read.ReadLine());
+                StartButton.Content = "Stop";
+                ExportButton.IsEnabled = true;
             });
         }
-
+        private void stop()
+        {
+            infoUpdateTimer.Enabled = false;
+            infoResetTimer.Enabled = true;
+            foreach (Pipe pipe in pipes) { pipe.stop(); }
+            this.Dispatcher.Invoke(() =>
+            {
+                StartButton.IsEnabled = false;
+                ExportButton.IsEnabled = false;
+                StartButton.Content = "Start";
+            });
+        }
+        private void reset()
+        {
+            string blank = "";
+            RWeight.Content = blank;
+            TLeft.Content = blank;
+            TRight.Content = blank;
+            BRight.Content = blank;
+            BLeft.Content = blank;
+            SpineBaseX.Text = blank;
+            SpineBaseY.Text = blank;
+            SpineBaseZ.Text = blank;
+            MidSpineX.Text = blank;
+            MidSpineY.Text = blank;
+            MidSpineZ.Text = blank;
+            NeckX.Text = blank;
+            NeckY.Text = blank;
+            NeckZ.Text = blank;
+            ShoulderLeftX.Text = blank;
+            ShoulderLeftY.Text = blank;
+            ShoulderLeftZ.Text = blank;
+            ElbowLeftX.Text = blank;
+            ElbowLeftY.Text = blank;
+            ElbowLeftZ.Text = blank;
+            WristLeftX.Text = blank;
+            WristLeftY.Text = blank;
+            WristLeftZ.Text = blank;
+            HandLeftX.Text = blank;
+            HandLeftY.Text = blank;
+            HandLeftZ.Text = blank;
+            HeadX.Text = blank;
+            HeadY.Text = blank;
+            HeadZ.Text = blank;
+            ShoulderRightX.Text = blank;
+            ShoulderRightY.Text = blank;
+            ShoulderRightZ.Text = blank;
+            ElbowRightX.Text = blank;
+            ElbowRightY.Text = blank;
+            ElbowRightZ.Text = blank;
+            HandRightX.Text = blank;
+            HandRightY.Text = blank;
+            HandRightZ.Text = blank;
+            HipLeftX.Text = blank;
+            HipLeftY.Text = blank;
+            HipLeftZ.Text = blank;
+            KneeLeftX.Text = blank;
+            KneeLeftY.Text = blank;
+            KneeLeftZ.Text = blank;
+            FootLeftX.Text = blank;
+            FootLeftY.Text = blank;
+            FootLeftZ.Text = blank;
+            HipRightX.Text = blank;
+            HipRightY.Text = blank;
+            HipRightZ.Text = blank;
+            KneeRightX.Text = blank;
+            KneeRightY.Text = blank;
+            KneeRightZ.Text = blank;
+            FootRightX.Text = blank;
+            FootRightY.Text = blank;
+            FootRightZ.Text = blank;
+            WristRightX.Text = blank;
+            WristRightY.Text = blank;
+            WristRightZ.Text = blank;
+        }
+        static void stopPrograms()
+        {
+            List<string> programList = new List<string>()
+            {"KinectEnvironment","BalanceBoard","Backend","Tunnel",
+             //"testapp","testapp2"
+            };
+            char[] del = { '\\', '.' };
+            Parallel.ForEach(programList, program => {
+                foreach (var process in Process.GetProcessesByName(program))
+                {
+                    process.Kill();
+                }
+            });
+        }
         private void parse(string line)
         {
             char[] delim = { ',', ';' };
@@ -252,6 +277,16 @@ namespace FrontEndUIRedux
                 }
             }
         }
+
+        //Events
+        private void initalLoadTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                StartButton.IsEnabled = true;
+            });
+            
+        }
         private void infoResetTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             infoResetTimer.Enabled = false;
@@ -262,96 +297,71 @@ namespace FrontEndUIRedux
             });
 
         }
-        private void reset()
-        {
-            string blank = "";
-            RWeight.Content = blank;
-            TLeft.Content = blank;
-            TRight.Content = blank;
-            BRight.Content = blank;
-            BLeft.Content = blank;
-            SpineBaseX.Text = blank;
-            SpineBaseY.Text = blank;
-            SpineBaseZ.Text = blank;
-            MidSpineX.Text = blank;
-            MidSpineY.Text = blank;
-            MidSpineZ.Text = blank;
-            NeckX.Text = blank;
-            NeckY.Text = blank;
-            NeckZ.Text = blank;
-            ShoulderLeftX.Text = blank;
-            ShoulderLeftY.Text = blank;
-            ShoulderLeftZ.Text = blank;
-            ElbowLeftX.Text = blank;
-            ElbowLeftY.Text = blank;
-            ElbowLeftZ.Text = blank;
-            WristLeftX.Text = blank;
-            WristLeftY.Text = blank;
-            WristLeftZ.Text = blank;
-            HandLeftX.Text = blank;
-            HandLeftY.Text = blank;
-            HandLeftZ.Text = blank;
-            HeadX.Text = blank;
-            HeadY.Text = blank;
-            HeadZ.Text = blank;
-            ShoulderRightX.Text = blank;
-            ShoulderRightY.Text = blank;
-            ShoulderRightZ.Text = blank;
-            ElbowRightX.Text = blank;
-            ElbowRightY.Text = blank;
-            ElbowRightZ.Text = blank;
-            HandRightX.Text = blank;
-            HandRightY.Text = blank;
-            HandRightZ.Text = blank;
-            HipLeftX.Text = blank;
-            HipLeftY.Text = blank;
-            HipLeftZ.Text = blank;
-            KneeLeftX.Text = blank;
-            KneeLeftY.Text = blank;
-            KneeLeftZ.Text = blank;
-            FootLeftX.Text = blank;
-            FootLeftY.Text = blank;
-            FootLeftZ.Text = blank;
-            HipRightX.Text = blank;
-            HipRightY.Text = blank;
-            HipRightZ.Text = blank;
-            KneeRightX.Text = blank;
-            KneeRightY.Text = blank;
-            KneeRightZ.Text = blank;
-            FootRightX.Text = blank;
-            FootRightY.Text = blank;
-            FootRightZ.Text = blank;
-            WristRightX.Text = blank;
-            WristRightY.Text = blank;
-            WristRightZ.Text = blank;
-        }
-
-        private void initalLoadTimer_Elapsed(object sender, ElapsedEventArgs e)
+        void infoUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             this.Dispatcher.Invoke(() =>
             {
-                StartButton.IsEnabled = true;
+                parse(guiClient.read.ReadLine());
             });
-            
         }
 
-        static void stopPrograms()
+        // Gui Default Events
+        /// <summary>
+        /// Initializes a new instance of the MainWindow class.
+        /// </summary>
+        public MainWindow()
         {
-        List<string> programList = new List<string>()
-            {"KinectEnvironment","BalanceBoard","Backend","Tunnel",
-             //"testapp","testapp2"
-            };
-            char[] del = { '\\', '.' };
-            Parallel.ForEach(programList, program => {
-                foreach (var process in Process.GetProcessesByName(program))
-                {
-                    process.Kill();
-                }
-            });
+            this.InitializeComponent();
+        }
+        /// <summary>
+        /// Execute shutdown tasks
+        /// </summary>
+        /// <param name="sender">object sending the event</param>
+        /// <param name="e">event arguments</param>
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            stopPrograms();
+        }
+        /// <summary>
+        /// Execute start up tasks
+        /// </summary>
+        /// <param name="sender">object sending the event</param>
+        /// <param name="e">event arguments</param>
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            infoUpdateTimer.Elapsed += new ElapsedEventHandler(infoUpdateTimer_Elapsed);
+            infoResetTimer.Elapsed += new ElapsedEventHandler(infoResetTimer_Elapsed);
+            initalLoadTimer.Elapsed += new ElapsedEventHandler(initalLoadTimer_Elapsed);
+        }
+        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+        private void MenuItem_board_Click_1(object sender, RoutedEventArgs e)
+        {
+            BoardWindow popup = new BoardWindow();
+            popup.ShowDialog();
+        }
+        private void SingleLegRadio_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void DoubleLegRadio_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void TandemLegRadio_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void Connect_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
-
-
-
     }
 

@@ -53,30 +53,34 @@ namespace BackEnd
                 var data = datat.Replace(';','\n');
                 miss = true;
                 splitdata = data.Split(delim);
-                start_time = DateTime.ParseExact(data.Split(',')[0], timeFormat, enUS);
-                for (int i = 0; i <= ((loglength * loginterval) - 2); i++)
+                try
                 {
-                    compareresult1 = DateTime.Compare(start_time, time_array[i]); //compares data to lower cell in time array
-                    compareresult2 = DateTime.Compare(start_time, time_array[i + 1]); //compares data to upper cell in time array
-                    
-                    if (compareresult1 > 0 && compareresult2 < 0) // if data is after lower cell but before the uppercell
+                    start_time = DateTime.ParseExact(data.Split(',')[0], timeFormat, enUS);
+                    for (int i = 0; i <= ((loglength * loginterval) - 2); i++)
                     {
-                        data_array[i] = data_array[i] + data;
-                        if (debug) { Console.WriteLine("Placed {1} in cell {0}! of timestamp {2}.", i, data, time_array[i].ToString(timeFormat)); }
-                        miss = false;
+                        compareresult1 = DateTime.Compare(start_time, time_array[i]); //compares data to lower cell in time array
+                        compareresult2 = DateTime.Compare(start_time, time_array[i + 1]); //compares data to upper cell in time array
+
+                        if (compareresult1 > 0 && compareresult2 < 0) // if data is after lower cell but before the uppercell
+                        {
+                            data_array[i] = data_array[i] + data;
+                            if (debug) { Console.WriteLine("Placed {1} in cell {0}! of timestamp {2}.", i, data, time_array[i].ToString(timeFormat)); }
+                            miss = false;
+                        }
+                        if (start_time == time_array[i])
+                        {
+                            data_array[i] = data_array[i] + data;
+                            if (debug) { Console.WriteLine("Placed {1} in cell {0}! of timestamp {2}.", i, data, time_array[i].ToString(timeFormat)); }
+                            miss = false;
+                        }
                     }
-                    if (start_time == time_array[i])
+                    if (miss)
                     {
-                        data_array[i] = data_array[i] + data;
-                        if (debug) { Console.WriteLine("Placed {1} in cell {0}! of timestamp {2}.", i, data, time_array[i].ToString(timeFormat)); }
-                        miss = false;
+                        if (debug) { Console.WriteLine("Data missed,{0}.", data); }
+                        misstracker++;
                     }
                 }
-                if (miss)
-                {
-                    if (debug){ Console.WriteLine("Data missed,{0}.", data); }
-                    misstracker++;
-                }
+                catch (Exception) { }
             }
             if (debug) { Console.WriteLine("Logging Finished with {0} errors.", misstracker); }
         }

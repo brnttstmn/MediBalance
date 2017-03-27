@@ -31,7 +31,7 @@ namespace BackEnd
         }; 
         // Lists
         // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
-        static List<Pipe> pipelist = new List<Pipe>() { kinect, board, tunnel, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
+        static List<Pipe> pipelist = new List<Pipe>() { kinect, board, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
         static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui, fromgui }).ToList();
         static List<string> data_list = new List<String>();
 
@@ -92,6 +92,7 @@ namespace BackEnd
 
         private static void startLogging()
         {
+            fromgui.start();
             start_time = DateTime.Now; //creates the time array at the start of data collection
             fileName += fromgui.read.ReadLine()+".csv";
             isLogging = true;
@@ -154,7 +155,7 @@ namespace BackEnd
         /// </summary>
         static void connectPipes()
         {
-            Parallel.ForEach(pipelist, pipe => {
+            Parallel.ForEach(pipelist.Except(new List<Pipe>() {fromgui }).ToList(), pipe => {
                 pipe.start();
             });
         }
