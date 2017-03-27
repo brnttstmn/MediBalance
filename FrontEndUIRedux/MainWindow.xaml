@@ -21,7 +21,7 @@
         <RadioButton x:Name="TandemLegStanceRadio" Content="Tandem Leg Stance" HorizontalAlignment="Left" Margin="10,535,0,0" VerticalAlignment="Top" Checked="TandemLegRadio_Checked"/>
         <Label x:Name="TestChoices" Content="Test Parameters" HorizontalAlignment="Left" Margin="8,469,0,0" VerticalAlignment="Top"/>
         <Button x:Name="StartButton" Content="Start" HorizontalAlignment="Left" Margin="207,494,0,0" VerticalAlignment="Top" Width="125" Height="62" Click="StartButton_Click" IsEnabled="False"/>
-        <Button x:Name="ExportButton" Content="Export Data to Log" HorizontalAlignment="Left" Margin="366,494,0,0" VerticalAlignment="Top" Width="125" Height="62" Click="ExportButton_Click"/>
+        <Button x:Name="ExportButton" Content="Start Logging" HorizontalAlignment="Left" Margin="366,494,0,0" VerticalAlignment="Top" Width="125" Height="62" Click="ExportButton_Click" IsEnabled="False"/>
         <GroupBox x:Name="LimbDataGroupBox" Header="Limb Data" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Height="419" Width="255">
             <Grid Height="399" VerticalAlignment="Top" Margin="0,0,-1.667,-3" HorizontalAlignment="Left" Width="245">
                 <Grid.ColumnDefinitions>

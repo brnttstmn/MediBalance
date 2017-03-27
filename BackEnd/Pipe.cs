@@ -31,6 +31,11 @@ namespace BackEnd
             this.path = path;
             this.name = name;
         }
+        public Pipe(string name, bool isClient)
+        {
+            this.isClient = isClient;
+            this.name = name;
+        }
 
         // Public Methods
         public void start()
@@ -64,6 +69,9 @@ namespace BackEnd
         }
 
         //Private Methods
+        /// <summary>
+        /// Start client
+        /// </summary>
         private void startClient()
         {
             Console.WriteLine("Connecting to " + name + "...");
@@ -73,7 +81,6 @@ namespace BackEnd
             streamRead = new StreamReader(client);
             streamWrite = new StreamWriter(client) { AutoFlush = true };
         }
-
         private void startServer()
         {
             Console.WriteLine("Connecting to " + name + "...");

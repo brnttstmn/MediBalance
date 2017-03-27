@@ -16,11 +16,14 @@ namespace FrontEndUIRedux
     public partial class MainWindow : Window
     {
 
-        Pipe guiClient = new Pipe("interface", true);
+        static Pipe guiClient = new Pipe("interface", true);
+        static Pipe guiCommands = new Pipe("frominterface", true);
+        Pipe[] pipes = { guiClient, guiCommands };
 
         Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
         Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
         Timer initalLoadTimer = new Timer() { Interval = 1500, Enabled = true };
+        string message = "";
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -49,21 +52,7 @@ namespace FrontEndUIRedux
         /// <param name="e">event arguments</param>
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
-            try
-            {
-                try
-                {
-                    guiClient.stop();
-                }
-                catch (Exception) { }
-                finally
-                {
-                    guiClient.start();
-                    guiClient.write.WriteLine("Stop");
-                    guiClient.stop();
-                }
-            }
-            catch (Exception) { }
+            stopPrograms();
         }
 
 
@@ -94,28 +83,38 @@ namespace FrontEndUIRedux
             {
                 infoUpdateTimer.Enabled = false;
                 infoResetTimer.Enabled = true;
-                guiClient.stop();
+                foreach (Pipe pipe in pipes) { pipe.stop(); }
                 this.Dispatcher.Invoke(() =>
                 {
                     StartButton.IsEnabled = false;
+                    ExportButton.IsEnabled = false;
                     StartButton.Content = "Start";
                 });
             }
             else
             {
-                guiClient.start();
+                foreach (Pipe pipe in pipes) { pipe.start(); }
                 guiClient.write.WriteLine("Start");
                 infoUpdateTimer.Enabled = true;
                 this.Dispatcher.Invoke(() =>
                 {
                     StartButton.Content = "Stop";
+                    ExportButton.IsEnabled = true;
                 });
             }
         }
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
+            Dictionary<string,bool> stances = new Dictionary<string, bool>(){
+                { "SingleLegStanceRadio", SingleLegStanceRadio.IsChecked == true },
+                { "DoubleLegStanceRadio", DoubleLegStanceRadio.IsChecked == true },
+                { "TandemLegStanceRadio", TandemLegStanceRadio.IsChecked == true }};
 
+            ExportButton.IsEnabled = false;
+            ExportButton.Content = "Collecting Data...";
+            foreach(KeyValuePair<string,bool> stance in stances) { if (stance.Value) { guiCommands.write.WriteLine(stance.Key); } }
+            
         }
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -335,7 +334,24 @@ namespace FrontEndUIRedux
             });
             
         }
+
+        static void stopPrograms()
+        {
+        List<string> programList = new List<string>()
+            {"KinectEnvironment","BalanceBoard","Backend","Tunnel",
+             //"testapp","testapp2"
+            };
+            char[] del = { '\\', '.' };
+            Parallel.ForEach(programList, program => {
+                foreach (var process in Process.GetProcessesByName(program))
+                {
+                    process.Kill();
+                }
+            });
+        }
     }
+
+
 
     }
 
