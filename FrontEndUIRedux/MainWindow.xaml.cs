@@ -10,6 +10,7 @@ using System.IO.Pipes;
 using System.Diagnostics;
 using System.IO;
 using System.Timers;
+using System.Windows.Shapes;
 
 namespace FrontEndUIRedux
 {
@@ -21,10 +22,11 @@ namespace FrontEndUIRedux
         Pipe[] pipes = { guiClient, guiCommands };
 
         // Set Timers
-        Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
+        Timer infoUpdateTimer = new Timer() { Interval = .1, Enabled = false };
         Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
         Timer initalLoadTimer = new Timer() { Interval = 1500, Enabled = true };
-        string message = "";
+        //Timer graphTimer = new Timer() { Interval = 100, Enabled = false };
+        private System.Windows.Threading.DispatcherTimer timer;
 
         // Button Presses
         public void StartButton_Click(object sender, RoutedEventArgs e)
@@ -38,7 +40,6 @@ namespace FrontEndUIRedux
                 start();
             }
         }
-
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
             guiCommands.start();
@@ -53,10 +54,33 @@ namespace FrontEndUIRedux
             
         }
 
+        //Ellipse initialization
+        Ellipse[] bodypoints = new Ellipse[18];
 
+        
 
-
-
+        // Array of Joint locations --------------------------------------
+        double[,] joints = new double[18,2];
+        //int[,] joints = new int[,] { { 0, 0 },
+        //                             { 0, 5 },
+        //                             { 0, 10 },
+        //                             { 0, 15 },
+        //                             { 0, 20 },
+        //                             { 0, 25 },
+        //                             { 0, 30 },
+        //                             { 0, 35 },
+        //                             { 0, 40 },
+        //                             { 0, 45 } };
+        //int[,] joints1 = new int[,] { { 0, 0 },
+        //                             { 5, 0 },
+        //                             { 10, 0 },
+        //                             { 15, 0 },
+        //                             { 20, 0 },
+        //                             { 25, 0 },
+        //                             { 30, 0 },
+        //                             { 35, 0 },
+        //                             { 40, 0 },
+        //                             { 45, 0 }  };
         // Methods
         private void start()
         {
@@ -64,6 +88,7 @@ namespace FrontEndUIRedux
             guiClient.start();
             guiClient.write.WriteLine("Start");
             infoUpdateTimer.Enabled = true;
+            //graphTimer.Enabled = true;
             this.Dispatcher.Invoke(() =>
             {
                 StartButton.Content = "Stop";
@@ -74,6 +99,7 @@ namespace FrontEndUIRedux
         {
             infoUpdateTimer.Enabled = false;
             infoResetTimer.Enabled = true;
+            infoUpdateTimer.Enabled = false;
             foreach (Pipe pipe in pipes) { pipe.stop(); }
             this.Dispatcher.Invoke(() =>
             {
@@ -161,119 +187,157 @@ namespace FrontEndUIRedux
         }
         private void parse(string line)
         {
+            if (line != null) { 
             char[] delim = { ',', ';' };
             string[] words = line.Split(delim);
-            if (words.Length > 2)
-            {
-                switch (words[1])
+                if (words.Length > 2)
                 {
-                    case "RWeight":
-                        RWeight.Content = words[2];
-                        break;
-                    case "TopLeft":
-                        TLeft.Content = words[2];
-                        break;
-                    case "TopRight":
-                        TRight.Content = words[2];
-                        break;
-                    case "BottomRight":
-                        BRight.Content = words[2];
-                        break;
-                    case "BottomLeft":
-                        BLeft.Content = words[2];
-                        break;
-                    case "spinebase":
-                        SpineBaseX.Text = words[2];
-                        SpineBaseY.Text = words[3];
-                        SpineBaseZ.Text = words[4];
-                        break;
-                    case "midspine":
-                        MidSpineX.Text = words[2];
-                        MidSpineY.Text = words[3];
-                        MidSpineZ.Text = words[4];
-                        break;
-                    case "neck":
-                        NeckX.Text = words[2];
-                        NeckY.Text = words[3];
-                        NeckZ.Text = words[4];
-                        break;
-                    case "shoulderleft":
-                        ShoulderLeftX.Text = words[2];
-                        ShoulderLeftY.Text = words[3];
-                        ShoulderLeftZ.Text = words[4];
-                        break;
-                    case "elbowleft":
-                        ElbowLeftX.Text = words[2];
-                        ElbowLeftY.Text = words[3];
-                        ElbowLeftZ.Text = words[4];
-                        break;
-                    case "wristleft":
-                        WristLeftX.Text = words[2];
-                        WristLeftY.Text = words[3];
-                        WristLeftZ.Text = words[4];
-                        break;
-                    case "handleft":
-                        HandLeftX.Text = words[2];
-                        HandLeftY.Text = words[3];
-                        HandLeftZ.Text = words[4];
-                        break;
-                    case "head":
-                        HeadX.Text = words[2];
-                        HeadY.Text = words[3];
-                        HeadZ.Text = words[4];
-                        break;
-                    case "shoulderright":
-                        ShoulderRightX.Text = words[2];
-                        ShoulderRightY.Text = words[3];
-                        ShoulderRightZ.Text = words[4];
-                        break;
-                    case "elbowright":
-                        ElbowRightX.Text = words[2];
-                        ElbowRightY.Text = words[3];
-                        ElbowRightZ.Text = words[4];
-                        break;
-                    case "handright":
-                        HandRightX.Text = words[2];
-                        HandRightY.Text = words[3];
-                        HandRightZ.Text = words[4];
-                        break;
-                    case "hipleft":
-                        HipLeftX.Text = words[2];
-                        HipLeftY.Text = words[3];
-                        HipLeftZ.Text = words[4];
-                        break;
-                    case "kneeleft":
-                        KneeLeftX.Text = words[2];
-                        KneeLeftY.Text = words[3];
-                        KneeLeftZ.Text = words[4];
-                        break;
-                    case "footleft":
-                        FootLeftX.Text = words[2];
-                        FootLeftY.Text = words[3];
-                        FootLeftZ.Text = words[4];
-                        break;
-                    case "hipright":
-                        HipRightX.Text = words[2];
-                        HipRightY.Text = words[3];
-                        HipRightZ.Text = words[4];
-                        break;
-                    case "kneeright":
-                        KneeRightX.Text = words[2];
-                        KneeRightY.Text = words[3];
-                        KneeRightZ.Text = words[4];
-                        break;
-                    case "footright":
-                        FootRightX.Text = words[2];
-                        FootRightY.Text = words[3];
-                        FootRightZ.Text = words[4];
-                        break;
-                    case "wristright":
-                        WristRightX.Text = words[2];
-                        WristRightY.Text = words[3];
-                        WristRightZ.Text = words[4];
-                        break;
-                    default:
-                        break;
+                    switch (words[1])
+                    {
+                        case "RWeight":
+                            RWeight.Content = words[2];
+                            break;
+                        case "TopLeft":
+                            TLeft.Content = words[2];
+                            break;
+                        case "TopRight":
+                            TRight.Content = words[2];
+                            break;
+                        case "BottomRight":
+                            BRight.Content = words[2];
+                            break;
+                        case "BottomLeft":
+                            BLeft.Content = words[2];
+                            break;
+                        case "spinebase":
+                            SpineBaseX.Text = words[2];
+                            SpineBaseY.Text = words[3];
+                            SpineBaseZ.Text = words[4];
+                            joints[0, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[0, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "midspine":
+                            MidSpineX.Text = words[2];
+                            MidSpineY.Text = words[3];
+                            MidSpineZ.Text = words[4];
+                            joints[1, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[1, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "neck":
+                            NeckX.Text = words[2];
+                            NeckY.Text = words[3];
+                            NeckZ.Text = words[4];
+                            joints[2, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[2, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "shoulderleft":
+                            ShoulderLeftX.Text = words[2];
+                            ShoulderLeftY.Text = words[3];
+                            ShoulderLeftZ.Text = words[4];
+                            joints[3, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[3, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "elbowleft":
+                            ElbowLeftX.Text = words[2];
+                            ElbowLeftY.Text = words[3];
+                            ElbowLeftZ.Text = words[4];
+                            joints[4, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[4, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "wristleft":
+                            WristLeftX.Text = words[2];
+                            WristLeftY.Text = words[3];
+                            WristLeftZ.Text = words[4];
+                            joints[5, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[5, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "handleft":
+                            HandLeftX.Text = words[2];
+                            HandLeftY.Text = words[3];
+                            HandLeftZ.Text = words[4];
+                            joints[6, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[6, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "head":
+                            HeadX.Text = words[2];
+                            HeadY.Text = words[3];
+                            HeadZ.Text = words[4];
+                            joints[7, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[7, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "shoulderright":
+                            ShoulderRightX.Text = words[2];
+                            ShoulderRightY.Text = words[3];
+                            ShoulderRightZ.Text = words[4];
+                            joints[8, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[8, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "elbowright":
+                            ElbowRightX.Text = words[2];
+                            ElbowRightY.Text = words[3];
+                            ElbowRightZ.Text = words[4];
+                            joints[9, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[9, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "handright":
+                            HandRightX.Text = words[2];
+                            HandRightY.Text = words[3];
+                            HandRightZ.Text = words[4];
+                            joints[10, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[10, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "hipleft":
+                            HipLeftX.Text = words[2];
+                            HipLeftY.Text = words[3];
+                            HipLeftZ.Text = words[4];
+                            joints[11, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[11, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "kneeleft":
+                            KneeLeftX.Text = words[2];
+                            KneeLeftY.Text = words[3];
+                            KneeLeftZ.Text = words[4];
+                            joints[12, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[12, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "footleft":
+                            FootLeftX.Text = words[2];
+                            FootLeftY.Text = words[3];
+                            FootLeftZ.Text = words[4];
+                            joints[13, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[13, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "hipright":
+                            HipRightX.Text = words[2];
+                            HipRightY.Text = words[3];
+                            HipRightZ.Text = words[4];
+                            joints[14, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[14, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "kneeright":
+                            KneeRightX.Text = words[2];
+                            KneeRightY.Text = words[3];
+                            KneeRightZ.Text = words[4];
+                            joints[15, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[15, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "footright":
+                            FootRightX.Text = words[2];
+                            FootRightY.Text = words[3];
+                            FootRightZ.Text = words[4];
+                            joints[16, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[16, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        case "wristright":
+                            WristRightX.Text = words[2];
+                            WristRightY.Text = words[3];
+                            WristRightZ.Text = words[4];
+                            joints[17, 0] = Convert.ToDouble(words[2]) * 100;
+                            joints[17, 1] = Convert.ToDouble(words[3]) * 100;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -304,6 +368,50 @@ namespace FrontEndUIRedux
                 parse(guiClient.read.ReadLine());
             });
         }
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            
+            //Remove the previous ellipse from the paint canvas.
+            for(int i = 0; i < bodypoints.Length; i++)
+            {
+                PaintCanvas.Children.Remove(bodypoints[i]);
+                bodypoints[i] = CreateAnEllipse(10, 10);
+                PaintCanvas.Children.Add(bodypoints[i]);
+                Canvas.SetLeft(bodypoints[i], joints[i, 0]);
+                Canvas.SetBottom(bodypoints[i], joints[i, 1]);
+
+            }
+            //>>>>>>PaintCanvas.Children.Remove(ellipse);
+            //PaintCanvas.Children.Remove(ellipse2);
+            //if (idx >= joints.GetLength(0))
+            //{
+            //    idx = 0;
+            //}
+
+            //Create ellipse with height and width
+            //ellipse2 = CreateAnEllipse(20, 20);
+            //>>>>>>>>>>>>ellipse = CreateAnEllipse(20, 20);
+
+            //Add Ellipse to canvas 
+            //>>>>>>>>>>>>>>>>PaintCanvas.Children.Add(ellipse);
+            //PaintCanvas.Children.Add(ellipse2);
+
+            //if (idx < joints.GetLength(0))
+            //{
+               //>>>>>>>>>>>>> Canvas.SetLeft(ellipse, joints[idx, 0]);
+                //>>>>>>>>>>>>>Canvas.SetBottom(ellipse, joints[idx, 1]);
+                // Canvas.SetLeft(ellipse2, joints1[idx, 0]);
+                //Canvas.SetTop(ellipse2, joints1[idx, 1]);
+          //  }
+            //else
+            //{
+            //    idx = 0;
+            //}
+
+            //Increment the index
+            //idx++;
+
+        }
 
         // Gui Default Events
         /// <summary>
@@ -311,7 +419,7 @@ namespace FrontEndUIRedux
         /// </summary>
         public MainWindow()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
         /// <summary>
         /// Execute shutdown tasks
@@ -329,6 +437,14 @@ namespace FrontEndUIRedux
         /// <param name="e">event arguments</param>
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+
+            //Initialize the timer class
+            timer = new System.Windows.Threading.DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(.01); //Set the interval period here.
+            timer.Tick += timer1_Tick;
+            // loopCounter = 10;
+            timer.Start();
+            //  graphTimer.Elapsed += new ElapsedEventHandler(graphTimer_Elapsed);
             infoUpdateTimer.Elapsed += new ElapsedEventHandler(infoUpdateTimer_Elapsed);
             infoResetTimer.Elapsed += new ElapsedEventHandler(infoResetTimer_Elapsed);
             initalLoadTimer.Elapsed += new ElapsedEventHandler(initalLoadTimer_Elapsed);
@@ -362,6 +478,20 @@ namespace FrontEndUIRedux
         {
 
         }
+        public Ellipse CreateAnEllipse(int height, int width)
+        {
+            SolidColorBrush fillBrush = new SolidColorBrush() { Color = Colors.Red };
+            SolidColorBrush borderBrush = new SolidColorBrush() { Color = Colors.Black };
+
+            return new Ellipse()
+            {
+                Height = height,
+                Width = width,
+                StrokeThickness = 1,
+                Stroke = borderBrush,
+                Fill = fillBrush
+            };
+        }
     }
-    }
+}
 

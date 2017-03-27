@@ -180,11 +180,8 @@
             </Menu>
             <StackPanel></StackPanel>
         </DockPanel>
-        <Canvas HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100"/>
         <GroupBox x:Name="groupBox1" Header="Skeletal Data" HorizontalAlignment="Left" Margin="515,50,0,0" VerticalAlignment="Top" Height="300" Width="300">
-            <Viewbox Margin="3,0,-2.667,-0.333">
-                <Image Source="{Binding ImageSource}" Stretch="UniformToFill" />
-            </Viewbox>
+            <Canvas Name="PaintCanvas" Height="128" VerticalAlignment="Top" Grid.Column="1" Margin="147,0,-2.667,0" Grid.RowSpan="2"/>
         </GroupBox>
         <GroupBox x:Name="Balance_Data" Header="Balance Distribution" HorizontalAlignment="Left" Margin="515,355,0,0" VerticalAlignment="Top" Height="208" Width="300"/>
     </Grid>

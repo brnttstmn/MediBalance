@@ -45,8 +45,12 @@ namespace FrontEndUIRedux
         }
         public void stop()
         {
-            if (!isClient) { server.Dispose(); }
-            else { client.Dispose(); }
+            try
+            {
+                if (!isClient) { server.Dispose(); }
+                else { client.Dispose(); }
+            }
+            catch (NullReferenceException) { }
         }
         public void sendcommand(string command)
         {
