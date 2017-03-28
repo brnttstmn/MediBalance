@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using WiimoteLib;
-using System.Text.RegularExpressions;
 using System.IO.Pipes;
 using System.IO;
-using System.Timers;
 using System.Threading;
 
 namespace BalanceBoard
@@ -21,7 +19,13 @@ namespace BalanceBoard
         static Wiimote wiiDevice = null;
         static string Timingformat = "HH:mm:ss:fff";
 
-
+        // Offsets
+        static float oWeight;
+        static float oTopLeft;
+        static float oTopRight;
+        static float oBottomLeft;
+        static float oBottomRight;
+        
         static void Main(string[] args)
         {    
             if (args.Length > 0) { if (args[0] == "Debug") { startDebug(); } }
@@ -45,7 +49,6 @@ namespace BalanceBoard
                     start();
                 }
                 catch (IOException) { Console.WriteLine("Connection Terminated"); }
-                //catch(ObjectDisposedException) { Console.WriteLine("Connection Terminated"); }
                 catch (Exception ex) { Console.WriteLine(ex.ToString()); run = false; }
                 finally { BoardServer.Dispose(); }                
 
@@ -151,7 +154,6 @@ namespace BalanceBoard
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error... you broke it");
                 Console.WriteLine(ex.Message, "Error");
             }
 
@@ -178,13 +180,20 @@ namespace BalanceBoard
             var rwBottomLeft = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomLeft;
             var rwBottomRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomRight;
 
+            // Auto Calibrate
+            if (rwWeight + oWeight < 0.0) { oWeight = -rwWeight; }
+            if (rwTopLeft + oTopLeft < 0.0) { oTopLeft = -rwTopLeft; }
+            if (rwTopRight + oTopRight < 0.0) { oTopRight = -rwTopRight; }
+            if (rwBottomLeft + oBottomLeft < 0.0) { oBottomLeft = -rwBottomLeft; }
+            if (rwBottomRight + oBottomRight < 0.0) { oBottomRight = -rwBottomRight; }
+
             // Format Raw Data
             string Timing = DateTime.Now.ToString(Timingformat);
-            var weight = rwWeight.ToString("0.0");
-            var topleft = rwTopLeft.ToString("0.0");
-            var topright = rwTopRight.ToString("0.0");
-            var bottomeleft = rwBottomLeft.ToString("0.0");
-            var bottomright = rwBottomRight.ToString("0.0");
+            var weight = (oWeight+rwWeight).ToString("0.0");
+            var topleft = (oTopLeft+rwTopLeft).ToString("0.0");
+            var topright = (oTopRight+rwTopRight).ToString("0.0");
+            var bottomeleft = (oBottomLeft+rwBottomLeft).ToString("0.0");
+            var bottomright = (oBottomRight+rwBottomRight).ToString("0.0");
 
             // Output Raw data
             Dictionary<string, string> bdata = new Dictionary<string, string>()
