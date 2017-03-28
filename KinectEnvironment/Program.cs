@@ -17,6 +17,7 @@ namespace KinectEnvironment
         static StreamWriter StreamWrite = null;
         static StreamReader StreamRead = null;
         static bool isRead = false;
+        static bool connectionBroken = false;
         // Create Objects
         static KinectSensor kinectSensor = KinectSensor.GetDefault();
         static BodyFrameReader bodyframeReader = null;
@@ -45,7 +46,12 @@ namespace KinectEnvironment
                     connectPipe();
                     listen();
                     startRead();
-                    while (true) { Thread.Sleep(1000); StreamWrite.WriteLine(); }
+                    while (true)
+                    {
+                        if (connectionBroken) { connectionBroken = false; throw new IOException(); }
+                        //Thread.Sleep(1000);
+                        //StreamWrite.WriteLine();
+                    }
                 }
                 catch (IOException) { Console.WriteLine("Connection Terminated"); }
                 catch (Exception ex) { Console.WriteLine(ex.ToString()); run = false; }
@@ -148,15 +154,19 @@ namespace KinectEnvironment
                                 {kneeleft,"kneeleft"}, {footleft,"footleft"}, {hipright,"hipright"}, {kneeright,"kneeright"}, {footright,"footright"}
                             };
                             string timestamp = DateTime.Now.ToString(timeFormat);
-                            foreach (KeyValuePair<Joint, string> joint in jointName)
+                            try
                             {
-                                var newLine = string.Format("{0},{1},{2},{3},{4};", timestamp , joint.Value,
-                                joint.Key.Position.X.ToString(), joint.Key.Position.Y.ToString(),
-                                joint.Key.Position.Z.ToString());
-                                StreamWrite.WriteLine(newLine);
-                                Console.WriteLine("Written");
-                                Console.WriteLine(newLine);
+                                foreach (KeyValuePair<Joint, string> joint in jointName)
+                                {
+                                    var newLine = string.Format("{0},{1},{2},{3},{4};", timestamp, joint.Value,
+                                    joint.Key.Position.X.ToString(), joint.Key.Position.Y.ToString(),
+                                    joint.Key.Position.Z.ToString());
+                                    StreamWrite.WriteLine(newLine);
+                                    Console.WriteLine("Written");
+                                    Console.WriteLine(newLine);
+                                }
                             }
+                            catch (IOException) { connectionBroken = true; }
                         }
                     }
                 }

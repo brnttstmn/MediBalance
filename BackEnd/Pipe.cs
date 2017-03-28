@@ -51,8 +51,12 @@ namespace BackEnd
         }
         public void stop()
         {
-            if (!isClient) { server.Dispose(); }
-            else { client.Dispose(); }
+            try
+            {
+                if (!isClient) { server.Dispose(); }
+                else { client.Dispose(); }
+            }
+            catch (NullReferenceException) { }
         }
         public void sendcommand(string command)
         {
@@ -74,21 +78,29 @@ namespace BackEnd
         /// </summary>
         private void startClient()
         {
-            Console.WriteLine("Connecting to " + name + "...");
-            client = new NamedPipeClientStream(".", name, PipeDirection.InOut);
-            client.Connect();
-            Console.WriteLine("Connected to " + name + ".");
-            streamRead = new StreamReader(client);
-            streamWrite = new StreamWriter(client) { AutoFlush = true };
+            try
+            {
+                Console.WriteLine("Connecting to " + name + "...");
+                client = new NamedPipeClientStream(".", name, PipeDirection.InOut);
+                client.Connect();
+                Console.WriteLine("Connected to " + name + ".");
+                streamRead = new StreamReader(client);
+                streamWrite = new StreamWriter(client) { AutoFlush = true };
+            }
+            catch (IOException) { }
         }
         private void startServer()
         {
-            Console.WriteLine("Connecting to " + name + "...");
-            server = new NamedPipeServerStream(name, PipeDirection.InOut);
-            server.WaitForConnection();
-            Console.WriteLine("Connected to " + name + ".");
-            streamRead = new StreamReader(server);
-            streamWrite = new StreamWriter(server) { AutoFlush = true };
+            try
+            {
+                Console.WriteLine("Connecting to " + name + "...");
+                server = new NamedPipeServerStream(name, PipeDirection.InOut);
+                server.WaitForConnection();
+                Console.WriteLine("Connected to " + name + ".");
+                streamRead = new StreamReader(server);
+                streamWrite = new StreamWriter(server) { AutoFlush = true };
+            }
+            catch (IOException) { }
         }
     }
 }
