@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FrontEndUIRedux"
         mc:Ignorable="d"
-        Title="MediBalance Balance Test Monitor" Height="603" Width="832.666"
+        Title="MediBalance Balance Test Monitor" Height="631.667" Width="832.666"
         Loaded="MainWindow_Loaded"
         Closing="MainWindow_Closing">
     <Window.Resources>
@@ -14,7 +14,7 @@
         <SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2" />
     </Window.Resources>
     <Grid>
-        <TextBox x:Name="Seconds" HorizontalAlignment="Right" Height="25" Margin="0,25,854.333,0" TextWrapping="Wrap" Text="Seconds" VerticalAlignment="Top" Width="87" TextChanged="textBox_TextChanged" TextAlignment="Center"/>
+        <TextBox x:Name="Seconds" HorizontalAlignment="Right" Height="21" Margin="0,27,665,0" TextWrapping="Wrap" Text="Seconds" VerticalAlignment="Top" Width="87" TextChanged="textBox_TextChanged" TextAlignment="Center"/>
         <Label x:Name="RunTime" Content="Run Time:" HorizontalAlignment="Left" Height="25" Margin="8,23,0,0" VerticalAlignment="Top" Width="61"/>
         <RadioButton x:Name="SingleLegStanceRadio" Content="Single Leg Stance" HorizontalAlignment="Left" Margin="10,495,0,0" VerticalAlignment="Top" Checked="SingleLegRadio_Checked"/>
         <RadioButton x:Name="DoubleLegStanceRadio" Content="Double Leg Stance" HorizontalAlignment="Left" Margin="10,515,0,0" VerticalAlignment="Top" Checked="DoubleLegRadio_Checked"/>
@@ -58,7 +58,7 @@
 
 
 
-                <Label Grid.Row="1" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">SpineBase</Label>
+                <Label Grid.Row="2" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="-84,5.667,84,15.333" Grid.RowSpan="2">SpineBase</Label>
                 <TextBlock x:Name="SpineBaseX" Grid.Column="1" Grid.Row="1"/>
                 <TextBlock x:Name="SpineBaseY" Grid.Column="2" Grid.Row="1"/>
                 <TextBlock x:Name="SpineBaseZ" Grid.Column="3" Grid.Row="1"/>
@@ -160,11 +160,28 @@
                 <TextBlock x:Name="RWeight" HorizontalAlignment="Left" Margin="10,9.8,0,0" Grid.Row="5" VerticalAlignment="Top" Width="86" />
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBox" Header="Biometric Data" HorizontalAlignment="Left" Margin="279,268,0,0" VerticalAlignment="Top" Height="201" Width="222">
+        <GroupBox x:Name="groupBx" Header="Biometric Data" HorizontalAlignment="Left" Margin="279,268,0,0" VerticalAlignment="Top" Height="201" Width="222">
+            <Grid Margin="1,0,-1.333,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
 
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="Heart_Rate" Margin="56,70,42.667,58"/>
+                <Label x:Name="HeartRate" Content="Heart Rate"/>
+                <Label x:Name="GSR" Content="GSR" HorizontalAlignment="Left" Margin="0,0.333,0,0" Grid.Row="1" VerticalAlignment="Top" Height="44" Width="105"/>
+                <TextBlock x:Name="HeartRateTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" TextWrapping="Wrap" Text="HeartRate" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="45" Grid.RowSpan="2" Width="106"/>
+                <TextBlock x:Name="GSRTextBlock" HorizontalAlignment="Left" Margin="105,0.333,-0.333,0" Grid.Row="1" TextWrapping="Wrap" Text="GSRTextBlock" VerticalAlignment="Top" Height="44" Width="106" Grid.ColumnSpan="2"/>
+            </Grid>
         </GroupBox>
         <DockPanel Height="18" LastChildFill="False" VerticalAlignment="Top" Margin="0,0,0.333,0">
-            <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" Width="1011">
+            <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" Width="826">
                 <MenuItem Header="_File" Click="MenuItem_Click">
                     <MenuItem Header="_Open"/>
                     <MenuItem Header="_Close"/>
@@ -186,5 +203,7 @@
         <GroupBox x:Name="Balance_Data" Header="Balance Distribution" HorizontalAlignment="Left" Margin="515,355,0,0" VerticalAlignment="Top" Height="208" Width="300">
             <Canvas x:Name="Balance_Distribution" Height="105" VerticalAlignment="Top" Margin="149,0,-2.8,0"/>
         </GroupBox>
+        <TextBlock x:Name="RealTimeClock" HorizontalAlignment="Left" Margin="666,28,0,0" TextWrapping="Wrap" Text="RealTimeClock" VerticalAlignment="Top" Height="23" Width="140"/>
+        <TextBlock x:Name="Status_Bar" HorizontalAlignment="Left" Margin="10,577,0,0" TextWrapping="Wrap" Text="Status Bar" VerticalAlignment="Top" Width="805"/>
     </Grid>
 </Window>
