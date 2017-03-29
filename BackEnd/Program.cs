@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Timers;
+using SharedLibraries;
 
 namespace BackEnd
 {
@@ -17,8 +17,6 @@ namespace BackEnd
         static Pipe gui = new Pipe("interface", false);
         static Pipe fromgui = new Pipe("frominterface", false);
         static Pipe tunnel = new Pipe("tunnel", true);
-        //static Pipe testapp = new Pipe("testapp", true);
-        //static Pipe testapp2 = new Pipe("testapp2", true);
 
         static Dictionary<Pipe, string> programList = new Dictionary<Pipe, string>()
         {
@@ -26,12 +24,10 @@ namespace BackEnd
             {board, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\BalanceBoard\\bin\\Debug\\BalanceBoard.exe"},
             {gui, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\FrontEndUIRedux\\bin\\Debug\\FrontEndUIRedux.exe"},
             {tunnel, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe"},
-            //{testapp, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\testapp\\bin\\Debug\\testapp.exe"},
-            //{testapp2, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\testapp2\\bin\\Debug\\testapp2.exe"},
-        }; 
+        };
         // Lists
         // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
-        static List<Pipe> pipelist = new List<Pipe>() { kinect, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
+        static List<Pipe> pipelist = new List<Pipe>() { board, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
         static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui, fromgui }).ToList();
         static List<string> data_list = new List<String>();
 
@@ -39,7 +35,7 @@ namespace BackEnd
         static bool endConnection = false, isLogging = false;
         static Log data_log;
         static DateTime start_time;
-        static string fileName = "C:\\Users\\" + Environment.UserName + "\\Desktop\\";
+        static string fileName = "C:\\Users\\" + Environment.UserName + "\\Desktop\\", append;
 
         /// <summary>
         /// Main Program
@@ -55,51 +51,74 @@ namespace BackEnd
         /// </summary>
         static void run()
         {
-            bool run = true;
+            // Restart Programs
             stopPrograms();
-            //runPrograms();
-            while (run)
+            runPrograms();
+
+            // Start
+            while (true)
             {
                 try
                 {
-                    fileName = "C:\\Users\\" + Environment.UserName + "\\Desktop\\";
-                    connectPipes();
-                    guiCommands();
+                    Pipe.connectPipes(pipelist);
+                    guiCommandsSetup();
                     multiSensorRead();
                 }
                 catch (IOException) { Console.WriteLine("Connection Terminated"); }
-                catch (Exception ex) { Console.WriteLine(ex.ToString()); run = false; }
-                finally {
-                    disconnectPipes();
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+                finally
+                {
+                    Pipe.disconnectPipes(pipelist);
                 }
 
+                // Log Applicable Data if Logging was Enabled
                 if (isLogging)
                 {
                     data_log = new Log(data_list, start_time);
                     data_log.logdata();
-                    data_log.writeCSV(fileName);
+                    data_log.writeCSV(fileName + append);
                     isLogging = false;
                 }
             }
         }
 
-        private static void guiCommands()
+        private static void guiCommandsSetup()
         {
-            if (gui.read.ReadLine() == "Stop") { stopPrograms(); return; }
-            Thread listen = new Thread(() => startLogging());
-            listen.Start();
+            Thread listen = new Thread(() => awaitGuiCommands());
+            if (!listen.IsAlive) { listen.Start(); }
         }
 
-        private static void startLogging()
+        private static void awaitGuiCommands()
         {
-            fromgui.stop();
-            fromgui.start();
-            start_time = DateTime.Now; //creates the time array at the start of data collection
-            var line = fromgui.read.ReadLine();
+            string line = null;
+
+            try { line = fromgui.read.ReadLine(); }
+            catch (IOException) { }
+
             if (line != null)
             {
-                fileName += fromgui.read.ReadLine() + ".csv";
-                isLogging = true;
+                switch (line)
+                {
+                    case "SingleLegStanceRadio":
+                        start_time = DateTime.Now;
+                        append = line + ".csv";
+                        isLogging = true;
+                        break;
+                    case "DoubleLegStanceRadio":
+                        start_time = DateTime.Now;
+                        append = line + ".csv";
+                        isLogging = true;
+                        break;
+                    case "TandemLegStanceRadio":
+                        start_time = DateTime.Now;
+                        append = line + ".csv";
+                        isLogging = true;
+                        break;
+                    case "Stop":
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -147,7 +166,7 @@ namespace BackEnd
                 if (line != "/n")
                 {
                     gui.write.WriteLine(line);
-                    if (isLogging) { data_list.Add(line); }                        
+                    if (isLogging) { data_list.Add(line); }
                     Console.WriteLine(line);
                 }
             }
@@ -156,31 +175,12 @@ namespace BackEnd
         }
 
         /// <summary>
-        /// Connects to all pipes
-        /// </summary>
-        static void connectPipes()
-        {
-            Parallel.ForEach(pipelist.Except(new List<Pipe>() {fromgui }).ToList(), pipe => {
-                pipe.start();
-            });
-        }
-
-        /// <summary>
-        /// Disconnects from all pipes
-        /// </summary>
-        static void disconnectPipes()
-        {
-            Parallel.ForEach(pipelist, pipe => {
-                pipe.stop();
-            });
-        }
-
-        /// <summary>
         /// Sends start signal to all Sensors
         /// </summary>
         static void startSensors()
         {
-            foreach (Pipe sensor in sensors) {
+            foreach (Pipe sensor in sensors)
+            {
                 Console.WriteLine("starting: " + sensor.name);
                 sensor.sendcommand("Start");
             }
@@ -219,4 +219,3 @@ namespace BackEnd
 
     }
 }
-  

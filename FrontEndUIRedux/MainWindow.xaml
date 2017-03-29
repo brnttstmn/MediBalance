@@ -153,11 +153,11 @@
                 <Label x:Name="Bottom_Left" Content="Bottom Left" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Height="25" Margin="0,0.2,0,0" Grid.Row="2" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
                 <Label x:Name="Bottom_Right" Content="Bottom Right" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Height="25" Margin="0.4,0.2,-0.8,0" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2"/>
                 <Label x:Name="Weight" Content="Weight" HorizontalAlignment="Left" VerticalAlignment="Top" Width="212" Height="24" Margin="0,42.6,-0.8,0" Grid.Row="3" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
-                <Label x:Name="TLeft" Content="" HorizontalAlignment="Left" Margin="10,10.4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="86" />
-                <Label x:Name="TRight" Content="" HorizontalAlignment="Left" Margin="10.4,10.4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="86" Grid.Column="1" />
-                <Label x:Name="BLeft" Content="" HorizontalAlignment="Left" Margin="10,11.6,0,0" Grid.Row="3" VerticalAlignment="Top" Width="86" />
-                <Label x:Name="BRight" Content="" HorizontalAlignment="Left" Margin="9.4,10.6,0,0" Grid.Row="3" VerticalAlignment="Top" Width="86" Grid.Column="1" />
-                <Label x:Name="RWeight" Content="" HorizontalAlignment="Left" Margin="10,9.8,0,0" Grid.Row="5" VerticalAlignment="Top" Width="86" />
+                <TextBlock x:Name="TLeft" HorizontalAlignment="Left" Margin="10,10.4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="86" />
+                <TextBlock x:Name="TRight" HorizontalAlignment="Left" Margin="10.4,10.4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="86" Grid.Column="1" />
+                <TextBlock x:Name="BLeft" HorizontalAlignment="Left" Margin="10,11.6,0,0" Grid.Row="3" VerticalAlignment="Top" Width="86" />
+                <TextBlock x:Name="BRight" HorizontalAlignment="Left" Margin="9.4,10.6,0,0" Grid.Row="3" VerticalAlignment="Top" Width="86" Grid.Column="1" />
+                <TextBlock x:Name="RWeight" HorizontalAlignment="Left" Margin="10,9.8,0,0" Grid.Row="5" VerticalAlignment="Top" Width="86" />
             </Grid>
         </GroupBox>
         <GroupBox x:Name="groupBox" Header="Biometric Data" HorizontalAlignment="Left" Margin="279,268,0,0" VerticalAlignment="Top" Height="201" Width="222">
@@ -183,6 +183,8 @@
         <GroupBox x:Name="groupBox1" Header="Skeletal Data" HorizontalAlignment="Left" Margin="515,50,0,0" VerticalAlignment="Top" Height="300" Width="300">
             <Canvas Name="PaintCanvas" Height="128" VerticalAlignment="Top" Grid.Column="1" Margin="147,0,-2.667,0" Grid.RowSpan="2"/>
         </GroupBox>
-        <GroupBox x:Name="Balance_Data" Header="Balance Distribution" HorizontalAlignment="Left" Margin="515,355,0,0" VerticalAlignment="Top" Height="208" Width="300"/>
+        <GroupBox x:Name="Balance_Data" Header="Balance Distribution" HorizontalAlignment="Left" Margin="515,355,0,0" VerticalAlignment="Top" Height="208" Width="300">
+            <Canvas x:Name="Balance_Distribution" Height="105" VerticalAlignment="Top" Margin="149,0,-2.8,0"/>
+        </GroupBox>
     </Grid>
 </Window>

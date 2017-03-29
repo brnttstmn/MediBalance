@@ -44,25 +44,32 @@ namespace SharedLibraries
         // Public Methods
         public void start()
         {
-            if (!isClient)
+            if (!active)
             {
-                startServer();
+                if (!isClient)
+                {
+                    startServer();
+                }
+                else
+                {
+                    startClient();
+                }
+                active = true;
             }
-            else
-            {
-                startClient();
-            }
-            active = true;
         }
         public void stop()
         {
-            try
+            if (active)
             {
-                if (!isClient) { server.Close(); server = null; }
-                else { client.Close(); client = null; }
+                try
+                {
+                    if (!isClient) { server.Close(); server = null; }
+                    else { client.Close(); client = null; }
+                }
+                catch (NullReferenceException) { }
+                Console.WriteLine("Disconnected: " + name);
+                active = false;
             }
-            catch (NullReferenceException) { }
-            active = false;
         }
         public void sendcommand(string command)
         {

@@ -4,13 +4,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.ComponentModel;
-using Microsoft.Kinect;
 using System.Threading.Tasks;
-using System.IO.Pipes;
 using System.Diagnostics;
-using System.IO;
 using System.Timers;
 using System.Windows.Shapes;
+using SharedLibraries;
 
 namespace FrontEndUIRedux
 {
@@ -42,7 +40,6 @@ namespace FrontEndUIRedux
         }
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            guiCommands.start();
             Dictionary<string,bool> stances = new Dictionary<string, bool>(){
                 { "SingleLegStanceRadio", SingleLegStanceRadio.IsChecked == true },
                 { "DoubleLegStanceRadio", DoubleLegStanceRadio.IsChecked == true },
@@ -56,39 +53,14 @@ namespace FrontEndUIRedux
 
         //Ellipse initialization
         Ellipse[] bodypoints = new Ellipse[18];
-
-        
-
-        // Array of Joint locations --------------------------------------
+        Ellipse COB = new Ellipse();
+        double[,] COBpoint = new double[1, 2];
         double[,] joints = new double[18,2];
-        //int[,] joints = new int[,] { { 0, 0 },
-        //                             { 0, 5 },
-        //                             { 0, 10 },
-        //                             { 0, 15 },
-        //                             { 0, 20 },
-        //                             { 0, 25 },
-        //                             { 0, 30 },
-        //                             { 0, 35 },
-        //                             { 0, 40 },
-        //                             { 0, 45 } };
-        //int[,] joints1 = new int[,] { { 0, 0 },
-        //                             { 5, 0 },
-        //                             { 10, 0 },
-        //                             { 15, 0 },
-        //                             { 20, 0 },
-        //                             { 25, 0 },
-        //                             { 30, 0 },
-        //                             { 35, 0 },
-        //                             { 40, 0 },
-        //                             { 45, 0 }  };
         // Methods
         private void start()
         {
-            //foreach (Pipe pipe in pipes) { pipe.start(); }
-            guiClient.start();
-            guiClient.write.WriteLine("Start");
+            Pipe.connectPipes(pipes);
             infoUpdateTimer.Enabled = true;
-            //graphTimer.Enabled = true;
             this.Dispatcher.Invoke(() =>
             {
                 StartButton.Content = "Stop";
@@ -99,8 +71,7 @@ namespace FrontEndUIRedux
         {
             infoUpdateTimer.Enabled = false;
             infoResetTimer.Enabled = true;
-            infoUpdateTimer.Enabled = false;
-            foreach (Pipe pipe in pipes) { pipe.stop(); }
+            Pipe.disconnectPipes(pipes);
             this.Dispatcher.Invoke(() =>
             {
                 StartButton.IsEnabled = false;
@@ -111,11 +82,11 @@ namespace FrontEndUIRedux
         private void reset()
         {
             string blank = "";
-            RWeight.Content = blank;
-            TLeft.Content = blank;
-            TRight.Content = blank;
-            BRight.Content = blank;
-            BLeft.Content = blank;
+            RWeight.Text = blank;
+            TLeft.Text = blank;
+            TRight.Text = blank;
+            BRight.Text = blank;
+            BLeft.Text = blank;
             SpineBaseX.Text = blank;
             SpineBaseY.Text = blank;
             SpineBaseZ.Text = blank;
@@ -195,19 +166,19 @@ namespace FrontEndUIRedux
                     switch (words[1])
                     {
                         case "RWeight":
-                            RWeight.Content = words[2];
+                            RWeight.Text = words[2];
                             break;
                         case "TopLeft":
-                            TLeft.Content = words[2];
+                            TLeft.Text = words[2];
                             break;
                         case "TopRight":
-                            TRight.Content = words[2];
+                            TRight.Text = words[2];
                             break;
                         case "BottomRight":
-                            BRight.Content = words[2];
+                            BRight.Text = words[2];
                             break;
                         case "BottomLeft":
-                            BLeft.Content = words[2];
+                            BLeft.Text = words[2];
                             break;
                         case "spinebase":
                             SpineBaseX.Text = words[2];
@@ -357,9 +328,9 @@ namespace FrontEndUIRedux
             this.Dispatcher.Invoke(() =>
             {
                 reset();
+                System.Threading.Thread.Sleep(500);
                 StartButton.IsEnabled = true;
             });
-
         }
         void infoUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -370,8 +341,6 @@ namespace FrontEndUIRedux
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
-            
-            //Remove the previous ellipse from the paint canvas.
             for(int i = 0; i < bodypoints.Length; i++)
             {
                 PaintCanvas.Children.Remove(bodypoints[i]);
@@ -379,37 +348,13 @@ namespace FrontEndUIRedux
                 PaintCanvas.Children.Add(bodypoints[i]);
                 Canvas.SetLeft(bodypoints[i], joints[i, 0]);
                 Canvas.SetBottom(bodypoints[i], joints[i, 1]);
-
             }
-            //>>>>>>PaintCanvas.Children.Remove(ellipse);
-            //PaintCanvas.Children.Remove(ellipse2);
-            //if (idx >= joints.GetLength(0))
-            //{
-            //    idx = 0;
-            //}
 
-            //Create ellipse with height and width
-            //ellipse2 = CreateAnEllipse(20, 20);
-            //>>>>>>>>>>>>ellipse = CreateAnEllipse(20, 20);
-
-            //Add Ellipse to canvas 
-            //>>>>>>>>>>>>>>>>PaintCanvas.Children.Add(ellipse);
-            //PaintCanvas.Children.Add(ellipse2);
-
-            //if (idx < joints.GetLength(0))
-            //{
-               //>>>>>>>>>>>>> Canvas.SetLeft(ellipse, joints[idx, 0]);
-                //>>>>>>>>>>>>>Canvas.SetBottom(ellipse, joints[idx, 1]);
-                // Canvas.SetLeft(ellipse2, joints1[idx, 0]);
-                //Canvas.SetTop(ellipse2, joints1[idx, 1]);
-          //  }
-            //else
-            //{
-            //    idx = 0;
-            //}
-
-            //Increment the index
-            //idx++;
+            PaintCanvas.Children.Remove(COB);
+            COB = CreateAnEllipse(10, 10);
+            PaintCanvas.Children.Add(COB);
+            Canvas.SetLeft(COB, COBpoint[0,0]);
+            Canvas.SetBottom(COB, COBpoint[0, 1]);
 
         }
 
@@ -437,7 +382,6 @@ namespace FrontEndUIRedux
         /// <param name="e">event arguments</param>
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-
             //Initialize the timer class
             timer = new System.Windows.Threading.DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(.01); //Set the interval period here.
