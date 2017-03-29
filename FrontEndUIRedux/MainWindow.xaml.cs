@@ -23,6 +23,7 @@ namespace FrontEndUIRedux
         Timer infoUpdateTimer = new Timer() { Interval = .1, Enabled = false };
         Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
         Timer initalLoadTimer = new Timer() { Interval = 1500, Enabled = true };
+        Timer stopLoggingTimer = new Timer() { Interval = 35000, Enabled = false };
         //Timer graphTimer = new Timer() { Interval = 100, Enabled = false };
         private System.Windows.Threading.DispatcherTimer timer;
 
@@ -40,15 +41,18 @@ namespace FrontEndUIRedux
         }
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            Dictionary<string,bool> stances = new Dictionary<string, bool>(){
+            Dictionary<string, bool> stances = new Dictionary<string, bool>(){
                 { "SingleLegStanceRadio", SingleLegStanceRadio.IsChecked == true },
                 { "DoubleLegStanceRadio", DoubleLegStanceRadio.IsChecked == true },
                 { "TandemLegStanceRadio", TandemLegStanceRadio.IsChecked == true }};
 
             ExportButton.IsEnabled = false;
             ExportButton.Content = "Collecting Data...";
-            foreach(KeyValuePair<string,bool> stance in stances) { if (stance.Value) { guiCommands.write.WriteLine(stance.Key); } }
-            
+            foreach (KeyValuePair<string, bool> stance in stances)
+            {
+                if (stance.Value) { guiCommands.write.WriteLine(stance.Key); }
+            }
+            stopLoggingTimer.Enabled = true;
         }
 
         //Ellipse initialization
@@ -314,6 +318,11 @@ namespace FrontEndUIRedux
         }
 
         //Events
+        private void stopLoggingTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            stopLoggingTimer.Enabled = false;
+            stop();
+        }
         private void initalLoadTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             this.Dispatcher.Invoke(() =>
@@ -392,6 +401,7 @@ namespace FrontEndUIRedux
             infoUpdateTimer.Elapsed += new ElapsedEventHandler(infoUpdateTimer_Elapsed);
             infoResetTimer.Elapsed += new ElapsedEventHandler(infoResetTimer_Elapsed);
             initalLoadTimer.Elapsed += new ElapsedEventHandler(initalLoadTimer_Elapsed);
+            stopLoggingTimer.Elapsed += new ElapsedEventHandler(stopLoggingTimer_Elapsed);
         }
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
         {
