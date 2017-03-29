@@ -28,6 +28,7 @@ namespace BalanceBoard
         
         static void Main(string[] args)
         {    
+            // If called in Debug mode, run DEBUG, else run program
             if (args.Length > 0) { if (args[0] == "Debug") { startDebug(); } }
             else { run(); }
         }
@@ -38,30 +39,45 @@ namespace BalanceBoard
             var run = true;
 
             Console.WriteLine("Connecting....");
+
+            // Run untill closed or unexpected Exception
             while (run)
             {
                 try
                 {
-                    // Connect to Pipe
-                    connectPipe();
-                    listen();
-                    if (isConnected==false) { connect(); }                    
-                    start();
-                }
-                catch (IOException) { Console.WriteLine("Connection Terminated"); }
-                catch (Exception ex) { Console.WriteLine(ex.ToString()); run = false; }
-                finally { BoardServer.Dispose(); }                
+                    // Initialize and start pipe
+                    connectPipe(); 
 
+                    // Listen for start command
+                    listen(); 
+
+                    // Initialize Board variable (Only do once)
+                    if (isConnected==false) { connect(); }                
+
+                    // Start reading from sensors and send to pipe
+                    start(); 
+                }
+
+                // Catch IOException when pipe is closed and restart pipe connection
+                catch (IOException) { Console.WriteLine("Connection Terminated"); }
+
+                // Catch all other unexpected exceptions, write to terminal and close program
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); run = false; }
+
+                // Dispose thread 
+                finally { BoardServer.Dispose(); }
             }
         }
 
+        /// <summary>
+        /// Listen to Pipe Connection and return value
+        /// </summary>
+        /// <returns></returns>
         static string listen()
         {
-            var message = "";
-
             while (true)
             {
-                message = StreamRead.ReadLine();
+                var message = StreamRead.ReadLine();
                 if (message != null)
                 {
                     return message;
@@ -69,6 +85,10 @@ namespace BalanceBoard
             }
         }
 
+        /// <summary>
+        /// Read Data from sensors and send to Pipe
+        /// </summary>
+        /// <returns></returns>
         static string start()
         {
             while (true)
@@ -79,6 +99,10 @@ namespace BalanceBoard
             }
         }
 
+        /// <summary>
+        /// Debug Mode
+        /// </summary>
+        /// <param name="mode"></param>
         static void startDebug(int mode=1)
         {
             List<string> a;
@@ -102,6 +126,10 @@ namespace BalanceBoard
             }
         }
 
+        /// <summary>
+        /// Prints data data list to console
+        /// </summary>
+        /// <param name="data"></param>
         static void print(List<string> data)
         {
             foreach (string line in data)
@@ -110,6 +138,10 @@ namespace BalanceBoard
             }
         }
 
+        /// <summary>
+        /// Sends Data List through pipe
+        /// </summary>
+        /// <param name="data"></param>
         static void send(List<string> data)
         {
             foreach (string line in data)
@@ -118,6 +150,9 @@ namespace BalanceBoard
             }
         }
 
+        /// <summary>
+        /// Verifies that Balance board is connected, then initializes board object
+        /// </summary>
         private static void connect()
         {
             try
@@ -159,6 +194,9 @@ namespace BalanceBoard
 
         }
 
+        /// <summary>
+        /// Initialize and Connect to Pipe
+        /// </summary>
         private static void connectPipe() {
             // Start and Connect to Pipe
             BoardServer = new NamedPipeServerStream("board", PipeDirection.InOut);
@@ -169,6 +207,10 @@ namespace BalanceBoard
             Console.WriteLine("Pipe Connected.");
         }
 
+        /// <summary>
+        /// Populates sensor data at a given instance and returns it in a string list
+        /// </summary>
+        /// <returns></returns>
         private static List<string> InfoUpdate()
         {
             var result = new List<string>();
