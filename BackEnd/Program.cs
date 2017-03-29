@@ -25,13 +25,13 @@ namespace BackEnd
             {kinect, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe"},
             {board, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\BalanceBoard\\bin\\Debug\\BalanceBoard.exe"},
             {gui, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\FrontEndUIRedux\\bin\\Debug\\FrontEndUIRedux.exe"},
-            {tunnel, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe"},
+            {tunnel, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Bridge\\bin\\Debug\\Bridge.exe"},
             //{testapp, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\testapp\\bin\\Debug\\testapp.exe"},
             //{testapp2, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\testapp2\\bin\\Debug\\testapp2.exe"},
         }; 
         // Lists
         // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
-        static List<Pipe> pipelist = new List<Pipe>() { kinect, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
+        static List<Pipe> pipelist = new List<Pipe>() { tunnel, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
         static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui, fromgui }).ToList();
         static List<string> data_list = new List<String>();
 
@@ -57,7 +57,7 @@ namespace BackEnd
         {
             bool run = true;
             stopPrograms();
-            //runPrograms();
+            runPrograms();
             while (run)
             {
                 try

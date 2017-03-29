@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectEnvironment", "KinectEnvironment\KinectEnvironment.csproj", "{B9297C8F-983F-40FF-ADFD-A963018D6AA2}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testapp", "testapp\testapp.csproj", "{E35F69C7-ADE8-47C0-81D0-F144EDC1A784}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testapp2", "testapp2\testapp2.csproj", "{D6B5D382-053C-4921-A9A0-BB6AFEB8F738}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge", "Bridge\Bridge.csproj", "{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,6 +165,22 @@ Global
 		{D6B5D382-053C-4921-A9A0-BB6AFEB8F738}.Release|x64.Build.0 = Release|Any CPU
 		{D6B5D382-053C-4921-A9A0-BB6AFEB8F738}.Release|x86.ActiveCfg = Release|Any CPU
 		{D6B5D382-053C-4921-A9A0-BB6AFEB8F738}.Release|x86.Build.0 = Release|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Debug|ARM.Build.0 = Debug|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Debug|x64.Build.0 = Debug|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Debug|x86.Build.0 = Debug|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Release|ARM.ActiveCfg = Release|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Release|ARM.Build.0 = Release|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Release|x64.ActiveCfg = Release|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Release|x64.Build.0 = Release|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Release|x86.ActiveCfg = Release|Any CPU
+		{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
