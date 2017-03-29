@@ -33,7 +33,7 @@ namespace MediBalance
     public sealed partial class MainPage : Page
     {
         string timeFormat = "HH:mm:ss:fff";
-        string ipadd = "10.109.137.97";
+        string ipadd = "10.0.0.10";
         Tcp_Client clit = new Tcp_Client();
         //clit.create_socket();
         //clit.connect(ipadd);
@@ -162,15 +162,15 @@ namespace MediBalance
             //clit.create_socket();
             //clit.connect(ipadd);
             //await clit.send("hello world");
-
+            //string data_string;
             // Simulate Wait Time
             for (int i = 0; i < hr.Count; i++)
             {
                 await Task.Delay(1000);
-                samples.Add(hr[i].ToString() + ": " + DateTime.Now.ToString(timeFormat));
+                //data_string = string.Format("{0},Heartrate,{1};", DateTime.Now.ToString(timeFormat), hr[i].ToString());
+                samples.Add(string.Format("{0},Heartrate,{1};", DateTime.Now.ToString(timeFormat), hr[i].ToString()));
                 connection_text.Text += samples[i] + '\n';
                 await clit.send(samples[i]);
-
                 //string res = await clit.sendit("10.0.0.10", "8001", "hello world");
             }
             //clit.close();
