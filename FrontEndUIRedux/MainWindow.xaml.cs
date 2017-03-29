@@ -20,7 +20,8 @@ namespace FrontEndUIRedux
         Pipe[] pipes = { guiClient, guiCommands };
 
         // Set Timers
-        Timer infoUpdateTimer = new Timer() { Interval = .1, Enabled = false };
+        Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
+        Timer timeTimer = new Timer() { Interval = 100, Enabled = false };
         Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
         Timer initalLoadTimer = new Timer() { Interval = 1500, Enabled = true };
         Timer stopLoggingTimer = new Timer() { Interval = 35000, Enabled = false };
@@ -169,6 +170,9 @@ namespace FrontEndUIRedux
                 {
                     switch (words[1])
                     {
+                        case "Heartrate":
+                            Heart_Rate.Text = words[2];
+                            break;
                         case "RWeight":
                             RWeight.Text = words[2];
                             break;
@@ -318,6 +322,13 @@ namespace FrontEndUIRedux
         }
 
         //Events
+        private void timeTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                RealTimeClock.Text = "Current Time: " + DateTime.Now.ToString("HH:mm:ss");
+            });
+        }
         private void stopLoggingTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             stopLoggingTimer.Enabled = false;
@@ -398,10 +409,12 @@ namespace FrontEndUIRedux
             // loopCounter = 10;
             timer.Start();
             //  graphTimer.Elapsed += new ElapsedEventHandler(graphTimer_Elapsed);
+            timeTimer.Elapsed += new ElapsedEventHandler(timeTimer_Elapsed);
             infoUpdateTimer.Elapsed += new ElapsedEventHandler(infoUpdateTimer_Elapsed);
             infoResetTimer.Elapsed += new ElapsedEventHandler(infoResetTimer_Elapsed);
             initalLoadTimer.Elapsed += new ElapsedEventHandler(initalLoadTimer_Elapsed);
             stopLoggingTimer.Elapsed += new ElapsedEventHandler(stopLoggingTimer_Elapsed);
+            timeTimer.Enabled = true;
         }
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
         {
