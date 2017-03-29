@@ -23,7 +23,7 @@ namespace ConsoleApplication1
         static TcpListener myList = null;
         static Socket s = null;
         //Create receive buffer for TCP connection
-        static int buffer_len = 28;
+        static int buffer_len = 27;
         static byte[] b = new byte[buffer_len];
         static string readresult = null;
         static bool tcpconnect = false;
