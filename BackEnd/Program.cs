@@ -23,11 +23,11 @@ namespace BackEnd
             {kinect, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe"},
             {board, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\BalanceBoard\\bin\\Debug\\BalanceBoard.exe"},
             {gui, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\FrontEndUIRedux\\bin\\Debug\\FrontEndUIRedux.exe"},
-            {tunnel, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Tunnel\\bin\\Debug\\Tunnel.exe"},
+            {tunnel, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Bridge\\bin\\Debug\\Bridge.exe"},
         };
         // Lists
         // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
-        static List<Pipe> pipelist = new List<Pipe>() { board, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
+        static List<Pipe> pipelist = new List<Pipe>() { kinect, board, tunnel, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
         static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui, fromgui }).ToList();
         static List<string> data_list = new List<String>();
 

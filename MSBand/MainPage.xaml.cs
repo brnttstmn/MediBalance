@@ -33,7 +33,7 @@ namespace MediBalance
     public sealed partial class MainPage : Page
     {
         string timeFormat = "HH:mm:ss:fff";
-        string ipadd = "10.0.0.10";
+        string ipadd = "10.109.55.62";
         Tcp_Client clit = new Tcp_Client();
         //clit.create_socket();
         //clit.connect(ipadd);
