@@ -15,7 +15,7 @@ namespace ConsoleApplication1
 {
     class Program
     {
-        static NamedPipeServerStream kServer = new NamedPipeServerStream("tunnel", PipeDirection.InOut);
+        static NamedPipeServerStream kServer =  null;
         static StreamWriter sw = null;
         static StreamReader sr = null;
         static IPAddress ipAd = null;
@@ -30,24 +30,30 @@ namespace ConsoleApplication1
         static bool pipeconnect = false;
         static string pipemsg = "Stop";
 
+        static ThreadStart pipestart = new ThreadStart(connectPipe);
+        static Thread pipeconnection = null;
+
+        static ThreadStart tcpstart = new ThreadStart(connectTcp);
+        static Thread tcpconnection = null;
+
+        static ThreadStart tcpreadstart = new ThreadStart(readnostream);
+        static Thread tcpread = null;
+
+        static ThreadStart tcpreadstreamstart = new ThreadStart(readNstream);
+        static Thread tcpreadstream = new Thread(tcpreadstreamstart);
+
+        static ThreadStart pipelistenstart = new ThreadStart(pipelistener);
+        static Thread pipelisten = null;
+        
         static void Main(string[] args)
         {
-            Console.WriteLine("In Main: Creating the Child threads");
+            //Console.WriteLine("In Main: Creating the Child threads");
 
-            ThreadStart pipestart = new ThreadStart(connectPipe);
-            Thread pipeconnection = new Thread(pipestart);
-
-            ThreadStart tcpstart = new ThreadStart(connectTcp);
-            Thread tcpconnection = new Thread(tcpstart);
-
-            ThreadStart tcpreadstart = new ThreadStart(readnostream);
-            Thread tcpread = new Thread(tcpreadstart);
-
-            ThreadStart tcpreadstreamstart = new ThreadStart(readNstream);
-            Thread tcpreadstream = new Thread(tcpreadstreamstart);
-
-            ThreadStart pipelistenstart = new ThreadStart(pipelistener);
-            Thread pipelisten = new Thread(pipelistenstart);
+            tcpconnection = new Thread(tcpstart);
+            pipeconnection = new Thread(pipestart);
+            pipelisten = new Thread(pipelistenstart);
+            tcpread = new Thread(tcpreadstart);
+            pipelisten = new Thread(pipelistenstart);
 
 
             //Start connection threads(they act weird)
@@ -66,49 +72,66 @@ namespace ConsoleApplication1
 
             while (true)
             {
-                if (pipemsg == "Start")
+                if (!pipeconnect)
                 {
-                    if (!tcpreadstream.IsAlive)
+                    if (!pipeconnection.IsAlive)
                     {
-                        try
-                        {
-                            tcpread.Abort();
-                            //tcpread.Join();
-                            tcpreadstream.Start();
-                            pipemsg = "Running";
-                        }
-                        catch (Exception)
-                        {
-                            tcpreadstream.Start();
-                            pipemsg = "Running";
-                        }
+                        pipeconnection = new Thread(pipestart);
+                        pipelisten = new Thread(pipelistenstart);
+                        pipeconnection.Start();
+                        pipelisten.Start();
                     }
                 }
-                if (pipemsg == "Stop")
-                {
-                    if (!tcpread.IsAlive)
-                    {
-
-                        try
-                        {
-                            tcpreadstream.Abort();
-                            tcpreadstream.Join();
-                            tcpread.Start();
-                            pipemsg = "Stopped";
-                        }
-                        catch (Exception)
-                        {
-                            tcpread.Start();
-                            pipemsg = "Stopped";
-                        }
-                    }
-                }
+                threadmanage();
             }
 
 
             Console.WriteLine("Main: Finsihed");
             Console.ReadKey();
         }
+
+        public static void threadmanage()
+        {
+            if (pipemsg == "Start" && pipeconnect == true)
+            {
+                if (!tcpreadstream.IsAlive)
+                {
+                    tcpreadstream = new Thread(tcpreadstreamstart);
+                    try
+                    {
+                        tcpread.Abort();
+                        tcpread.Join();
+                        tcpreadstream.Start();
+                        pipemsg = "Running";
+                    }
+                    catch (Exception)
+                    {
+                        tcpreadstream.Start();
+                        pipemsg = "Running";
+                    }
+                }
+            }
+            if (pipemsg == "Stop")
+            {
+                if (!tcpread.IsAlive)
+                {
+                    tcpread = new Thread(tcpreadstart);
+                    try
+                    {
+                        tcpreadstream.Abort();
+                        tcpreadstream.Join();
+                        tcpread.Start();
+                        pipemsg = "Stopped";
+                    }
+                    catch (Exception)
+                    {
+                        tcpread.Start();
+                        pipemsg = "Stopped";
+                    }
+                }
+            }
+        }
+
 
         public static async void connectTcp()
         {
@@ -161,7 +184,16 @@ namespace ConsoleApplication1
             while (true)
             {
                 data = readTcp();
-                sw.WriteLine(data);
+                try
+                {
+                    sw.WriteLine(data);
+                }
+                catch (IOException)
+                {
+                    pipemsg = "Stop";
+                    pipeconnect = false;
+                    kServer.Close();
+                }
             }
         }
 
@@ -198,6 +230,7 @@ namespace ConsoleApplication1
         static public void connectPipe()
         {
             pipeconnect = false;
+            kServer = new NamedPipeServerStream("tunnel", PipeDirection.InOut);
             Console.WriteLine("Waiting on Pipe Connection...");
             //data.AppendText(Environment.NewLine);
 
@@ -214,6 +247,7 @@ namespace ConsoleApplication1
         {
             //pipemsg = null;
             string res;
+            while (!pipeconnect) Thread.Sleep(10);
             res = sr.ReadLine();
             pipemsg = res;
         }
