@@ -14,7 +14,7 @@
         <SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2" />
     </Window.Resources>
     <Grid>
-        <TextBox x:Name="Seconds" HorizontalAlignment="Right" Height="21" Margin="0,27,665,0" TextWrapping="Wrap" Text="Seconds" VerticalAlignment="Top" Width="87" TextChanged="textBox_TextChanged" TextAlignment="Center"/>
+        <TextBox x:Name="Seconds" HorizontalAlignment="Right" Height="21" Margin="0,27,665,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="87" TextChanged="textBox_TextChanged" TextAlignment="Center"/>
         <Label x:Name="RunTime" Content="Run Time:" HorizontalAlignment="Left" Height="25" Margin="8,23,0,0" VerticalAlignment="Top" Width="61"/>
         <RadioButton x:Name="SingleLegStanceRadio" Content="Single Leg Stance" HorizontalAlignment="Left" Margin="10,495,0,0" VerticalAlignment="Top" Checked="SingleLegRadio_Checked"/>
         <RadioButton x:Name="DoubleLegStanceRadio" Content="Double Leg Stance" HorizontalAlignment="Left" Margin="10,515,0,0" VerticalAlignment="Top" Checked="DoubleLegRadio_Checked"/>

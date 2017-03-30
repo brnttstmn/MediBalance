@@ -18,13 +18,17 @@ namespace FrontEndUIRedux
         static Pipe guiClient = new Pipe("interface", true);
         static Pipe guiCommands = new Pipe("frominterface", true);
         Pipe[] pipes = { guiClient, guiCommands };
+        static string status = "";
+        static short time = 30;
+        static short timeElapsed = 0;
 
         // Set Timers
         Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
         Timer timeTimer = new Timer() { Interval = 100, Enabled = false };
         Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
+        Timer statusTimer = new Timer() { Interval = 1000, Enabled = true };
         Timer initalLoadTimer = new Timer() { Interval = 1500, Enabled = true };
-        Timer stopLoggingTimer = new Timer() { Interval = 35000, Enabled = false };
+        Timer stopLoggingTimer = new Timer() { Interval = time * 1000, Enabled = false };
         //Timer graphTimer = new Timer() { Interval = 100, Enabled = false };
         private System.Windows.Threading.DispatcherTimer timer;
 
@@ -42,18 +46,7 @@ namespace FrontEndUIRedux
         }
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            Dictionary<string, bool> stances = new Dictionary<string, bool>(){
-                { "SingleLegStanceRadio", SingleLegStanceRadio.IsChecked == true },
-                { "DoubleLegStanceRadio", DoubleLegStanceRadio.IsChecked == true },
-                { "TandemLegStanceRadio", TandemLegStanceRadio.IsChecked == true }};
-
-            ExportButton.IsEnabled = false;
-            ExportButton.Content = "Collecting Data...";
-            foreach (KeyValuePair<string, bool> stance in stances)
-            {
-                if (stance.Value) { guiCommands.write.WriteLine(stance.Key); }
-            }
-            stopLoggingTimer.Enabled = true;
+            log();
         }
 
         //Ellipse initialization
@@ -64,6 +57,7 @@ namespace FrontEndUIRedux
         // Methods
         private void start()
         {
+            status = "running";
             Pipe.connectPipes(pipes);
             infoUpdateTimer.Enabled = true;
             this.Dispatcher.Invoke(() =>
@@ -74,6 +68,7 @@ namespace FrontEndUIRedux
         }
         private void stop()
         {
+            status = "";
             infoUpdateTimer.Enabled = false;
             infoResetTimer.Enabled = true;
             Pipe.disconnectPipes(pipes);
@@ -83,6 +78,31 @@ namespace FrontEndUIRedux
                 ExportButton.IsEnabled = false;
                 StartButton.Content = "Start";
             });
+        }
+        private void log()
+        {
+            status = "logging";
+            Dictionary<string, bool> stances = new Dictionary<string, bool>(){
+                { "SingleLegStanceRadio", SingleLegStanceRadio.IsChecked == true },
+                { "DoubleLegStanceRadio", DoubleLegStanceRadio.IsChecked == true },
+                { "TandemLegStanceRadio", TandemLegStanceRadio.IsChecked == true }};
+
+            ExportButton.IsEnabled = false;
+            ExportButton.Content = "Collecting Data...";
+
+            try { time = Int16.Parse(Seconds.Text); }
+            catch (Exception) { }
+            stopLoggingTimer = new Timer() { Interval = time * 1000, Enabled = false };
+            stopLoggingTimer.Elapsed += new ElapsedEventHandler(stopLoggingTimer_Elapsed);
+            stopLoggingTimer.Enabled = true;
+            //try { time = Int16.Parse(Seconds.Text);  }
+            //catch (Exception) { }
+            
+            foreach (KeyValuePair<string, bool> stance in stances)
+            {
+                if (stance.Value) { guiCommands.write.WriteLine(stance.Key); }
+            }
+            
         }
         private void reset()
         {
@@ -150,8 +170,7 @@ namespace FrontEndUIRedux
         static void stopPrograms()
         {
             List<string> programList = new List<string>()
-            {"KinectEnvironment","BalanceBoard","Backend","Tunnel",
-             //"testapp","testapp2"
+            {"KinectEnvironment","BalanceBoard","Backend","Bridge",
             };
             char[] del = { '\\', '.' };
             Parallel.ForEach(programList, program => {
@@ -329,9 +348,36 @@ namespace FrontEndUIRedux
                 RealTimeClock.Text = "Current Time: " + DateTime.Now.ToString("HH:mm:ss");
             });
         }
+        private void statusTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                switch (status)
+                {
+                    case "running":
+                        if (Status_Bar.Text.Equals("") || Status_Bar.Text.Equals("Running...")) { Status_Bar.Text = "Running"; }
+                        else if (Status_Bar.Text.Equals("Running")) { Status_Bar.Text = "Running."; }
+                        else if (Status_Bar.Text.Equals("Running.")) { Status_Bar.Text = "Running.."; }
+                        else if (Status_Bar.Text.Equals("Running..")) { Status_Bar.Text = "Running..."; }
+                        break;
+                    case "logging":
+                        if (Status_Bar.Text.Contains("Running")|| Status_Bar.Text.Contains("Logging...")) { Status_Bar.Text = "Logging\t\t" + (time - timeElapsed++).ToString(); }
+                        else if (Status_Bar.Text.Contains("Logging..")) { Status_Bar.Text = "Logging...\t" + (time - timeElapsed++).ToString(); }
+                        else if (Status_Bar.Text.Contains("Logging.")) { Status_Bar.Text = "Logging..\t" + (time - timeElapsed++).ToString(); }
+                        else if (Status_Bar.Text.Contains("Logging")) { Status_Bar.Text = "Logging.\t\t" + (time - timeElapsed++).ToString(); }
+                        break;
+                    case "":
+                    default:
+                        timeElapsed = 0;
+                        Status_Bar.Text = "";
+                        break;
+                }
+            });
+        }
         private void stopLoggingTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             stopLoggingTimer.Enabled = false;
+            stopLoggingTimer.Elapsed -= new ElapsedEventHandler(stopLoggingTimer_Elapsed);
             stop();
         }
         private void initalLoadTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -413,7 +459,8 @@ namespace FrontEndUIRedux
             infoUpdateTimer.Elapsed += new ElapsedEventHandler(infoUpdateTimer_Elapsed);
             infoResetTimer.Elapsed += new ElapsedEventHandler(infoResetTimer_Elapsed);
             initalLoadTimer.Elapsed += new ElapsedEventHandler(initalLoadTimer_Elapsed);
-            stopLoggingTimer.Elapsed += new ElapsedEventHandler(stopLoggingTimer_Elapsed);
+            //stopLoggingTimer.Elapsed += new ElapsedEventHandler(stopLoggingTimer_Elapsed);
+            statusTimer.Elapsed += new ElapsedEventHandler(statusTimer_Elapsed);
             timeTimer.Enabled = true;
         }
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
