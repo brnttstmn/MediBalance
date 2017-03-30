@@ -29,8 +29,7 @@ namespace FrontEndUIRedux
         Timer statusTimer = new Timer() { Interval = 1000, Enabled = true };
         Timer initalLoadTimer = new Timer() { Interval = 1500, Enabled = true };
         Timer stopLoggingTimer = new Timer() { Interval = time * 1000, Enabled = false };
-        //Timer graphTimer = new Timer() { Interval = 100, Enabled = false };
-        private System.Windows.Threading.DispatcherTimer timer;
+        Timer graphTimer = new Timer() { Interval = 1, Enabled = false };
 
         // Button Presses
         public void StartButton_Click(object sender, RoutedEventArgs e)
@@ -57,6 +56,7 @@ namespace FrontEndUIRedux
         // Methods
         private void start()
         {
+            graphTimer.Enabled = true;
             status = "running";
             Pipe.connectPipes(pipes);
             infoUpdateTimer.Enabled = true;
@@ -68,6 +68,7 @@ namespace FrontEndUIRedux
         }
         private void stop()
         {
+            graphTimer.Enabled = false;
             status = "";
             infoUpdateTimer.Enabled = false;
             infoResetTimer.Enabled = true;
@@ -405,9 +406,11 @@ namespace FrontEndUIRedux
                 parse(guiClient.read.ReadLine());
             });
         }
-        private void timer1_Tick(object sender, EventArgs e)
+        private void graphTimer_Elapsed(object sender, EventArgs e)
         {
-            for(int i = 0; i < bodypoints.Length; i++)
+            this.Dispatcher.Invoke(() =>
+            {
+                for (int i = 0; i < bodypoints.Length; i++)
             {
                 PaintCanvas.Children.Remove(bodypoints[i]);
                 bodypoints[i] = CreateAnEllipse(10, 10);
@@ -421,6 +424,7 @@ namespace FrontEndUIRedux
             PaintCanvas.Children.Add(COB);
             Canvas.SetLeft(COB, COBpoint[0,0]);
             Canvas.SetBottom(COB, COBpoint[0, 1]);
+            });
 
         }
 
@@ -449,19 +453,12 @@ namespace FrontEndUIRedux
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             //Initialize the timer class
-            timer = new System.Windows.Threading.DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(.01); //Set the interval period here.
-            timer.Tick += timer1_Tick;
-            // loopCounter = 10;
-            timer.Start();
-            //  graphTimer.Elapsed += new ElapsedEventHandler(graphTimer_Elapsed);
+            graphTimer.Elapsed += new ElapsedEventHandler(graphTimer_Elapsed);
             timeTimer.Elapsed += new ElapsedEventHandler(timeTimer_Elapsed);
             infoUpdateTimer.Elapsed += new ElapsedEventHandler(infoUpdateTimer_Elapsed);
             infoResetTimer.Elapsed += new ElapsedEventHandler(infoResetTimer_Elapsed);
             initalLoadTimer.Elapsed += new ElapsedEventHandler(initalLoadTimer_Elapsed);
-            //stopLoggingTimer.Elapsed += new ElapsedEventHandler(stopLoggingTimer_Elapsed);
             statusTimer.Elapsed += new ElapsedEventHandler(statusTimer_Elapsed);
-            timeTimer.Enabled = true;
         }
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
         {
