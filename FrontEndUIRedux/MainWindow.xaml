@@ -13,9 +13,9 @@
         <SolidColorBrush x:Key="KinectPurpleBrush" Color="#ff52318f" />
         <SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2" />
     </Window.Resources>
-    <Grid>
-        <TextBox x:Name="Seconds" HorizontalAlignment="Right" Height="21" Margin="0,27,665,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="87" TextChanged="textBox_TextChanged" TextAlignment="Center"/>
-        <Label x:Name="RunTime" Content="Run Time:" HorizontalAlignment="Left" Height="25" Margin="8,23,0,0" VerticalAlignment="Top" Width="61"/>
+    <Grid RenderTransformOrigin="0.467,0.519">
+        <TextBox x:Name="Seconds" HorizontalAlignment="Right" Height="21" Margin="0,27,720,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="37" TextChanged="textBox_TextChanged" TextAlignment="Center"/>
+        <Label x:Name="RunTime" Content="Log Time:" HorizontalAlignment="Left" Height="25" Margin="8,23,0,0" VerticalAlignment="Top" Width="61"/>
         <RadioButton x:Name="SingleLegStanceRadio" Content="Single Leg Stance" HorizontalAlignment="Left" Margin="10,495,0,0" VerticalAlignment="Top" Checked="SingleLegRadio_Checked"/>
         <RadioButton x:Name="DoubleLegStanceRadio" Content="Double Leg Stance" HorizontalAlignment="Left" Margin="10,515,0,0" VerticalAlignment="Top" Checked="DoubleLegRadio_Checked"/>
         <RadioButton x:Name="TandemLegStanceRadio" Content="Tandem Leg Stance" HorizontalAlignment="Left" Margin="10,535,0,0" VerticalAlignment="Top" Checked="TandemLegRadio_Checked"/>
@@ -25,10 +25,10 @@
         <GroupBox x:Name="LimbDataGroupBox" Header="Limb Data" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Height="419" Width="255">
             <Grid Height="399" VerticalAlignment="Top" Margin="0,0,-1.667,-3" HorizontalAlignment="Left" Width="245">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="87*" />
+                    <ColumnDefinition Width="60*" />
+                    <ColumnDefinition Width="49*" />
+                    <ColumnDefinition Width="49*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -51,85 +51,85 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Joint</Label>
-                <Label Grid.Column="1" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">X</Label>
-                <Label Grid.Column="2" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Y</Label>
-                <Label Grid.Column="3" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Z</Label>
+                <Label Grid.Row="0" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0.333,20.333" Grid.RowSpan="2">Joint</Label>
+                <Label Grid.Column="1" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="3.667,0,0.333,20.333" Grid.RowSpan="2">X</Label>
+                <Label Grid.Column="1" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.ColumnSpan="3" Margin="55.667,0,48.333,20.333" Grid.RowSpan="2">Y</Label>
+                <Label Grid.Column="3" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0.333,0,0.333,20.333" Grid.RowSpan="2">Z</Label>
 
 
 
-                <Label Grid.Row="2" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="-84,5.667,84,15.333" Grid.RowSpan="2">SpineBase</Label>
-                <TextBlock x:Name="SpineBaseX" Grid.Column="1" Grid.Row="1"/>
-                <TextBlock x:Name="SpineBaseY" Grid.Column="2" Grid.Row="1"/>
-                <TextBlock x:Name="SpineBaseZ" Grid.Column="3" Grid.Row="1"/>
-                <Label Grid.Row="2" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">MidSpine</Label>
-                <TextBlock x:Name="MidSpineX" Grid.Column="1" Grid.Row="2"/>
-                <TextBlock x:Name="MidSpineY" Grid.Column="2" Grid.Row="2"/>
-                <TextBlock x:Name="MidSpineZ" Grid.Column="3" Grid.Row="2"/>
-                <Label Grid.Row="3" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Neck</Label>
-                <TextBlock x:Name="NeckX" Grid.Column="1" Grid.Row="3"/>
-                <TextBlock x:Name="NeckY" Grid.Column="2" Grid.Row="3"/>
-                <TextBlock x:Name="NeckZ" Grid.Column="3" Grid.Row="3"/>
-                <Label Grid.Row="4" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Head</Label>
-                <TextBlock x:Name="HeadX" Grid.Column="1" Grid.Row="4"/>
-                <TextBlock x:Name="HeadY" Grid.Column="2" Grid.Row="4"/>
-                <TextBlock x:Name="HeadZ" Grid.Column="3" Grid.Row="4"/>
-                <Label Grid.Row="5" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">ShoulderLeft</Label>
-                <TextBlock x:Name="ShoulderLeftX" Grid.Column="1" Grid.Row="5"/>
-                <TextBlock x:Name="ShoulderLeftY" Grid.Column="2" Grid.Row="5"/>
-                <TextBlock x:Name="ShoulderLeftZ" Grid.Column="3" Grid.Row="5"/>
-                <Label Grid.Row="6" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">ElbowLeft</Label>
-                <TextBlock x:Name="ElbowLeftX" Grid.Column="1" Grid.Row="6"/>
-                <TextBlock x:Name="ElbowLeftY" Grid.Column="2" Grid.Row="6"/>
-                <TextBlock x:Name="ElbowLeftZ" Grid.Column="3" Grid.Row="6"/>
-                <Label Grid.Row="7" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">WristLeft</Label>
-                <TextBlock x:Name="WristLeftX" Grid.Column="1" Grid.Row="7"/>
-                <TextBlock x:Name="WristLeftY" Grid.Column="2" Grid.Row="7"/>
-                <TextBlock x:Name="WristLeftZ" Grid.Column="3" Grid.Row="7"/>
-                <Label Grid.Row="8" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">HandLeft</Label>
-                <TextBlock x:Name="HandLeftX" Grid.Column="1" Grid.Row="8"/>
-                <TextBlock x:Name="HandLeftY" Grid.Column="2" Grid.Row="8"/>
-                <TextBlock x:Name="HandLeftZ" Grid.Column="3" Grid.Row="8"/>
-                <Label Grid.Row="9" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">ShoulderRight</Label>
-                <TextBlock x:Name="ShoulderRightX" Grid.Column="1" Grid.Row="9"/>
-                <TextBlock x:Name="ShoulderRightY" Grid.Column="2" Grid.Row="9"/>
-                <TextBlock x:Name="ShoulderRightZ" Grid.Column="3" Grid.Row="9"/>
-                <Label Grid.Row="10" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">ElbowRight</Label>
-                <Label Grid.Row="11" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">WristRight</Label>
-                <Label Grid.Row="12" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">HandRight</Label>
-                <Label Grid.Row="13" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">HipLeft</Label>
-                <Label Grid.Row="14" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">KneeLeft</Label>
-                <Label Grid.Row="15" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">FootLeft</Label>
-                <Label Grid.Row="16" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">HipRight</Label>
-                <Label Grid.Row="17" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">KneeRight</Label>
-                <Label Grid.Row="18" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">FootRight</Label>
-                <TextBlock x:Name="ElbowRightX" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="2" Margin="0.4,20.6,49,0" Grid.RowSpan="2"/>
-                <TextBlock x:Name="ElbowRightY" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="2" Margin="48.4,20.6,1,0" Grid.RowSpan="2"/>
-                <TextBlock x:Name="ElbowRightZ" Grid.Column="2" Grid.Row="9" Grid.ColumnSpan="2" Margin="48.6,20.6,0.8,0" Grid.RowSpan="2"/>
-                <TextBlock x:Name="WristRightX" Grid.Column="1" Grid.Row="11" Grid.ColumnSpan="2" Margin="0.4,0,49,20.6" Grid.RowSpan="2"/>
-                <TextBlock x:Name="WristRightY" Grid.Column="1" Grid.Row="11" Grid.ColumnSpan="2" Margin="48.4,0,1,20.6" Grid.RowSpan="2"/>
-                <TextBlock x:Name="WristRightZ" Grid.Column="3" Grid.Row="11" Margin="0,0,-0.2,20.6" Grid.RowSpan="2"/>
-                <TextBlock x:Name="HandRightY" Grid.Column="2" Grid.Row="12" Margin="0.6,0.2,0,20.4" Grid.RowSpan="2"/>
-                <TextBlock x:Name="HandRightX" Grid.Column="1" Grid.Row="12" Grid.ColumnSpan="2" Margin="0.4,0.2,49,20.4" Grid.RowSpan="2"/>
-                <TextBlock x:Name="HandRightZ" Grid.Column="2" Grid.Row="12" Grid.ColumnSpan="2" Margin="48.6,0.2,0.8,20.4" Grid.RowSpan="2"/>
-                <TextBlock x:Name="HipLeftX" Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="2" Margin="0.4,0.4,49,20.2" Grid.RowSpan="2"/>
-                <TextBlock x:Name="HipLeftY" Grid.Column="2" Grid.Row="13" Margin="0.6,0.4,0,20.2" Grid.RowSpan="2"/>
-                <TextBlock x:Name="HipLeftZ" Grid.Column="3" Grid.Row="12" Margin="0,20.2,-0.2,0.4" Grid.RowSpan="2"/>
-                <TextBlock x:Name="KneeLeftX" Grid.Column="1" Grid.Row="14" Grid.ColumnSpan="2" Margin="0.4,0.6,49,20" Grid.RowSpan="2"/>
-                <TextBlock x:Name="FootLeftY" Grid.Column="2" Grid.Row="14" Margin="0.6,20.6,0,0" Grid.RowSpan="2"/>
-                <TextBlock x:Name="FootLeftZ" Grid.Column="2" Grid.Row="14" Grid.ColumnSpan="2" Margin="48.6,20.6,0.8,0" Grid.RowSpan="2"/>
-                <TextBlock x:Name="KneeLeftY" Grid.Column="1" Grid.Row="14" Grid.ColumnSpan="2" Margin="48.4,0.6,1,20" Grid.RowSpan="2"/>
-                <TextBlock x:Name="KneeLeftZ" Grid.Column="2" Grid.Row="14" Grid.ColumnSpan="2" Margin="48.6,0.6,0.8,20" Grid.RowSpan="2"/>
-                <TextBlock x:Name="HipRightX" Grid.Column="1" Grid.Row="16" Grid.ColumnSpan="2" Margin="0.4,0,49,20.6" Grid.RowSpan="2"/>
-                <TextBlock x:Name="FootLeftX" Grid.Column="1" Grid.Row="14" Grid.ColumnSpan="2" Margin="0.4,20.6,49,0" Grid.RowSpan="2"/>
-                <TextBlock x:Name="HipRightY" Grid.Column="1" Grid.Row="16" Grid.ColumnSpan="2" Margin="48.4,0,1,20.6" Grid.RowSpan="2"/>
-                <TextBlock x:Name="HipRightZ" Grid.Column="3" Grid.Row="16" Margin="0,0,-0.2,20.6" Grid.RowSpan="2"/>
-                <TextBlock x:Name="KneeRightX" Grid.Column="1" Grid.Row="17" Grid.ColumnSpan="2" Margin="0.4,0.2,49,21.2" Grid.RowSpan="2"/>
-                <TextBlock x:Name="KneeRightY" Grid.Column="2" Grid.Row="17" Margin="0.6,0.2,0,21.2" Grid.RowSpan="2"/>
-                <TextBlock x:Name="KneeRightZ" Grid.Column="3" Grid.Row="17" Margin="0,0.2,-0.2,21.2" Grid.RowSpan="2"/>
-                <TextBlock x:Name="FootRightX" Grid.Column="1" Grid.Row="18" Grid.ColumnSpan="2" Margin="0.4,0.4,49,0.2"/>
-                <TextBlock x:Name="FootRightY" Grid.Column="1" Grid.Row="18" Grid.ColumnSpan="2" Margin="48.4,0.4,1,0.2"/>
-                <TextBlock x:Name="FootRightZ" Grid.Column="3" Grid.Row="18" Margin="0,0.4,-0.2,0.2"/>
+                <Label Grid.Row="2" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="-84,5.667,84.333,15.333" Grid.RowSpan="2">SpineBase</Label>
+                <TextBlock x:Name="SpineBaseX" Grid.Column="1" Grid.Row="1" Margin="3.667,0.333,0.333,0.333"/>
+                <TextBlock x:Name="SpineBaseY" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Margin="55.667,0.333,48.333,0.333"/>
+                <TextBlock x:Name="SpineBaseZ" Grid.Column="3" Grid.Row="1" Margin="0.333"/>
+                <Label Grid.Row="1" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,20.333,0.333,20.333" Grid.RowSpan="3">MidSpine</Label>
+                <TextBlock x:Name="MidSpineX" Grid.Column="1" Grid.Row="1" Margin="3.667,20.333,0.333,20.333" Grid.RowSpan="3"/>
+                <TextBlock x:Name="MidSpineY" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Margin="55.667,20.333,48.333,20.333" Grid.RowSpan="3"/>
+                <TextBlock x:Name="MidSpineZ" Grid.Column="3" Grid.Row="1" Margin="0.333,20.333" Grid.RowSpan="3"/>
+                <Label Grid.Row="3" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0.333,0.333,0.333">Neck</Label>
+                <TextBlock x:Name="NeckX" Grid.Column="1" Grid.Row="3" Margin="3.667,0.333,0.333,0.333"/>
+                <TextBlock x:Name="NeckY" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3" Margin="55.667,0.333,48.333,0.333"/>
+                <TextBlock x:Name="NeckZ" Grid.Column="3" Grid.Row="3" Margin="0.333"/>
+                <Label Grid.Row="3" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,20.333,0.333,20.333" Grid.RowSpan="3">Head</Label>
+                <TextBlock x:Name="HeadX" Grid.Column="1" Grid.Row="3" Margin="3.667,20.333,0.333,20.333" Grid.RowSpan="3"/>
+                <TextBlock x:Name="HeadY" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3" Margin="55.667,20.333,48.333,20.333" Grid.RowSpan="3"/>
+                <TextBlock x:Name="HeadZ" Grid.Column="3" Grid.Row="3" Margin="0.333,20.333" Grid.RowSpan="3"/>
+                <Label Grid.Row="5" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0.333,0.333,0.333">ShoulderLeft</Label>
+                <TextBlock x:Name="ShoulderLeftX" Grid.Column="1" Grid.Row="5" Margin="3.667,0.333,0.333,0.333"/>
+                <TextBlock x:Name="ShoulderLeftY" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Margin="55.667,0.333,48.333,0.333"/>
+                <TextBlock x:Name="ShoulderLeftZ" Grid.Column="3" Grid.Row="5" Margin="0.333"/>
+                <Label Grid.Row="5" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,20.333,0.333,20.333" Grid.RowSpan="3">ElbowLeft</Label>
+                <TextBlock x:Name="ElbowLeftX" Grid.Column="1" Grid.Row="5" Margin="3.667,20.333,0.333,20.333" Grid.RowSpan="3"/>
+                <TextBlock x:Name="ElbowLeftY" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Margin="55.667,20.333,48.333,20.333" Grid.RowSpan="3"/>
+                <TextBlock x:Name="ElbowLeftZ" Grid.Column="3" Grid.Row="5" Margin="0.333,20.333" Grid.RowSpan="3"/>
+                <Label Grid.Row="7" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0.333,0.333,0.333">WristLeft</Label>
+                <TextBlock x:Name="WristLeftX" Grid.Column="1" Grid.Row="7" Margin="3.667,0.333,0.333,0.333"/>
+                <TextBlock x:Name="WristLeftY" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" Margin="55.667,0.333,48.333,0.333"/>
+                <TextBlock x:Name="WristLeftZ" Grid.Column="3" Grid.Row="7" Margin="0.333"/>
+                <Label Grid.Row="7" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,20.333,0.333,21" Grid.RowSpan="3">HandLeft</Label>
+                <TextBlock x:Name="HandLeftX" Grid.Column="1" Grid.Row="7" Margin="3.667,20.333,0.333,21" Grid.RowSpan="3"/>
+                <TextBlock x:Name="HandLeftY" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" Margin="55.667,20.333,48.333,21" Grid.RowSpan="3"/>
+                <TextBlock x:Name="HandLeftZ" Grid.Column="3" Grid.Row="7" Margin="0.333,20.333,0.333,21" Grid.RowSpan="3"/>
+                <Label Grid.Row="9" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0.333,0.333,0">ShoulderRight</Label>
+                <TextBlock x:Name="ShoulderRightX" Grid.Column="1" Grid.Row="9" Margin="3.667,0.333,0.333,0"/>
+                <TextBlock x:Name="ShoulderRightY" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3" Margin="55.667,0.333,48.333,0"/>
+                <TextBlock x:Name="ShoulderRightZ" Grid.Column="3" Grid.Row="9" Margin="0.333,0.333,0.333,0"/>
+                <Label Grid.Row="10" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0.333,0.333">ElbowRight</Label>
+                <Label Grid.Row="10" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,21,0.333,0" Grid.RowSpan="2">WristRight</Label>
+                <Label Grid.Row="12" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0.333,0.333">HandRight</Label>
+                <Label Grid.Row="12" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,21,0.333,0" Grid.RowSpan="2">HipLeft</Label>
+                <Label Grid.Row="14" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0.333,0.333">KneeLeft</Label>
+                <Label Grid.Row="14" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,21,0.333,0" Grid.RowSpan="2">FootLeft</Label>
+                <Label Grid.Row="16" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0.333,0.333">HipRight</Label>
+                <Label Grid.Row="16" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,21,0.333,0" Grid.RowSpan="2">KneeRight</Label>
+                <Label Grid.Row="18" Padding="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0.333,-0.333">FootRight</Label>
+                <TextBlock x:Name="ElbowRightX" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="2" Margin="0.667,20.333,48.667,0.333" Grid.RowSpan="2"/>
+                <TextBlock x:Name="ElbowRightY" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="2" Margin="48.667,20.333,0.667,0.333" Grid.RowSpan="2"/>
+                <TextBlock x:Name="ElbowRightZ" Grid.Column="2" Grid.Row="9" Grid.ColumnSpan="2" Margin="48.667,20.333,0.333,0.333" Grid.RowSpan="2"/>
+                <TextBlock x:Name="WristRightX" Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="2" Margin="0.667,21,48.667,20.333" Grid.RowSpan="3"/>
+                <TextBlock x:Name="WristRightY" Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="2" Margin="48.667,21,0.667,20.333" Grid.RowSpan="3"/>
+                <TextBlock x:Name="WristRightZ" Grid.Column="3" Grid.Row="10" Margin="0.333,21,-0.667,20.333" Grid.RowSpan="3"/>
+                <TextBlock x:Name="HandRightY" Grid.Column="2" Grid.Row="12" Margin="0.667,0,48.333,20" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+                <TextBlock x:Name="HandRightX" Grid.Column="1" Grid.Row="12" Grid.ColumnSpan="2" Margin="0.667,0,48.667,20" Grid.RowSpan="2"/>
+                <TextBlock x:Name="HandRightZ" Grid.Column="2" Grid.Row="12" Grid.ColumnSpan="2" Margin="48.667,0,0.333,20" Grid.RowSpan="2"/>
+                <TextBlock x:Name="HipLeftX" Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="2" Margin="0.667,0.667,48.667,20.333" Grid.RowSpan="2"/>
+                <TextBlock x:Name="HipLeftY" Grid.Column="2" Grid.Row="13" Margin="0.667,0.667,48.333,20.333" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+                <TextBlock x:Name="HipLeftZ" Grid.Column="3" Grid.Row="12" Margin="0.333,20,-0.667,0" Grid.RowSpan="2"/>
+                <TextBlock x:Name="KneeLeftX" Grid.Column="1" Grid.Row="14" Grid.ColumnSpan="2" Margin="0.667,1,48.667,20" Grid.RowSpan="2"/>
+                <TextBlock x:Name="FootLeftY" Grid.Column="2" Grid.Row="14" Margin="0.667,21,48.333,0" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+                <TextBlock x:Name="FootLeftZ" Grid.Column="2" Grid.Row="14" Grid.ColumnSpan="2" Margin="48.667,21,0.333,0" Grid.RowSpan="2"/>
+                <TextBlock x:Name="KneeLeftY" Grid.Column="1" Grid.Row="14" Grid.ColumnSpan="2" Margin="48.667,1,0.667,20" Grid.RowSpan="2"/>
+                <TextBlock x:Name="KneeLeftZ" Grid.Column="2" Grid.Row="14" Grid.ColumnSpan="2" Margin="48.667,1,0.333,20" Grid.RowSpan="2"/>
+                <TextBlock x:Name="HipRightX" Grid.Column="1" Grid.Row="16" Grid.ColumnSpan="2" Margin="0.667,0,48.667,0.333"/>
+                <TextBlock x:Name="FootLeftX" Grid.Column="1" Grid.Row="14" Grid.ColumnSpan="2" Margin="0.667,21,48.667,0" Grid.RowSpan="2"/>
+                <TextBlock x:Name="HipRightY" Grid.Column="1" Grid.Row="16" Grid.ColumnSpan="2" Margin="48.667,0,0.667,0.333"/>
+                <TextBlock x:Name="HipRightZ" Grid.Column="3" Grid.Row="16" Margin="0.333,0,-0.667,0.333"/>
+                <TextBlock x:Name="KneeRightX" Grid.Column="1" Grid.Row="17" Grid.ColumnSpan="2" Margin="0.667,0.667,48.667,1"/>
+                <TextBlock x:Name="KneeRightY" Grid.Column="2" Grid.Row="17" Margin="0.667,0.667,48.333,1" Grid.ColumnSpan="2"/>
+                <TextBlock x:Name="KneeRightZ" Grid.Column="3" Grid.Row="17" Margin="0.333,0.667,-0.667,1"/>
+                <TextBlock x:Name="FootRightX" Grid.Column="1" Grid.Row="18" Grid.ColumnSpan="2" Margin="0.667,0,48.667,0.667"/>
+                <TextBlock x:Name="FootRightY" Grid.Column="1" Grid.Row="18" Grid.ColumnSpan="2" Margin="48.667,0,0.667,0.667"/>
+                <TextBlock x:Name="FootRightZ" Grid.Column="3" Grid.Row="18" Margin="0.333,0,-0.667,0.667"/>
 
             </Grid>
         </GroupBox>
@@ -150,18 +150,18 @@
                 </Grid.RowDefinitions>
                 <Label x:Name="Top_Left" Content="Top Left" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Height="25" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
                 <Label x:Name="Top_Right" Content="Top Right" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Height="25" Grid.Column="1" Margin="0.4,0,-0.8,0" Grid.RowSpan="2"/>
-                <Label x:Name="Bottom_Left" Content="Bottom Left" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Height="25" Margin="0,0.2,0,0" Grid.Row="2" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+                <Label x:Name="Bottom_Left" Content="Bottom Left" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Height="25" Margin="0,0.2,0,0" Grid.Row="2" Grid.RowSpan="2" Padding="5,4,5,5"/>
                 <Label x:Name="Bottom_Right" Content="Bottom Right" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Height="25" Margin="0.4,0.2,-0.8,0" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2"/>
-                <Label x:Name="Weight" Content="Weight" HorizontalAlignment="Left" VerticalAlignment="Top" Width="212" Height="24" Margin="0,42.6,-0.8,0" Grid.Row="3" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
+                <Label x:Name="Weight" Content="Weight" HorizontalAlignment="Left" VerticalAlignment="Top" Width="212" Height="24" Margin="0,42.6,-0.8,0" Grid.Row="3" Grid.RowSpan="3" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" Padding="5,3,5,5"/>
                 <TextBlock x:Name="TLeft" HorizontalAlignment="Left" Margin="10,10.4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="86" />
                 <TextBlock x:Name="TRight" HorizontalAlignment="Left" Margin="10.4,10.4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="86" Grid.Column="1" />
                 <TextBlock x:Name="BLeft" HorizontalAlignment="Left" Margin="10,11.6,0,0" Grid.Row="3" VerticalAlignment="Top" Width="86" />
                 <TextBlock x:Name="BRight" HorizontalAlignment="Left" Margin="9.4,10.6,0,0" Grid.Row="3" VerticalAlignment="Top" Width="86" Grid.Column="1" />
-                <TextBlock x:Name="RWeight" HorizontalAlignment="Left" Margin="10,9.8,0,0" Grid.Row="5" VerticalAlignment="Top" Width="86" />
+                <TextBlock x:Name="RWeight" HorizontalAlignment="Left" Margin="11,13.667,0,0" Grid.Row="5" VerticalAlignment="Top" Width="191" Grid.ColumnSpan="2" />
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBx" Header="Biometric Data" HorizontalAlignment="Left" Margin="279,268,0,0" VerticalAlignment="Top" Height="201" Width="222">
-            <Grid Margin="1,0,-1.333,0">
+        <GroupBox x:Name="groupBx" Header="Biometric Data" HorizontalAlignment="Left" Margin="279,268,0,0" VerticalAlignment="Top" Height="94" Width="222">
+            <Grid Margin="1,0,-1.333,-1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -170,14 +170,13 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+
                 </Grid.RowDefinitions>
                 <TextBlock x:Name="Heart_Rate" Margin="56,70,42.667,58"/>
-                <Label x:Name="HeartRate" Content="Heart Rate"/>
-                <Label x:Name="GSR" Content="GSR" HorizontalAlignment="Left" Margin="0,0.333,0,0" Grid.Row="1" VerticalAlignment="Top" Height="44" Width="105"/>
-                <TextBlock x:Name="HeartRateTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" TextWrapping="Wrap" Text="HeartRate" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="45" Grid.RowSpan="2" Width="106"/>
-                <TextBlock x:Name="GSRTextBlock" HorizontalAlignment="Left" Margin="105,0.333,-0.333,0" Grid.Row="1" TextWrapping="Wrap" Text="GSRTextBlock" VerticalAlignment="Top" Height="44" Width="106" Grid.ColumnSpan="2"/>
+                <Label x:Name="HeartRate" Content="Heart Rate" Margin="0,0,0.333,0"/>
+                <Label x:Name="GSR" Content="GSR" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Height="36" Width="105"/>
+                <TextBlock x:Name="HeartRateTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" TextWrapping="Wrap" Text="HeartRate" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="36" Width="106" Padding="0"/>
+                <TextBlock x:Name="GSRTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" Grid.Row="1" TextWrapping="Wrap" Text="GSRTextBlock" VerticalAlignment="Top" Height="36" Width="106" Grid.ColumnSpan="2"/>
             </Grid>
         </GroupBox>
         <DockPanel Height="18" LastChildFill="False" VerticalAlignment="Top" Margin="0,0,0.333,0">
@@ -201,9 +200,23 @@
             <Canvas Name="PaintCanvas" Height="128" VerticalAlignment="Top" Grid.Column="1" Margin="147,0,-2.667,0" Grid.RowSpan="2"/>
         </GroupBox>
         <GroupBox x:Name="Balance_Data" Header="Balance Distribution" HorizontalAlignment="Left" Margin="515,355,0,0" VerticalAlignment="Top" Height="208" Width="300">
-            <Canvas x:Name="Balance_Distribution" Height="105" VerticalAlignment="Top" Margin="149,0,-2.8,0"/>
+            <Grid HorizontalAlignment="Left" Height="187" VerticalAlignment="Top" Width="290" Margin="0,0,-2.667,-3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Canvas HorizontalAlignment="Left" Height="93" VerticalAlignment="Top" Width="145" Grid.ColumnSpan="2" Margin="145,0,0,0"/>
+            </Grid>
         </GroupBox>
-        <TextBlock x:Name="RealTimeClock" HorizontalAlignment="Left" Margin="666,28,0,0" TextWrapping="Wrap" Text="RealTimeClock" VerticalAlignment="Top" Height="23" Width="140"/>
-        <TextBlock x:Name="Status_Bar" HorizontalAlignment="Left" Margin="10,577,0,0" TextWrapping="Wrap" Text="Status Bar" VerticalAlignment="Top" Width="805"/>
+        <TextBlock x:Name="RealTimeClock" HorizontalAlignment="Left" Margin="709,28,0,0" TextWrapping="Wrap" Text="RealTimeClock" VerticalAlignment="Top" Height="23" Width="97"/>
+        <TextBlock x:Name="Status_Bar" HorizontalAlignment="Left" Margin="10,577,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="805"><Run Text="Statu"/><Run Text="s Bar"/></TextBlock>
+        <Label x:Name="S" Content="s" HorizontalAlignment="Left" Margin="106,23,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="SubjectName" HorizontalAlignment="Left" Height="25" Margin="366,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190"/>
+        <Label x:Name="SubjectNameLabel" Content="Subject Name: " HorizontalAlignment="Left" Margin="270,26,0,0" VerticalAlignment="Top" Width="100" Height="22" Padding="5,2,5,5"/>
     </Grid>
 </Window>
