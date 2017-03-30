@@ -44,8 +44,7 @@ namespace MediBalance
         {
             this.InitializeComponent();
             clit.create_socket();
-            clit.connect(ipadd);
-            //Start();
+            clit.connect(Tcp_Client.GetLocalIp());
         }
 
         public async void listen()

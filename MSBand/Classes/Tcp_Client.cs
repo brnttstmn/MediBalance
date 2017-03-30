@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.Networking;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
+using Windows.Networking.Connectivity;
 
 namespace MediBalance
 {
@@ -68,11 +69,6 @@ namespace MediBalance
 
             }
         }
-
-        //public async Task writer(DataWriter outstream)
-        //{
-
-        //} 
 
 
         public async Task<string> sendit(string host, string port, string message)
@@ -194,6 +190,22 @@ namespace MediBalance
                 reader.DetachStream();
                 return strBuilder.ToString();
             }
+        }
+
+        public static string GetLocalIp()
+        {
+            var icp = NetworkInformation.GetInternetConnectionProfile();
+
+            if (icp?.NetworkAdapter == null) return null;
+            var hostname =
+                NetworkInformation.GetHostNames()
+                    .SingleOrDefault(
+                        hn =>
+                            hn.IPInformation?.NetworkAdapter != null && hn.IPInformation.NetworkAdapter.NetworkAdapterId
+                            == icp.NetworkAdapter.NetworkAdapterId);
+
+            // the ip address
+            return hostname?.CanonicalName;
         }
 
 
