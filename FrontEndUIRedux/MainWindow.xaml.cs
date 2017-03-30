@@ -52,7 +52,8 @@ namespace FrontEndUIRedux
         Ellipse[] bodypoints = new Ellipse[18];
         Ellipse COB = new Ellipse();
         double[,] COBpoint = new double[1, 2];
-        double[,] joints = new double[18,2];
+        double[,] joints = new double[18, 2];
+        //double[,] balance = new double[4, 2];
         // Methods
         private void start()
         {
@@ -96,8 +97,6 @@ namespace FrontEndUIRedux
             stopLoggingTimer = new Timer() { Interval = time * 1000, Enabled = false };
             stopLoggingTimer.Elapsed += new ElapsedEventHandler(stopLoggingTimer_Elapsed);
             stopLoggingTimer.Enabled = true;
-            //try { time = Int16.Parse(Seconds.Text);  }
-            //catch (Exception) { }
             
             foreach (KeyValuePair<string, bool> stance in stances)
             {
@@ -171,7 +170,7 @@ namespace FrontEndUIRedux
         static void stopPrograms()
         {
             List<string> programList = new List<string>()
-            {"KinectEnvironment","BalanceBoard","Backend","Bridge",
+            {"KinectEnvironment","BalanceBoard","Backend","Bridge","MediBalance","BackEnd.EXE"
             };
             char[] del = { '\\', '.' };
             Parallel.ForEach(programList, program => {
@@ -191,13 +190,17 @@ namespace FrontEndUIRedux
                     switch (words[1])
                     {
                         case "Heartrate":
-                            Heart_Rate.Text = words[2];
+                            HeartRateTextBlock.Text = words[2];
+                            break;
+                        case "gsr":
+                            GSRTextBlock.Text = words[2];
                             break;
                         case "RWeight":
                             RWeight.Text = words[2];
                             break;
                         case "TopLeft":
                             TLeft.Text = words[2];
+
                             break;
                         case "TopRight":
                             TRight.Text = words[2];
@@ -340,6 +343,24 @@ namespace FrontEndUIRedux
                 }
             }
         }
+        //private void BalancePlot(EnvironmentVariableTarget TL)
+        //{
+        //    float naCorners = 0f;
+        //    var owTopLeft = ;
+        //    var owTopRight = ;
+        //    var owBottomLeft = ;
+        //    var owBottomRight = ;
+
+
+        //    var owrPercentage = 100 / (owTopLeft + owTopRight + owBottomLeft + owBottomRight);
+        //    var owrTopLeft = owrPercentage * owTopLeft;
+        //    var owrTopRight = owrPercentage * owTopRight;
+        //    var owrBottomLeft = owrPercentage * owBottomLeft;
+        //    var owrBottomRight = owrPercentage * owBottomRight;
+
+        //    var brX = owrBottomRight + owrTopRight;
+        //    var brY = owrBottomRight + owrBottomLeft;
+        //}
 
         //Events
         private void timeTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -401,10 +422,13 @@ namespace FrontEndUIRedux
         }
         void infoUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            infoUpdateTimer.Enabled = false;
+            var line = guiClient.read.ReadLine();
             this.Dispatcher.Invoke(() =>
             {
-                parse(guiClient.read.ReadLine());
+                parse(line);
             });
+            infoUpdateTimer.Enabled = true;
         }
         private void graphTimer_Elapsed(object sender, EventArgs e)
         {
@@ -503,6 +527,7 @@ namespace FrontEndUIRedux
                 Fill = fillBrush
             };
         }
+
     }
 }
 

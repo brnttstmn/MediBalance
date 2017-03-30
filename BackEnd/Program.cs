@@ -27,7 +27,7 @@ namespace BackEnd
         };
         // Lists
         // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
-        static List<Pipe> pipelist = new List<Pipe>() { kinect, board, tunnel, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
+        static List<Pipe> pipelist = new List<Pipe>() { kinect, board, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
         static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui, fromgui }).ToList();
         static List<string> data_list = new List<String>();
 
