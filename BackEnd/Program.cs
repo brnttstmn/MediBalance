@@ -130,13 +130,27 @@ namespace BackEnd
             startSensors();
 
             // Create Threads per device
-            foreach(Pipe sensor in sensors)
-            {
+            Parallel.ForEach(sensors, sensor => {
                 sensor.startThread(() => readSensor(sensor));
-                sensor.thread.Start();
-            }
+            });
 
-            while (!endConnection) { }
+            // Run Threads untill exception
+            try
+            {
+                while (!endConnection)
+                {
+                    Parallel.ForEach(sensors, sensor =>
+                    {
+                        if (!sensor.thread.IsAlive)
+                        {
+                            sensor.startThread(() => readSensor(sensor));
+                            sensor.thread.Start();
+                        }
+                    });
+                }
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            finally { endConnection = false; }
             throw new IOException();
         }
 
@@ -148,15 +162,12 @@ namespace BackEnd
         {
             try
             {
-                while (true)
+                var line = sensor.read.ReadLine();
+                if (line != "/n")
                 {
-                    var line = sensor.read.ReadLine();
-                    if (line != "/n")
-                    {
-                        gui.write.WriteLine(line);
-                        if (isLogging) { data_list.Add(line); }
-                        Console.WriteLine(line);
-                    }
+                    gui.write.WriteLine(line);
+                    if (isLogging) { data_list.Add(line); }
+                    Console.WriteLine(line);
                 }
             }
             catch (IOException) { endConnection = true; }
