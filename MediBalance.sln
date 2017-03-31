@@ -4,16 +4,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectEnvironment", "KinectEnvironment\KinectEnvironment.csproj", "{B9297C8F-983F-40FF-ADFD-A963018D6AA2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9955FCCB-37BC-4C7C-A78A-C3C0F0C989B2} = {9955FCCB-37BC-4C7C-A78A-C3C0F0C989B2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSBand", "MSBand\MSBand.csproj", "{E7DA3A14-DBDC-41AA-94FD-395FD2E41EBA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackEnd", "BackEnd\BackEnd.csproj", "{98DFC8D5-FE80-4527-87F6-FA0DBFD0B0AC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9955FCCB-37BC-4C7C-A78A-C3C0F0C989B2} = {9955FCCB-37BC-4C7C-A78A-C3C0F0C989B2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontEndUIRedux", "FrontEndUIRedux\FrontEndUIRedux.csproj", "{531C041A-75D1-48BB-BAEC-364217D00029}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9955FCCB-37BC-4C7C-A78A-C3C0F0C989B2} = {9955FCCB-37BC-4C7C-A78A-C3C0F0C989B2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BalanceBoard", "BalanceBoard\BalanceBoard.csproj", "{AB2DA948-6CE3-42C3-A347-9B5235961486}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9955FCCB-37BC-4C7C-A78A-C3C0F0C989B2} = {9955FCCB-37BC-4C7C-A78A-C3C0F0C989B2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge", "Bridge\Bridge.csproj", "{8B369D67-1CAB-43D3-99A9-ABBE594B39C6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9955FCCB-37BC-4C7C-A78A-C3C0F0C989B2} = {9955FCCB-37BC-4C7C-A78A-C3C0F0C989B2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLibraries", "SharedLibraries\SharedLibraries.csproj", "{9955FCCB-37BC-4C7C-A78A-C3C0F0C989B2}"
 EndProject
