@@ -1,23 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.MemoryMappedFiles;
-using System.IO.Pipes;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using SharedLibraries;
 
 namespace BackEnd
 {
     class Program
     {
         // Instantiate Named Pipes
-        static Pipe kinect = new Pipe(new NamedPipeClientStream(".", "kinect", PipeDirection.InOut));
-        static Pipe board = new Pipe(new NamedPipeClientStream(".", "board", PipeDirection.InOut));
-        static Pipe gui = new Pipe(new NamedPipeClientStream(".", "interface", PipeDirection.InOut));
+        static Pipe kinect = new Pipe("kinect", true);
+        static Pipe board = new Pipe("board", true);
+        static Pipe gui = new Pipe("interface", false);
+        static Pipe fromgui = new Pipe("frominterface", false);
+        static Pipe tunnel = new Pipe("tunnel", true);
+
+        static Dictionary<Pipe, string> programList = new Dictionary<Pipe, string>()
+        {
+            {kinect, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe"},
+            {board, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\BalanceBoard\\bin\\Debug\\BalanceBoard.exe"},
+            {gui, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\FrontEndUIRedux\\bin\\Debug\\FrontEndUIRedux.exe"},
+            {tunnel, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Bridge\\bin\\Debug\\Bridge.exe"},
+        };
+        // Lists
+        // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
+        static List<Pipe> pipelist = new List<Pipe>() { kinect, board, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
+        static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui, fromgui }).ToList();
+        static List<string> data_list = new List<String>();
+
+        //Logging and Data Array
+        static bool endConnection = false, isLogging = false;
+        static Log data_log;
+        static DateTime start_time;
+        static string fileName = "C:\\Users\\" + Environment.UserName + "\\Desktop\\", append;
 
         /// <summary>
         /// Main Program
@@ -25,34 +43,147 @@ namespace BackEnd
         /// <param name="args"></param>
         static void Main(string[] args)
         {
+            run();
+        }
 
-            // Start Devices
+        /// <summary>
+        /// Runs program
+        /// </summary>
+        static void run()
+        {
+            // Restart Programs
+            stopPrograms();
             runPrograms();
 
-            // Connect Pipes
-            kinect.start_client();
-            board.start_client();
-            string command = "start";
-            kinect.sendcommand(command);
-
-
-            var line = "";
-            var line2 = "";
-            int i = 0;
-            while (i < 1000000)
+            // Start
+            while (true)
             {
-                //Thread.Sleep(500);
-                line2 = kinect.read.ReadLine();
-                if (line2 != null) { Console.WriteLine(line2); }
-                line = board.read.ReadLine();
-                if (line != null) { Console.WriteLine(line); }
-                //else { Console.WriteLine("Error"); }
-                Console.WriteLine("Reading ",i);
-                i++;
-            }
+                try
+                {
+                    Pipe.connectPipes(pipelist);
+                    guiCommandsSetup();
+                    multiSensorRead();
+                }
+                catch (IOException) { Console.WriteLine("Connection Terminated"); }
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+                finally
+                {
+                    Pipe.disconnectPipes(pipelist);
+                }
 
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
+                // Log Applicable Data if Logging was Enabled
+                if (isLogging)
+                {
+                    data_log = new Log(data_list, start_time);
+                    data_log.logdata();
+                    data_log.writeCSV(fileName + append);
+                    isLogging = false;
+                }
+            }
+        }
+
+        private static void guiCommandsSetup()
+        {
+            Thread listen = new Thread(() => awaitGuiCommands());
+            if (!listen.IsAlive) { listen.Start(); }
+        }
+
+        private static void awaitGuiCommands()
+        {
+            string line = null;
+
+            try { line = fromgui.read.ReadLine(); }
+            catch (IOException) { }
+
+            if (line != null)
+            {
+                switch (line)
+                {
+                    case "SingleLegStanceRadio":
+                        start_time = DateTime.Now;
+                        append = line + ".csv";
+                        isLogging = true;
+                        break;
+                    case "DoubleLegStanceRadio":
+                        start_time = DateTime.Now;
+                        append = line + ".csv";
+                        isLogging = true;
+                        break;
+                    case "TandemLegStanceRadio":
+                        start_time = DateTime.Now;
+                        append = line + ".csv";
+                        isLogging = true;
+                        break;
+                    case "Stop":
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Multithread read
+        /// </summary>
+        static void multiSensorRead()
+        {
+            startSensors();
+
+            // Create Threads per device
+            Parallel.ForEach(sensors, sensor => {
+                sensor.startThread(() => readSensor(sensor));
+            });
+
+            // Run Threads untill exception
+            try
+            {
+                while (!endConnection)
+                {
+                    Parallel.ForEach(sensors, sensor =>
+                    {
+                        if (!sensor.thread.IsAlive)
+                        {
+                            sensor.startThread(() => readSensor(sensor));
+                            sensor.thread.Start();
+                        }
+                    });
+                }
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            finally { endConnection = false; }
+            throw new IOException();
+        }
+
+        /// <summary>
+        /// Single Pipe read. Exits gracefully on pipe closing.
+        /// </summary>
+        /// <param name="sensor"></param>
+        static void readSensor(Pipe sensor)
+        {
+            try
+            {
+                var line = sensor.read.ReadLine();
+                if (line != "/n")
+                {
+                    gui.write.WriteLine(line);
+                    if (isLogging) { data_list.Add(line); }
+                    Console.WriteLine(line);
+                }
+            }
+            catch (IOException) { endConnection = true; }
+            catch (ObjectDisposedException) { }
+        }
+
+        /// <summary>
+        /// Sends start signal to all Sensors
+        /// </summary>
+        static void startSensors()
+        {
+            foreach (Pipe sensor in sensors)
+            {
+                Console.WriteLine("starting: " + sensor.name);
+                sensor.sendcommand("Start");
+            }
         }
 
         /// <summary>
@@ -60,8 +191,31 @@ namespace BackEnd
         /// </summary>
         static void runPrograms()
         {
-            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe");
-            Process.Start("C:\\Users\\Brent\\Source\\Repos\\MediBalance\\WiiBalanceWalker\\bin\\Debug\\WiiBalanceWalker.exe");
+            Parallel.ForEach(pipelist, program => {
+                if (programList.ContainsKey(program))
+                {
+                    Process.Start(programList[program]);
+                }
+            });
         }
+
+        /// <summary>
+        /// Kills all processes
+        /// </summary>
+        static void stopPrograms()
+        {
+            char[] del = { '\\', '.' };
+            Parallel.ForEach(pipelist, program => {
+                if (programList.ContainsKey(program))
+                {
+                    string name = programList[program].Split(del)[programList[program].Split(del).Length - 2];
+                    foreach (var process in Process.GetProcessesByName(name))
+                    {
+                        process.Kill();
+                    }
+                }
+            });
+        }
+
     }
 }

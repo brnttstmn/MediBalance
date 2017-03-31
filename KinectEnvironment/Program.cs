@@ -13,11 +13,14 @@ namespace KinectEnvironment
     class Program
     {
         static string timeFormat = "HH:mm:ss:fff";
-        //static NamedPipeClientStream kClient = new NamedPipeClientStream(".", "tokinect", PipeDirection.InOut);
-        static NamedPipeServerStream kServer = new NamedPipeServerStream("kinect", PipeDirection.InOut);
-        static StreamWriter sw = null;
-        static StreamReader sr = null;
-        static int count = 0;
+        static NamedPipeServerStream kServer;
+        static StreamWriter StreamWrite = null;
+        static StreamReader StreamRead = null;
+        static bool isRead = false;
+        static bool connectionBroken = false;
+        // Create Objects
+        static KinectSensor kinectSensor = KinectSensor.GetDefault();
+        static BodyFrameReader bodyframeReader = null;
 
 
         /// <summary>
@@ -26,102 +29,76 @@ namespace KinectEnvironment
         [STAThread]
         static void Main()
         {
-            // Declare Variables
-            var command = "";
-            bool run = true;
+            run();
+        }
 
-            // Connect to Pipe
-            //kClient.Connect();
-            kServer.WaitForConnection();
-            sr = new StreamReader(kServer);
-            sw = new StreamWriter(kServer) { AutoFlush = true };
+        static void run()
+        {
+            // Initialize Variables
+            var run = true;
 
-            // Run until told to exit
             while (run)
             {
-
-                // Listen for command
-                Console.WriteLine("Listening");
-                command = listen();
-                Console.WriteLine(command);
-
-                // Perform Command
-                switch (command)
+                try
                 {
-                    case "start":
-                        start();
-                        break;
-                    case "test":
-                        test();
-                        break;
-                    case "stop":
-                        run = false;
-                        break;
-                    default:
-                        run = true;
-                        break;
+                    // Connect to Pipe
+                    Console.WriteLine("Connecting....");
+                    connectPipe();
+                    listen();
+                    startRead();
+                    while (true)
+                    {
+                        if (connectionBroken) { connectionBroken = false; throw new IOException(); }
+                        //Thread.Sleep(1000);
+                        //StreamWrite.WriteLine();
+                    }
                 }
-                //temporary. needs debugging
-                run = false;
+                catch (IOException) { Console.WriteLine("Connection Terminated"); }
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); run = false; }
+                finally
+                {
+                    kinectSensor.Close();
+                    kServer.Dispose();
+                    isRead = false;
+                }
             }
-
-            // Close Pipe Connection -- Terminate program
-            //kClient.Close();
-            kServer.Close();
-
-            Console.WriteLine("Press Enter to Continue...");
-            Console.ReadLine();
         }
+
+        private static void connectPipe()
+        {
+            // Start and Connect to Pipe
+            kServer = new NamedPipeServerStream("kinect", PipeDirection.InOut);
+            Console.WriteLine("Waiting for Connection...");
+            kServer.WaitForConnection();
+            StreamRead = new StreamReader(kServer);
+            StreamWrite = new StreamWriter(kServer) { AutoFlush = true };
+            Console.WriteLine("Pipe Connected.");
+        }
+
         static string listen()
         {
             var message = "";
 
             while (true)
             {
-                message = sr.ReadLine();
+                message = StreamRead.ReadLine();
                 if (message != null)
                 {
                     return message;
                 }
-                Thread.Sleep(500);
             }
         }
 
-        static void start()
+        static void startRead()
         {
-            // Create Objects
-            KinectSensor kinectSensor = KinectSensor.GetDefault();
-            BodyFrameReader bodyframeReader = null;
-
-
-            // Start Kinect
             kinectSensor.Open();
-
             // Track Changes
             bodyframeReader = kinectSensor.BodyFrameSource.OpenReader();
             if (bodyframeReader != null)
             {
                 bodyframeReader.FrameArrived += BodyframeReader_FrameArrived;
             }
-
-            int i = 0;
-            // Wait for 15s
-            while (true)
-            {
-                Console.WriteLine(i);
-                Thread.Sleep(1000);
-                i++;
-            }
-
-            // Close Kinect Connection
-            kinectSensor.Close();
-        }
-
-        static void test()
-        {
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new KinectForm());
+            isRead = true;
         }
 
         private static void BodyframeReader_FrameArrived(object sender, BodyFrameArrivedEventArgs e)
@@ -176,15 +153,20 @@ namespace KinectEnvironment
                                 {elbowright,"elbowright"}, {wristright,"wristright"}, {handright,"handright"}, {hipleft,"hipleft"},
                                 {kneeleft,"kneeleft"}, {footleft,"footleft"}, {hipright,"hipright"}, {kneeright,"kneeright"}, {footright,"footright"}
                             };
-
-                            foreach (KeyValuePair<Joint, string> joint in jointName)
+                            string timestamp = DateTime.Now.ToString(timeFormat);
+                            try
                             {
-                                var newLine = string.Format("{0},{1},{2},{3},{4};", DateTime.Now.ToString(timeFormat), joint.Value,
-                                joint.Key.Position.X.ToString(), joint.Key.Position.Y.ToString(),
-                                joint.Key.Position.Z.ToString());
-                                sw.WriteLine(newLine);
-                                Console.WriteLine(newLine);
+                                foreach (KeyValuePair<Joint, string> joint in jointName)
+                                {
+                                    var newLine = string.Format("{0},{1},{2},{3},{4};", timestamp, joint.Value,
+                                    joint.Key.Position.X.ToString(), joint.Key.Position.Y.ToString(),
+                                    joint.Key.Position.Z.ToString());
+                                    StreamWrite.WriteLine(newLine);
+                                    Console.WriteLine("Written");
+                                    Console.WriteLine(newLine);
+                                }
                             }
+                            catch (IOException) { connectionBroken = true; }
                         }
                     }
                 }

@@ -394,20 +394,11 @@ namespace WiiBalanceWalker
 
         public void Logging(string timing, string weight, string TopLeft, string TopRight, string BottomLeft, string BottomRight) //This is where the data is logged
         {
+            Console.WriteLine("logging");
+
             Dictionary<string, string> bdata = new Dictionary<string, string>() {
                 { "RWeight", weight}, {"TopLeft",TopLeft}, {"TopRight", TopRight}, {"BottomLeft",BottomLeft}, {"BottomRight",BottomRight },{"Weight Orientation",label_Status.Text}
             };
-
-            // Writes string to a file.append mode is enabled so that the log
-            // lines get appended to test.txt instead of wiping content and writing log
-            // string newlines = "\r\n Shit \r\n Goes \r\n Right \r\n Here!";
-
-            // System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\Brent\\Desktop\\test.txt", true);
-            //file.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
-            //file.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
-            //file.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
-            //file.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
-            //file.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
 
             foreach (KeyValuePair<string, string> data in bdata)
             {
@@ -415,21 +406,6 @@ namespace WiiBalanceWalker
                 StreamWrite.WriteLine(newLine);
                 Console.WriteLine(newLine);
             }
-
-            //Console.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
-            ////StreamWrite.WriteLine(timing + "," + "RWeight" + "," + weight + ";");
-            //Console.WriteLine(timing + "," + "TopLeft" + "," + TopLeft + ";");
-            //Console.WriteLine(timing + "," + "TopRight" + "," + TopRight + ";");
-            //Console.WriteLine(timing + "," + "BottomLeft" + "," + BottomLeft + ";");
-            //Console.WriteLine(timing + "," + "BottomRight" + "," + BottomRight + ";");
-            //Console.WriteLine(timing + "," + "Weight Orientation" + "," + label_Status.Text + ";");
-               // Console.ReadKey();
-            
-            
-
-            //file.WriteLine(newlines);
-
-           // file.Close();
         }
 
         //private void checkBox_EnableJoystick_CheckedChanged(object sender, EventArgs e)

@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+//using System.IO;
+//using System.Linq;
+//using System.Runtime.InteropServices.WindowsRuntime;
+//using Windows.Foundation;
+//using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+//using Windows.UI.Xaml.Controls.Primitives;
+//using Windows.UI.Xaml.Data;
+//using Windows.UI.Xaml.Input;
+//using Windows.UI.Xaml.Media;
+//using Windows.UI.Xaml.Navigation;
 using Microsoft.Band;
 using System.Threading.Tasks;
 using System.Collections;
@@ -24,7 +24,7 @@ namespace MediBalance
         /*
          * Class Variables
          */
-        private IBandClient bandClient=null;
+        private IBandClient bandClient = null;
 
         /*
         * TSK Everything(int time, TextBlock OutputText):
@@ -34,8 +34,13 @@ namespace MediBalance
         *  **Note: Currently only running one sensor at a time (It can run all but not sure how we should output it...)
         * 
         */
-        public async Task<int> everything(int RunTime,List<string> samples, BitArray control, Dictionary<string, int> map, TextBlock OutputText)
+        public async Task<int> everything(int RunTime, List<string> samples, BitArray control, Dictionary<string, int> map, TextBlock OutputText, Tcp_Client clit)
         {
+
+            //Tcp_Client clit = new Tcp_Client();
+            //clit.create_socket();
+            //clit.connect(ipadd);
+
             OutputText.Visibility = Visibility.Visible;
             try
             {
@@ -76,14 +81,24 @@ namespace MediBalance
                         if (!lsConsentGranted) { return -1; }
                     }
 
-                    if (control[map["hr"]]) {
+                    if (control[map["hr"]])
+                    {
                         // Subscribe to HeartRate data.
                         bandClient.SensorManager.HeartRate.ReadingChanged += async (s, args) =>
                         {
-                            await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                             {
-                                OutputText.Text += string.Format("\nhr,{1},{0};", args.SensorReading.HeartRate.ToString(), DateTime.Now.ToString(timeFormat));
-                                samples.Add(string.Format("\nhr,{1},{0};", args.SensorReading.HeartRate.ToString(), DateTime.Now.ToString(timeFormat)));
+                                string data_string = args.SensorReading.HeartRate.ToString();
+                                if (data_string.Length == 2)
+                                {
+                                    data_string = "0" + data_string;
+                                }
+                                else if (data_string.Length > 3) OutputText.Text += "Error!!!!....";
+                                data_string = string.Format("{0},Heartrate,{1};", DateTime.Now.ToString(timeFormat), data_string);
+
+                                OutputText.Text += data_string;
+                                samples.Add(data_string);
+                                await clit.send(data_string);
                             });
                         };
                         await bandClient.SensorManager.HeartRate.StartReadingsAsync();
@@ -93,10 +108,11 @@ namespace MediBalance
                         // Subscribe to GSR data.
                         bandClient.SensorManager.Gsr.ReadingChanged += async (s, args) =>
                         {
-                            await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                             {
-                                OutputText.Text += string.Format("\ngsr,{1},{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat));
-                                samples.Add(string.Format("\ngsr,{1},{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat)));
+                                OutputText.Text += string.Format("\n{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat));
+                                samples.Add(string.Format(string.Format("{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat))));
+                                await clit.send(string.Format("{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat)));
                             });
                         };
                         await bandClient.SensorManager.Gsr.StartReadingsAsync();
@@ -125,7 +141,7 @@ namespace MediBalance
                     await bandClient.SensorManager.Gsr.StopReadingsAsync();
                     await bandClient.SensorManager.AmbientLight.StopReadingsAsync();
                     return 0;
-                    }
+                }
             }
             catch (Exception ex)
             {
@@ -175,7 +191,7 @@ namespace MediBalance
                     return true;
                 }
             }
-        }  
+        }
 
         /*
          * Check HeartRate Permissions
@@ -183,9 +199,10 @@ namespace MediBalance
          * **Notes: This portion appears to work; however, when seperated methods are called,
          *      (startRead errors) errors out saying object has been removed--NEEDS WORK 
          */
-        public async Task<bool> HeartRatePerm() {
+        public async Task<bool> HeartRatePerm()
+        {
             // Ensure MS Band is Connected
-                if (bandClient==null) { await ConnectAsync(); }
+            if (bandClient == null) { await ConnectAsync(); }
 
             using (bandClient)
             {
@@ -221,7 +238,7 @@ namespace MediBalance
          */
         public async Task<int> startRead(int RunTime, TextBlock OutputText)
         {
-             using (bandClient)
+            using (bandClient)
             {
                 // Subscribe to HeartRate data.
                 bandClient.SensorManager.HeartRate.ReadingChanged += async (s, args) =>
@@ -256,7 +273,7 @@ namespace MediBalance
                 return 0;
             }
         }
-               
-    }
 
     }
+
+}

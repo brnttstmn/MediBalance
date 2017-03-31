@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+//using System.Collections.Generic;
+//using System.Linq;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
-using System.Timers;
+//using System.Text.RegularExpressions;
+//using System.Timers;
 // using VJoyLibrary;
-using WiimoteLib;
+//using WiimoteLib;
 namespace WiiBalanceWalker
 {
     static class Program
