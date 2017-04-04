@@ -256,9 +256,11 @@ namespace ConsoleApplication1
         public static string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
+            //return host.AddressList[3].ToString();
 
             foreach (var ip in host.AddressList)
             {
+                //if (ip.ToString().Split('.'))
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
                     return ip.ToString();

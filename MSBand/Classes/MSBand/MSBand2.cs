@@ -110,9 +110,14 @@ namespace MediBalance
                         {
                             await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                             {
+                                string data_string = args.SensorReading.Resistance.ToString();
+                                if (data_string.Length == 3)
+                                {
+                                    data_string = "000000" + data_string;
+                                }
                                 OutputText.Text += string.Format("\n{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat));
                                 samples.Add(string.Format(string.Format("{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat))));
-                                await clit.send(string.Format("{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat)));
+                                await clit.send(string.Format("{1},gsr,{0};", data_string, DateTime.Now.ToString(timeFormat)));
                             });
                         };
                         await bandClient.SensorManager.Gsr.StartReadingsAsync();
