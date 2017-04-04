@@ -27,8 +27,8 @@ namespace BackEnd
         };
         // Lists
         // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
-        static List<Pipe> pipelist = new List<Pipe>() { kinect, board, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
-        static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui, fromgui }).ToList();
+        static List<Pipe> pipelist = new List<Pipe>() { kinect, board, tunnel, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
+        static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui }).ToList();
         static List<string> data_list = new List<String>();
 
         //Logging and Data Array
@@ -64,7 +64,7 @@ namespace BackEnd
                     guiCommandsSetup();
                     multiSensorRead();
                 }
-                catch (IOException) { Console.WriteLine("Connection Terminated"); }
+                catch (IOException) { Console.WriteLine("Connection Terminated\n\n"); }
                 catch (Exception ex) { Console.WriteLine(ex.ToString()); }
                 finally
                 {
@@ -88,13 +88,8 @@ namespace BackEnd
             if (!listen.IsAlive) { listen.Start(); }
         }
 
-        private static void awaitGuiCommands()
+        private static void awaitGuiCommands(string line = null)
         {
-            string line = null;
-
-            try { line = fromgui.read.ReadLine(); }
-            catch (IOException) { }
-
             if (line != null)
             {
                 switch (line)
@@ -162,12 +157,16 @@ namespace BackEnd
         {
             try
             {
-                var line = sensor.read.ReadLine();
-                if (line != "/n")
+                if (sensor == fromgui) { awaitGuiCommands(sensor.read.ReadLine()); }
+                else
                 {
-                    gui.write.WriteLine(line);
-                    if (isLogging) { data_list.Add(line); }
-                    Console.WriteLine(line);
+                    var line = sensor.read.ReadLine();
+                    if (line != "/n")
+                    {
+                        gui.write.WriteLine(line);
+                        if (isLogging) { data_list.Add(line); }
+                        //Console.WriteLine(line);
+                    }
                 }
             }
             catch (IOException) { endConnection = true; }
