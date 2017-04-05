@@ -88,13 +88,13 @@ namespace MediBalance
                         {
                             await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                             {
-                                string data_string = args.SensorReading.HeartRate.ToString();
-                                if (data_string.Length == 2)
-                                {
-                                    data_string = "0" + data_string;
-                                }
-                                else if (data_string.Length > 3) OutputText.Text += "Error!!!!....";
-                                data_string = string.Format("{0},Heartrate,{1};", DateTime.Now.ToString(timeFormat), data_string);
+                                //string data_string = args.SensorReading.HeartRate.ToString();
+                                //if (data_string.Length == 2)
+                                //{
+                                //    data_string = "0" + data_string;
+                                //}
+                                //else if (data_string.Length > 3) OutputText.Text += "Error!!!!....";
+                                string data_string = string.Format("{0},Heartrate,{1,0:D3};", DateTime.Now.ToString(timeFormat), args.SensorReading.HeartRate);
 
                                 OutputText.Text += data_string;
                                 samples.Add(data_string);
@@ -110,14 +110,14 @@ namespace MediBalance
                         {
                             await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                             {
-                                string data_string = args.SensorReading.Resistance.ToString();
-                                if (data_string.Length == 3)
-                                {
-                                    data_string = "000000" + data_string;
-                                }
+                                //string data_string = args.SensorReading.Resistance.ToString();
+                                //if (data_string.Length == 3)
+                                //{
+                                //    data_string = "000000" + data_string;
+                                //}
                                 OutputText.Text += string.Format("\n{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat));
                                 samples.Add(string.Format(string.Format("{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat))));
-                                await clit.send(string.Format("{1},gsr,{0};", data_string, DateTime.Now.ToString(timeFormat)));
+                                await clit.send(string.Format("{1},gsr,{0,0:D9};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat)));
                             });
                         };
                         await bandClient.SensorManager.Gsr.StartReadingsAsync();
