@@ -53,7 +53,7 @@ namespace FrontEndUIRedux
         Ellipse COB = new Ellipse();
         double[,] COBpoint = new double[1, 2];
         double[,] joints = new double[18, 2];
-        //double[,] balance = new double[4, 2];
+
         // Methods
         private void start()
         {
@@ -105,9 +105,16 @@ namespace FrontEndUIRedux
             }
             
         }
+
         private void reset()
         {
+            foreach (Ellipse point in bodypoints)
+            {
+                PaintCanvas.Children.Remove(point);
+            }
             string blank = "";
+            HeartRateTextBlock.Text = blank;
+            GSRTextBlock.Text = blank;
             RWeight.Text = blank;
             TLeft.Text = blank;
             TRight.Text = blank;
@@ -181,6 +188,7 @@ namespace FrontEndUIRedux
                 }
             });
         }
+
         private void parse(string line)
         {
             try
@@ -445,19 +453,24 @@ namespace FrontEndUIRedux
             this.Dispatcher.Invoke(() =>
             {
                 for (int i = 0; i < bodypoints.Length; i++)
-            {
-                PaintCanvas.Children.Remove(bodypoints[i]);
-                bodypoints[i] = CreateAnEllipse(10, 10);
-                PaintCanvas.Children.Add(bodypoints[i]);
-                Canvas.SetLeft(bodypoints[i], joints[i, 0]);
-                Canvas.SetBottom(bodypoints[i], joints[i, 1]);
-            }
+                {
+                    try
+                    {
+                        PaintCanvas.Children.Remove(bodypoints[i]);
+                        bodypoints[i] = CreateAnEllipse(10, 10);
+                        PaintCanvas.Children.Add(bodypoints[i]);
+                        Canvas.SetLeft(bodypoints[i], joints[i, 0]);
+                        Canvas.SetBottom(bodypoints[i], joints[i, 1]);
+                    }
+                    catch (Exception) { }
+                    
+                }
 
-            PaintCanvas.Children.Remove(COB);
-            COB = CreateAnEllipse(10, 10);
-            PaintCanvas.Children.Add(COB);
-            Canvas.SetLeft(COB, COBpoint[0,0]);
-            Canvas.SetBottom(COB, COBpoint[0, 1]);
+            //PaintCanvas.Children.Remove(COB);
+            //COB = CreateAnEllipse(10, 10);
+            //PaintCanvas.Children.Add(COB);
+            //Canvas.SetLeft(COB, COBpoint[0,0]);
+            //Canvas.SetBottom(COB, COBpoint[0, 1]);
             });
 
         }
