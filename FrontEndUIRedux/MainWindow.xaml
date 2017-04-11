@@ -175,8 +175,8 @@
                 <TextBlock x:Name="Heart_Rate" Margin="56,70,42.667,58"/>
                 <Label x:Name="HeartRate" Content="Heart Rate" Margin="0,0,0.333,0"/>
                 <Label x:Name="GSR" Content="GSR" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Height="36" Width="105"/>
-                <TextBlock x:Name="HeartRateTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" TextWrapping="Wrap" Text="HeartRate" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="36" Width="106" Padding="0"/>
-                <TextBlock x:Name="GSRTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" Grid.Row="1" TextWrapping="Wrap" Text="GSRTextBlock" VerticalAlignment="Top" Height="36" Width="106" Grid.ColumnSpan="2"/>
+                <TextBlock x:Name="HeartRateTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="36" Width="106" Padding="0"/>
+                <TextBlock x:Name="GSRTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" Grid.Row="1" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="36" Width="106" Grid.ColumnSpan="2"/>
             </Grid>
         </GroupBox>
         <DockPanel Height="18" LastChildFill="False" VerticalAlignment="Top" Margin="0,0,0.333,0">
