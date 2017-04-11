@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using SharedLibraries;
+using System.Collections.Concurrent;
 
 namespace BackEnd
 {
@@ -29,7 +30,7 @@ namespace BackEnd
         // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
         static List<Pipe> pipelist = new List<Pipe>() { kinect, board, tunnel, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
         static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui }).ToList();
-        static List<string> data_list = new List<String>();
+        static ConcurrentBag<string> data_list = new ConcurrentBag<string>();
 
         //Logging and Data Array
         static bool endConnection = false, isLogging = false;
@@ -74,7 +75,7 @@ namespace BackEnd
                 // Log Applicable Data if Logging was Enabled
                 if (isLogging)
                 {
-                    data_log = new Log(data_list, start_time);
+                    data_log = new Log(data_list.ToList(), start_time);
                     data_log.logdata();
                     data_log.writeCSV(fileName + append);
                     isLogging = false;
