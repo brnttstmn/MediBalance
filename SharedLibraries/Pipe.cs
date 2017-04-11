@@ -13,11 +13,13 @@ namespace SharedLibraries
         private StreamReader streamRead;
         private StreamWriter streamWrite;
         private Thread readWriteThread;
-        private bool active;
+        private bool streamActive;
+        private bool threadActive;
 
         // Public
         public bool isClient { get; }
-        public bool isStarted { get { return active; } }
+        public bool streamStarted { get { return streamActive; } }
+        public bool threadStarted { get { return threadActive; } }
         public string name { get; }
         public string path { get; }
 
@@ -32,19 +34,21 @@ namespace SharedLibraries
             this.isClient = isClient;
             this.path = path;
             this.name = name;
-            active = false;
+            streamActive = false;
+            threadActive = false;
         }
         public Pipe(string name, bool isClient)
         {
             this.isClient = isClient;
             this.name = name;
-            active = false;
+            streamActive = false;
+            threadActive = false;
         }
 
         // Public Methods
         public void start()
         {
-            if (!active)
+            if (!streamActive)
             {
                 if (!isClient)
                 {
@@ -54,12 +58,12 @@ namespace SharedLibraries
                 {
                     startClient();
                 }
-                active = true;
+                streamActive = true;
             }
         }
         public void stop()
         {
-            if (active)
+            if (streamActive)
             {
                 try
                 {
@@ -68,21 +72,23 @@ namespace SharedLibraries
                 }
                 catch (NullReferenceException) { }
                 Console.WriteLine("Disconnected: " + name);
-                active = false;
+                streamActive = false;
             }
         }
         public void sendcommand(string command)
         {
-            this.write.WriteLine(command);
+            write.WriteLine(command);
             Console.WriteLine("sent: " + command);
         }
         public void startThread(ThreadStart start)
         {
             readWriteThread = new Thread(start);
+            threadActive = true;
         }
         public void stopThread(ThreadStart thread)
         {
             readWriteThread.Abort();
+            threadActive = false;
         }
 
         // Public Static Methods
