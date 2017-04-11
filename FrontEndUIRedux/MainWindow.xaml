@@ -213,10 +213,11 @@
                 <Canvas Name="BalanceCanvas" HorizontalAlignment="Left" Height="93" VerticalAlignment="Top" Width="145" Grid.ColumnSpan="2" Margin="145,0,0,0"/>
             </Grid>
         </GroupBox>
-        <TextBlock x:Name="RealTimeClock" HorizontalAlignment="Left" Margin="709,28,0,0" TextWrapping="Wrap" Text="RealTimeClock" VerticalAlignment="Top" Height="23" Width="97"/>
+        <TextBlock x:Name="RealTimeClock" HorizontalAlignment="Left" Margin="747,28,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="23" Width="67"/>
         <TextBlock x:Name="Status_Bar" HorizontalAlignment="Left" Margin="10,577,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="805"><Run Text="Statu"/><Run Text="s Bar"/></TextBlock>
         <Label x:Name="S" Content="s" HorizontalAlignment="Left" Margin="106,23,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="SubjectName" HorizontalAlignment="Left" Height="25" Margin="366,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190"/>
         <Label x:Name="SubjectNameLabel" Content="Subject Name: " HorizontalAlignment="Left" Margin="270,26,0,0" VerticalAlignment="Top" Width="100" Height="22" Padding="5,2,5,5"/>
+        <TextBlock x:Name="CurrentTime" HorizontalAlignment="Left" Margin="674,28,0,0" TextWrapping="Wrap" Text="Current Time:" VerticalAlignment="Top" Height="23" Width="73"/>
     </Grid>
 </Window>

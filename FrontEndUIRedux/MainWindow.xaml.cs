@@ -24,7 +24,7 @@ namespace FrontEndUIRedux
 
         // Set Timers
         Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
-        Timer timeTimer = new Timer() { Interval = 100, Enabled = false };
+        Timer timeTimer = new Timer() { Interval = 100, Enabled = true };
         Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
         Timer statusTimer = new Timer() { Interval = 1000, Enabled = true };
         Timer initalLoadTimer = new Timer() { Interval = 1500, Enabled = true };
@@ -381,7 +381,7 @@ namespace FrontEndUIRedux
         {
             this.Dispatcher.Invoke(() =>
             {
-                RealTimeClock.Text = "Current Time: " + DateTime.Now.ToString("HH:mm:ss");
+                RealTimeClock.Text = DateTime.Now.ToString("HH:mm:ss");
             });
         }
         private void statusTimer_Elapsed(object sender, ElapsedEventArgs e)
