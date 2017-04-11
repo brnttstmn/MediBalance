@@ -18,16 +18,24 @@ namespace FrontEndUIRedux
         static Pipe guiClient = new Pipe("interface", true);
         static Pipe guiCommands = new Pipe("frominterface", true);
         Pipe[] pipes = { guiClient, guiCommands };
+
+        // GUI Status Variables
         static string status = "";
         static short time = 30;
         static short timeElapsed = 0;
 
+        // Ellipse initialization
+        Ellipse[] bodypoints = new Ellipse[18];
+        Ellipse COB = new Ellipse();
+        double[,] COBpoint = new double[1, 2];
+        double[,] joints = new double[18, 2];
+
         // Set Timers
-        Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
-        Timer timeTimer = new Timer() { Interval = 100, Enabled = true };
-        Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
-        Timer statusTimer = new Timer() { Interval = 1000, Enabled = true };
         Timer initalLoadTimer = new Timer() { Interval = 1500, Enabled = true };
+        Timer timeTimer = new Timer() { Interval = 100, Enabled = true };
+        Timer statusTimer = new Timer() { Interval = 1000, Enabled = true };
+        Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
+        Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
         Timer stopLoggingTimer = new Timer() { Interval = time * 1000, Enabled = false };
         Timer graphTimer = new Timer() { Interval = 1, Enabled = false };
 
@@ -48,11 +56,6 @@ namespace FrontEndUIRedux
             log();
         }
 
-        //Ellipse initialization
-        Ellipse[] bodypoints = new Ellipse[18];
-        Ellipse COB = new Ellipse();
-        double[,] COBpoint = new double[1, 2];
-        double[,] joints = new double[18, 2];
 
         // Methods
         private void start()
@@ -105,7 +108,6 @@ namespace FrontEndUIRedux
             }
             
         }
-
         private void reset()
         {
             foreach (Ellipse point in bodypoints)
@@ -188,7 +190,6 @@ namespace FrontEndUIRedux
                 }
             });
         }
-
         private void parse(string line)
         {
             try
@@ -357,24 +358,24 @@ namespace FrontEndUIRedux
             }
             catch (FormatException){ }
         }
-        //private void BalancePlot(EnvironmentVariableTarget TL)
-        //{
-        //    float naCorners = 0f;
-        //    var owTopLeft = ;
-        //    var owTopRight = ;
-        //    var owBottomLeft = ;
-        //    var owBottomRight = ;
+        private void BalancePlot(EnvironmentVariableTarget TL)
+        {
+            //    float naCorners = 0f;
+            //    var owTopLeft = ;
+            //    var owTopRight = ;
+            //    var owBottomLeft = ;
+            //    var owBottomRight = ;
 
 
-        //    var owrPercentage = 100 / (owTopLeft + owTopRight + owBottomLeft + owBottomRight);
-        //    var owrTopLeft = owrPercentage * owTopLeft;
-        //    var owrTopRight = owrPercentage * owTopRight;
-        //    var owrBottomLeft = owrPercentage * owBottomLeft;
-        //    var owrBottomRight = owrPercentage * owBottomRight;
+            //    var owrPercentage = 100 / (owTopLeft + owTopRight + owBottomLeft + owBottomRight);
+            //    var owrTopLeft = owrPercentage * owTopLeft;
+            //    var owrTopRight = owrPercentage * owTopRight;
+            //    var owrBottomLeft = owrPercentage * owBottomLeft;
+            //    var owrBottomRight = owrPercentage * owBottomRight;
 
-        //    var brX = owrBottomRight + owrTopRight;
-        //    var brY = owrBottomRight + owrBottomLeft;
-        //}
+            //    var brX = owrBottomRight + owrTopRight;
+            //    var brY = owrBottomRight + owrBottomLeft;
+        }
 
         //Events
         private void timeTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -475,23 +476,7 @@ namespace FrontEndUIRedux
 
         }
 
-        // Gui Default Events
-        /// <summary>
-        /// Initializes a new instance of the MainWindow class.
-        /// </summary>
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-        /// <summary>
-        /// Execute shutdown tasks
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
-        private void MainWindow_Closing(object sender, CancelEventArgs e)
-        {
-            stopPrograms();
-        }
+        // Start and Close Events
         /// <summary>
         /// Execute start up tasks
         /// </summary>
@@ -507,15 +492,17 @@ namespace FrontEndUIRedux
             initalLoadTimer.Elapsed += new ElapsedEventHandler(initalLoadTimer_Elapsed);
             statusTimer.Elapsed += new ElapsedEventHandler(statusTimer_Elapsed);
         }
-        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        /// <summary>
+        /// Execute shutdown tasks
+        /// </summary>
+        /// <param name="sender">object sending the event</param>
+        /// <param name="e">event arguments</param>
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
+            stopPrograms();
+        }
 
-        }
-        private void MenuItem_board_Click_1(object sender, RoutedEventArgs e)
-        {
-            BoardWindow popup = new BoardWindow();
-            popup.ShowDialog();
-        }
+        // Logging Options
         private void SingleLegRadio_Checked(object sender, RoutedEventArgs e)
         {
 
@@ -528,13 +515,16 @@ namespace FrontEndUIRedux
         {
 
         }
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+
+        // Menu Items
+        private void Help_Click(object sender, RoutedEventArgs e)
         {
 
         }
-        private void Connect_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_board_Click_1(object sender, RoutedEventArgs e)
         {
-
+            BoardWindow popup = new BoardWindow();
+            popup.ShowDialog();
         }
         public Ellipse CreateAnEllipse(int height, int width)
         {
@@ -551,6 +541,14 @@ namespace FrontEndUIRedux
             };
         }
 
+        // Default Gui Instantiation
+        /// <summary>
+        /// Initializes a new instance of the MainWindow class.
+        /// </summary>
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
     }
 }
 

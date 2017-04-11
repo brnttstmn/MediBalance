@@ -14,7 +14,7 @@
         <SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2" />
     </Window.Resources>
     <Grid RenderTransformOrigin="0.467,0.519">
-        <TextBox x:Name="Seconds" HorizontalAlignment="Right" Height="21" Margin="0,27,720,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="37" TextChanged="textBox_TextChanged" TextAlignment="Center"/>
+        <TextBox x:Name="Seconds" HorizontalAlignment="Right" Height="21" Margin="0,27,720,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="37" TextAlignment="Center"/>
         <Label x:Name="RunTime" Content="Log Time:" HorizontalAlignment="Left" Height="25" Margin="8,23,0,0" VerticalAlignment="Top" Width="61"/>
         <RadioButton x:Name="SingleLegStanceRadio" Content="Single Leg Stance" HorizontalAlignment="Left" Margin="10,495,0,0" VerticalAlignment="Top" Checked="SingleLegRadio_Checked"/>
         <RadioButton x:Name="DoubleLegStanceRadio" Content="Double Leg Stance" HorizontalAlignment="Left" Margin="10,515,0,0" VerticalAlignment="Top" Checked="DoubleLegRadio_Checked"/>
@@ -181,18 +181,18 @@
         </GroupBox>
         <DockPanel Height="18" LastChildFill="False" VerticalAlignment="Top" Margin="0,0,0.333,0">
             <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" Width="826">
-                <MenuItem Header="_File" Click="MenuItem_Click">
+                <MenuItem Header="_File">
                     <MenuItem Header="_Open"/>
                     <MenuItem Header="_Close"/>
                     <MenuItem Header="_Export"/>
                     <MenuItem Header="_Save"/>
                 </MenuItem>
-                <MenuItem Header="_Connect" Click="Connect_Click">
+                <MenuItem Header="_Connect">
                     <MenuItem Header="_Band"/>
                     <MenuItem Header="_Board" Click="MenuItem_board_Click_1"/>
                     <MenuItem Header="_Kinect"/>
                 </MenuItem>
-                <MenuItem Header="_Help" Click="MenuItem_Click"/>
+                <MenuItem Header="_Help" Click="Help_Click"/>
             </Menu>
             <StackPanel></StackPanel>
         </DockPanel>
