@@ -1,23 +1,8 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Microsoft.Band;
-using Windows.Networking;
-using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
 using System.Collections;
 //using Windows.Task;
 
@@ -33,12 +18,7 @@ namespace MediBalance
     public sealed partial class MainPage : Page
     {
         string timeFormat = "HH:mm:ss:fff";
-        string ipadd = "10.109.55.62";
         Tcp_Client clit = new Tcp_Client();
-        //clit.create_socket();
-        //clit.connect(ipadd);
-
-
 
         public MainPage()
         {
@@ -82,10 +62,7 @@ namespace MediBalance
             // Inform user that function requires integers
             else { connection_text.Text = "Please only enter intergers."; }
         }
-
-
-
-
+        
         /// <Main Method>
         /// This will be the main method of this module.
         /// </summary>
@@ -155,24 +132,14 @@ namespace MediBalance
 
             // Random Number Generator(s)
             await test.heartRate(time, hr);
-
-            //string ipadd = IP_Box.Text;
-            //Tcp_Client clit = new Tcp_Client();
-            //clit.create_socket();
-            //clit.connect(ipadd);
-            //await clit.send("hello world");
-            //string data_string;
-            // Simulate Wait Time
+            
             for (int i = 0; i < hr.Count; i++)
             {
                 await Task.Delay(1000);
-                //data_string = string.Format("{0},Heartrate,{1};", DateTime.Now.ToString(timeFormat), hr[i].ToString());
                 samples.Add(string.Format("{0},Heartrate,{1};", DateTime.Now.ToString(timeFormat), hr[i].ToString()));
                 connection_text.Text += samples[i] + '\n';
                 await clit.send(samples[i]);
-                //string res = await clit.sendit("10.0.0.10", "8001", "hello world");
             }
-            //clit.close();
         }
 
         private void checkBox_Checked_hr(object sender, RoutedEventArgs e)
