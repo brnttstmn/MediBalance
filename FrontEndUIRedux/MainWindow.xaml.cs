@@ -42,7 +42,7 @@ namespace FrontEndUIRedux
         // Button Presses
         public void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            if (infoUpdateTimer.Enabled)
+            if (status.Contains("running")|| status.Contains("logging"))
             {
                 stop();
             }
@@ -60,16 +60,19 @@ namespace FrontEndUIRedux
         // Methods
         private void start()
         {
-            graphTimer.Enabled = true;
-            status = "running";
-            Pipe.connectPipes(pipes);
-            infoUpdateTimer.Enabled = true;
             this.Dispatcher.Invoke(() =>
             {
                 StartButton.Content = "Stop";
                 ExportButton.IsEnabled = true;
             });
-            guiCommands.read.ReadLine();
+            status = "running";
+            Task.Run(() =>
+            {
+                Pipe.connectPipes(pipes);
+                guiCommands.read.ReadLine();
+                infoUpdateTimer.Enabled = true;
+                graphTimer.Enabled = true;
+            });           
         }
         private void stop()
         {
