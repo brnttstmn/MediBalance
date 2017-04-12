@@ -5,23 +5,19 @@ using System.Threading;
 
 namespace SharedLibraries
 {
-    public class Pipe
+    public class Pipe:Comm
     {
         // Private
         private NamedPipeClientStream client = null;
         private NamedPipeServerStream server = null;
         private StreamReader streamRead;
         private StreamWriter streamWrite;
-        private Thread readWriteThread;
-        private bool streamActive;
-        private bool threadActive;
 
         // Public
         public bool isClient { get; }
         public bool streamStarted { get { return streamActive; } }
         public bool threadStarted { get { return threadActive; } }
         public string name { get; }
-        public string path { get; }
 
         // Accessors
         public StreamReader read { get { return streamRead; } }
@@ -29,20 +25,13 @@ namespace SharedLibraries
         public Thread thread { get { return readWriteThread; } }
 
         // Constructors
-        public Pipe(string name, bool isClient, string path)
-        {
-            this.isClient = isClient;
-            this.path = path;
-            this.name = name;
-            streamActive = false;
-            threadActive = false;
-        }
         public Pipe(string name, bool isClient)
         {
             this.isClient = isClient;
             this.name = name;
             streamActive = false;
             threadActive = false;
+            type = typeof(Pipe);
         }
 
         // Public Methods
@@ -80,15 +69,9 @@ namespace SharedLibraries
             write.WriteLine(command);
             Console.WriteLine("sent: " + command);
         }
-        public void startThread(ThreadStart start)
+        public string readStream()
         {
-            readWriteThread = new Thread(start);
-            threadActive = true;
-        }
-        public void stopThread(ThreadStart thread)
-        {
-            readWriteThread.Abort();
-            threadActive = false;
+            return streamRead.ReadLine();
         }
 
         // Public Static Methods
