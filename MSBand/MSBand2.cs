@@ -24,13 +24,8 @@ namespace MediBalance
         *  **Note: Currently only running one sensor at a time (It can run all but not sure how we should output it...)
         * 
         */
-        public async Task<int> everything(int RunTime, List<string> samples, BitArray control, Dictionary<string, int> map, TextBlock OutputText, Tcp_Client clit)
+        public async Task<int> everything(int RunTime, List<string> samples, BitArray control, Dictionary<string, int> map, TextBlock OutputText, Tcp_Client tcpClient)
         {
-
-            //Tcp_Client clit = new Tcp_Client();
-            //clit.create_socket();
-            //clit.connect(ipadd);
-
             OutputText.Visibility = Visibility.Visible;
             try
             {
@@ -78,17 +73,11 @@ namespace MediBalance
                         {
                             await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                             {
-                                //string data_string = args.SensorReading.HeartRate.ToString();
-                                //if (data_string.Length == 2)
-                                //{
-                                //    data_string = "0" + data_string;
-                                //}
-                                //else if (data_string.Length > 3) OutputText.Text += "Error!!!!....";
                                 string data_string = string.Format("{0},Heartrate,{1,0:D3};", DateTime.Now.ToString(timeFormat), args.SensorReading.HeartRate);
 
                                 OutputText.Text += data_string;
                                 samples.Add(data_string);
-                                await clit.send(data_string);
+                                await tcpClient.send(data_string);
                             });
                         };
                         await bandClient.SensorManager.HeartRate.StartReadingsAsync();
@@ -100,14 +89,9 @@ namespace MediBalance
                         {
                             await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                             {
-                                //string data_string = args.SensorReading.Resistance.ToString();
-                                //if (data_string.Length == 3)
-                                //{
-                                //    data_string = "000000" + data_string;
-                                //}
                                 OutputText.Text += string.Format("\n{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat));
                                 samples.Add(string.Format(string.Format("{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat))));
-                                await clit.send(string.Format("{1},gsr,{0,0:D9};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat)));
+                                await tcpClient.send(string.Format("{1},gsr,{0,0:D9};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat)));
                             });
                         };
                         await bandClient.SensorManager.Gsr.StartReadingsAsync();
@@ -138,137 +122,11 @@ namespace MediBalance
                     return 0;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return -1;
             }
         }
-
-        /*
-         * Connect Band without reading Sensors
-         * 
-         * **Notes: This portion appears to work; however, when seperated methods are called,
-         *      (startRead errors) errors out saying object has been removed--NEEDS WORK 
-         */
-        public async Task<bool> ConnectAsync()
-        {
-            // Connect Band
-            // Verify that a MS Band is connected
-            IBandInfo[] pairedBands = await BandClientManager.Instance.GetBandsAsync();
-            if (pairedBands.Length < 1)
-            {
-                return false; // Return in error if no Bands are connected
-            }
-
-            // Connect to Microsoft Band.
-            using (bandClient = await BandClientManager.Instance.ConnectAsync(pairedBands[0]))
-            {
-                // Local Variable
-                bool heartRateConsentGranted;
-
-                // Ensure Heartrate Sensor Permissions
-                // Ask for Permission if needed
-                if (bandClient.SensorManager.HeartRate.GetCurrentUserConsent() == UserConsent.Granted)
-                {
-                    heartRateConsentGranted = true;
-                }
-                else
-                {
-                    heartRateConsentGranted = await bandClient.SensorManager.HeartRate.RequestUserConsentAsync();
-                }
-                // Return Permission status
-                if (!heartRateConsentGranted)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
-
-        /*
-         * Check HeartRate Permissions
-         * 
-         * **Notes: This portion appears to work; however, when seperated methods are called,
-         *      (startRead errors) errors out saying object has been removed--NEEDS WORK 
-         */
-        public async Task<bool> HeartRatePerm()
-        {
-            // Ensure MS Band is Connected
-            if (bandClient == null) { await ConnectAsync(); }
-
-            using (bandClient)
-            {
-                // Local Variable
-                bool heartRateConsentGranted;
-
-                // Ensure Heartrate Sensor Permissions
-                // Ask for Permission if needed
-                if (bandClient.SensorManager.HeartRate.GetCurrentUserConsent() == UserConsent.Granted)
-                {
-                    heartRateConsentGranted = true;
-                }
-                else
-                {
-                    heartRateConsentGranted = await bandClient.SensorManager.HeartRate.RequestUserConsentAsync();
-                }
-                // Return Permission status
-                if (!heartRateConsentGranted)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
-
-        /*
-         * Read HeartRate
-         * 
-         * **Notes: This portion does not work. errors out saying object has been removed--NEEDS WORK 
-         */
-        public async Task<int> startRead(int RunTime, TextBlock OutputText)
-        {
-            using (bandClient)
-            {
-                // Subscribe to HeartRate data.
-                bandClient.SensorManager.HeartRate.ReadingChanged += async (s, args) =>
-                {
-                    await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                    {
-                        OutputText.Text = string.Format("{0}", args.SensorReading.HeartRate.ToString());
-                    });
-                };
-                await bandClient.SensorManager.HeartRate.StartReadingsAsync();
-
-
-                // Receive HeartRate data for a while, then stop the subscription.
-                await Task.Delay(TimeSpan.FromSeconds(RunTime));
-                await bandClient.SensorManager.HeartRate.StopReadingsAsync();
-
-                OutputText.Text = string.Format("Finished Sampling");
-                return 0;
-            }
-        }
-
-        /*
-         * Stop HeartRate
-         * 
-         * **Notes: Can't test until startRead works. -- MAY NEED WORK 
-         */
-        public async Task<int> stopRead()
-        {
-            using (bandClient)
-            {
-                await bandClient.SensorManager.HeartRate.StopReadingsAsync();
-                return 0;
-            }
-        }
-
     }
 
 }

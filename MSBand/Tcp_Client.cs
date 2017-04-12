@@ -11,24 +11,23 @@ namespace MediBalance
 {
     public class Tcp_Client
     {
-
-        StreamSocket s = null;
+        StreamSocket socket = null;
 
         public void close()
         {
-            s.Dispose();
+            socket.Dispose();
         }
 
         public void create_socket()
         {
-            if (s == null)
+            if (socket == null)
             {
-                s = new StreamSocket();
+                socket = new StreamSocket();
             }
             else
             {
                 close();
-                s = new StreamSocket();
+                socket = new StreamSocket();
             }
         }
 
@@ -40,7 +39,7 @@ namespace MediBalance
             try
             {
                 // Connect to the server
-                await s.ConnectAsync(hostName, port);
+                await socket.ConnectAsync(hostName, port);
             }
             catch (Exception exception)
             {
@@ -51,30 +50,26 @@ namespace MediBalance
                         throw;
                     default:
                         return;
-
                 }
-
             }
         }
         
         public async Task<string> sendit(string host, string port, string message)
         {
-
-
             HostName hostName;
             string response_from_server;
 
-            using (s = new StreamSocket())
+            using (socket = new StreamSocket())
             {
                 hostName = new HostName(host);
 
                 // Set NoDelay to false so that the Nagle algorithm is not disabled
-                s.Control.NoDelay = false;
+                socket.Control.NoDelay = false;
 
                 try
                 {
                     // Connect to the server
-                    await s.ConnectAsync(hostName, port);
+                    await socket.ConnectAsync(hostName, port);
 
                     // Send the message
                     await this.send(message);
@@ -110,7 +105,7 @@ namespace MediBalance
             DataWriter writer;
 
             // Create the data writer object backed by the in-memory stream. 
-            using (writer = new DataWriter(s.OutputStream))
+            using (writer = new DataWriter(socket.OutputStream))
             {
                 // Set the Unicode character encoding for the output stream
                 writer.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
@@ -151,7 +146,7 @@ namespace MediBalance
             DataReader reader;
             StringBuilder strBuilder;
 
-            using (reader = new DataReader(s.InputStream))
+            using (reader = new DataReader(socket.InputStream))
             {
                 strBuilder = new StringBuilder();
 

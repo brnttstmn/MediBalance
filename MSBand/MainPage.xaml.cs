@@ -18,24 +18,20 @@ namespace MediBalance
     public sealed partial class MainPage : Page
     {
         string timeFormat = "HH:mm:ss:fff";
-        Tcp_Client clit = new Tcp_Client();
+        Tcp_Client tcpClient = new Tcp_Client();
 
         public MainPage()
         {
             this.InitializeComponent();
-            clit.create_socket();
-            clit.connect(Tcp_Client.GetLocalIp());
+            tcpClient.create_socket();
+            tcpClient.connect(Tcp_Client.GetLocalIp());
         }
 
         public async void listen()
         {
-            //await Task.Delay(TimeSpan.FromSeconds(3))
             connection_text.Text += "listening";
-            string mess = await clit.read();
+            string mess = await tcpClient.read();
             connection_text.Text += mess;
-            //if (mess == "start") Start();
-
-
         }
 
         private void Start()
@@ -106,7 +102,7 @@ namespace MediBalance
             int stat;
             string ipadd = IP_Box.Text;
             connection_text.Text = "Connecting...";
-            stat = await band.everything(time, samples, control, map, connection_text, clit);
+            stat = await band.everything(time, samples, control, map, connection_text, tcpClient);
 
             if (stat == 0) { connection_text.Text += string.Format("\nFinished Sampling"); }
             if (stat == -1) { connection_text.Text = "Microsoft Band cannot be found. Check Connection"; }
@@ -138,7 +134,7 @@ namespace MediBalance
                 await Task.Delay(1000);
                 samples.Add(string.Format("{0},Heartrate,{1};", DateTime.Now.ToString(timeFormat), hr[i].ToString()));
                 connection_text.Text += samples[i] + '\n';
-                await clit.send(samples[i]);
+                await tcpClient.send(samples[i]);
             }
         }
 
