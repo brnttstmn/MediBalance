@@ -164,17 +164,3 @@ namespace MediBalance
         }
     }
 }
-//int a = 5;
-////int n = 5;
-//string Hb_arr = "Hb: ";
-//textBox.Text = "hello world";
-//string host = "10.109.97.195";
-//string port = "8001";
-//string serverresponse;
-////for (int i = 0; i < n; i++)
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//Hb_arr += band.Hb;
-//textBox.Text = Hb_arr;
-//Tcp_Client clnt = new Tcp_Client();
-//serverresponse = await clnt.sendit(host, port, Hb_arr);
-//clnt.close();
