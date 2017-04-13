@@ -1,57 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SharedLibraries
 {
-    public class TCP
+    public class TCP:Comm
     {
         // Objects
-        static IPAddress ip;
-        static TcpListener myList = null;
-        static Socket s = null;
-        static int buffer_len = 27;
-        static byte[] b = new byte[buffer_len];
-        static string readresult = null;
-        static bool tcpconnect = false;
+        protected IPAddress ip;
+        protected TcpListener listener = null;
+        protected Socket socket = null;
+        protected const int buffer_len = 27;
+        protected byte[] b = new byte[buffer_len];
+        protected string readresult = null;
 
 
         public TCP()
         {
             ip = GetLocalIPAddress();
+            type = typeof(TCP);
+            streamActive = false;
         }
 
-        public static async void connectTcp()
+        public async void start()
         {
-            tcpconnect = false;
             Console.WriteLine("CONNECTING TCP");
-            while (!tcpconnect)
+            while (!streamActive)
             {
                 try
                 {
                     /* Initializes the Listener */
-                    myList = new TcpListener(ip, 8001);
+                    listener = new TcpListener(ip, 8001);
 
                     /* Start Listeneting at the specified port */
-                    myList.Start();
+                    listener.Start();
                     Console.WriteLine("The server is running at port 8001...");
-                    Console.WriteLine("The local End point is  :" + myList.LocalEndpoint);
+                    Console.WriteLine("The local End point is  :" + listener.LocalEndpoint);
                     Console.WriteLine("...Waiting for a connection...");
-                    s = await myList.AcceptSocketAsync();
-                    Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
-                    tcpconnect = true;
+                    socket = await listener.AcceptSocketAsync();
+                    Console.WriteLine("Connection accepted from " + socket.RemoteEndPoint);
+                    streamActive = true;
                 }
                 catch (SocketException connectexcept)
                 {
                     Console.WriteLine("ERROR" + connectexcept.ToString());
                 }
             }
-            //while(true) readTcp();
+        }
+
+        public void stop()
+        {
+            listener.Stop();
+            socket.Close();
         }
 
         private void readNstream()
@@ -59,7 +61,7 @@ namespace SharedLibraries
             Console.WriteLine("ReadNstream started");
             while (true)
             {
-                var data = readTcp();
+                var data = readStream();
             }
         }
 
@@ -68,17 +70,17 @@ namespace SharedLibraries
             Console.WriteLine("Readnostream started");
             while (true)
             {
-                readTcp();
+                readStream();
             }
         }
 
-        private string readTcp()
+        public string readStream()
         {
-            while (s == null) Thread.Sleep(1000);
+            while (socket == null) Thread.Sleep(1000);
 
             try
             {
-                int k = s.Receive(b);
+                int k = socket.Receive(b);
                 string rev = "Received " + k + " bytes...";
                 if (k > 0)
                 {
@@ -98,7 +100,6 @@ namespace SharedLibraries
             Console.WriteLine(readresult);
             return readresult;
         }
-
 
         private static IPAddress GetLocalIPAddress()
         {

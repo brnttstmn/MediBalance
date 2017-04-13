@@ -14,7 +14,7 @@
         <SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2" />
     </Window.Resources>
     <Grid RenderTransformOrigin="0.467,0.519">
-        <TextBox x:Name="Seconds" HorizontalAlignment="Right" Height="21" Margin="0,27,720,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="37" TextChanged="textBox_TextChanged" TextAlignment="Center"/>
+        <TextBox x:Name="Seconds" HorizontalAlignment="Right" Height="21" Margin="0,27,720,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="37" TextAlignment="Center"/>
         <Label x:Name="RunTime" Content="Log Time:" HorizontalAlignment="Left" Height="25" Margin="8,23,0,0" VerticalAlignment="Top" Width="61"/>
         <RadioButton x:Name="SingleLegStanceRadio" Content="Single Leg Stance" HorizontalAlignment="Left" Margin="10,495,0,0" VerticalAlignment="Top" Checked="SingleLegRadio_Checked"/>
         <RadioButton x:Name="DoubleLegStanceRadio" Content="Double Leg Stance" HorizontalAlignment="Left" Margin="10,515,0,0" VerticalAlignment="Top" Checked="DoubleLegRadio_Checked"/>
@@ -175,24 +175,24 @@
                 <TextBlock x:Name="Heart_Rate" Margin="56,70,42.667,58"/>
                 <Label x:Name="HeartRate" Content="Heart Rate" Margin="0,0,0.333,0"/>
                 <Label x:Name="GSR" Content="GSR" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Height="36" Width="105"/>
-                <TextBlock x:Name="HeartRateTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" TextWrapping="Wrap" Text="HeartRate" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="36" Width="106" Padding="0"/>
-                <TextBlock x:Name="GSRTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" Grid.Row="1" TextWrapping="Wrap" Text="GSRTextBlock" VerticalAlignment="Top" Height="36" Width="106" Grid.ColumnSpan="2"/>
+                <TextBlock x:Name="HeartRateTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="36" Width="106" Padding="0"/>
+                <TextBlock x:Name="GSRTextBlock" HorizontalAlignment="Left" Margin="105,0,-0.333,0" Grid.Row="1" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="36" Width="106" Grid.ColumnSpan="2"/>
             </Grid>
         </GroupBox>
         <DockPanel Height="18" LastChildFill="False" VerticalAlignment="Top" Margin="0,0,0.333,0">
             <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" Width="826">
-                <MenuItem Header="_File" Click="MenuItem_Click">
+                <MenuItem Header="_File">
                     <MenuItem Header="_Open"/>
                     <MenuItem Header="_Close"/>
                     <MenuItem Header="_Export"/>
                     <MenuItem Header="_Save"/>
                 </MenuItem>
-                <MenuItem Header="_Connect" Click="Connect_Click">
+                <MenuItem Header="_Connect">
                     <MenuItem Header="_Band"/>
                     <MenuItem Header="_Board" Click="MenuItem_board_Click_1"/>
                     <MenuItem Header="_Kinect"/>
                 </MenuItem>
-                <MenuItem Header="_Help" Click="MenuItem_Click"/>
+                <MenuItem Header="_Help" Click="Help_Click"/>
             </Menu>
             <StackPanel></StackPanel>
         </DockPanel>
@@ -213,10 +213,11 @@
                 <Canvas Name="BalanceCanvas" HorizontalAlignment="Left" Height="93" VerticalAlignment="Top" Width="145" Grid.ColumnSpan="2" Margin="145,0,0,0"/>
             </Grid>
         </GroupBox>
-        <TextBlock x:Name="RealTimeClock" HorizontalAlignment="Left" Margin="709,28,0,0" TextWrapping="Wrap" Text="RealTimeClock" VerticalAlignment="Top" Height="23" Width="97"/>
+        <TextBlock x:Name="RealTimeClock" HorizontalAlignment="Left" Margin="747,28,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="23" Width="67"/>
         <TextBlock x:Name="Status_Bar" HorizontalAlignment="Left" Margin="10,577,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="805"><Run Text="Statu"/><Run Text="s Bar"/></TextBlock>
         <Label x:Name="S" Content="s" HorizontalAlignment="Left" Margin="106,23,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="SubjectName" HorizontalAlignment="Left" Height="25" Margin="366,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190"/>
         <Label x:Name="SubjectNameLabel" Content="Subject Name: " HorizontalAlignment="Left" Margin="270,26,0,0" VerticalAlignment="Top" Width="100" Height="22" Padding="5,2,5,5"/>
+        <TextBlock x:Name="CurrentTime" HorizontalAlignment="Left" Margin="674,28,0,0" TextWrapping="Wrap" Text="Current Time:" VerticalAlignment="Top" Height="23" Width="73"/>
     </Grid>
 </Window>

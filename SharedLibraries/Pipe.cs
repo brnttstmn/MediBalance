@@ -5,21 +5,19 @@ using System.Threading;
 
 namespace SharedLibraries
 {
-    public class Pipe
+    public class Pipe:Comm
     {
         // Private
         private NamedPipeClientStream client = null;
         private NamedPipeServerStream server = null;
         private StreamReader streamRead;
         private StreamWriter streamWrite;
-        private Thread readWriteThread;
-        private bool active;
 
         // Public
         public bool isClient { get; }
-        public bool isStarted { get { return active; } }
+        public bool streamStarted { get { return streamActive; } }
+        public bool threadStarted { get { return threadActive; } }
         public string name { get; }
-        public string path { get; }
 
         // Accessors
         public StreamReader read { get { return streamRead; } }
@@ -27,24 +25,19 @@ namespace SharedLibraries
         public Thread thread { get { return readWriteThread; } }
 
         // Constructors
-        public Pipe(string name, bool isClient, string path)
-        {
-            this.isClient = isClient;
-            this.path = path;
-            this.name = name;
-            active = false;
-        }
         public Pipe(string name, bool isClient)
         {
             this.isClient = isClient;
             this.name = name;
-            active = false;
+            streamActive = false;
+            threadActive = false;
+            type = typeof(Pipe);
         }
 
         // Public Methods
         public void start()
         {
-            if (!active)
+            if (!streamActive)
             {
                 if (!isClient)
                 {
@@ -54,12 +47,12 @@ namespace SharedLibraries
                 {
                     startClient();
                 }
-                active = true;
+                streamActive = true;
             }
         }
         public void stop()
         {
-            if (active)
+            if (streamActive)
             {
                 try
                 {
@@ -68,21 +61,17 @@ namespace SharedLibraries
                 }
                 catch (NullReferenceException) { }
                 Console.WriteLine("Disconnected: " + name);
-                active = false;
+                streamActive = false;
             }
         }
         public void sendcommand(string command)
         {
-            this.write.WriteLine(command);
+            write.WriteLine(command);
             Console.WriteLine("sent: " + command);
         }
-        public void startThread(ThreadStart start)
+        public string readStream()
         {
-            readWriteThread = new Thread(start);
-        }
-        public void stopThread(ThreadStart thread)
-        {
-            readWriteThread.Abort();
+            return streamRead.ReadLine();
         }
 
         // Public Static Methods

@@ -1,20 +1,7 @@
 ﻿using System;
 using System.Text;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Windows.Networking;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
@@ -24,24 +11,23 @@ namespace MediBalance
 {
     public class Tcp_Client
     {
-
-        StreamSocket s = null;
+        StreamSocket socket = null;
 
         public void close()
         {
-            s.Dispose();
+            socket.Dispose();
         }
 
         public void create_socket()
         {
-            if (s == null)
+            if (socket == null)
             {
-                s = new StreamSocket();
+                socket = new StreamSocket();
             }
             else
             {
                 close();
-                s = new StreamSocket();
+                socket = new StreamSocket();
             }
         }
 
@@ -53,42 +39,37 @@ namespace MediBalance
             try
             {
                 // Connect to the server
-                await s.ConnectAsync(hostName, port);
+                await socket.ConnectAsync(hostName, port);
             }
             catch (Exception exception)
             {
                 switch (SocketError.GetStatus(exception.HResult))
-                {     
+                {
                     case SocketErrorStatus.HostNotFound:
                         return;
                         throw;
                     default:
                         return;
-
                 }
-
             }
         }
 
-
         public async Task<string> sendit(string host, string port, string message)
         {
-
-
             HostName hostName;
             string response_from_server;
 
-            using (s = new StreamSocket())
+            using (socket = new StreamSocket())
             {
                 hostName = new HostName(host);
 
                 // Set NoDelay to false so that the Nagle algorithm is not disabled
-                s.Control.NoDelay = false;
+                socket.Control.NoDelay = false;
 
                 try
                 {
                     // Connect to the server
-                    await s.ConnectAsync(hostName, port);
+                    await socket.ConnectAsync(hostName, port);
 
                     // Send the message
                     await this.send(message);
@@ -114,17 +95,17 @@ namespace MediBalance
             }
 
         }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="message"></param>
-            /// <returns></returns>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public async Task send(string message)
         {
             DataWriter writer;
 
             // Create the data writer object backed by the in-memory stream. 
-            using (writer = new DataWriter(s.OutputStream))
+            using (writer = new DataWriter(socket.OutputStream))
             {
                 // Set the Unicode character encoding for the output stream
                 writer.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
@@ -160,13 +141,12 @@ namespace MediBalance
             }
         }
 
-
         public async Task<String> read()
         {
             DataReader reader;
             StringBuilder strBuilder;
 
-            using (reader = new DataReader(s.InputStream))
+            using (reader = new DataReader(socket.InputStream))
             {
                 strBuilder = new StringBuilder();
 
@@ -207,13 +187,5 @@ namespace MediBalance
             // the ip address
             return hostname?.CanonicalName;
         }
-
-
-
-
-
     }
-
-
-
 }

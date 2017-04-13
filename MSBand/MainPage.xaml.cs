@@ -1,23 +1,8 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Microsoft.Band;
-using Windows.Networking;
-using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
 using System.Collections;
 //using Windows.Task;
 
@@ -33,29 +18,19 @@ namespace MediBalance
     public sealed partial class MainPage : Page
     {
         string timeFormat = "HH:mm:ss:fff";
-        string ipadd = "10.109.55.62";
-        Tcp_Client clit = new Tcp_Client();
-        //clit.create_socket();
-        //clit.connect(ipadd);
-
-
+        Tcp_Client tcpClient = new Tcp_Client();
 
         public MainPage()
         {
             this.InitializeComponent();
-            clit.create_socket();
-            clit.connect(Tcp_Client.GetLocalIp());
+            
         }
 
         public async void listen()
         {
-            //await Task.Delay(TimeSpan.FromSeconds(3))
             connection_text.Text += "listening";
-            string mess = await clit.read();
+            string mess = await tcpClient.read();
             connection_text.Text += mess;
-            //if (mess == "start") Start();
-
-
         }
 
         private void Start()
@@ -65,7 +40,7 @@ namespace MediBalance
             var preload = new bool[4] { false, false, false, false };
             var control = new BitArray(preload);
             var c = new Dictionary<string, int>() { { "hr", 0 }, { "gsr", 1 }, { "ls", 2 }, { "debug", 3 } };
-            
+
             // Only run if provide time is an integer
             if (Int32.TryParse(textBox.Text, out time))
             {
@@ -82,9 +57,6 @@ namespace MediBalance
             // Inform user that function requires integers
             else { connection_text.Text = "Please only enter intergers."; }
         }
-
-
-
 
         /// <Main Method>
         /// This will be the main method of this module.
@@ -122,6 +94,8 @@ namespace MediBalance
         /// <param name="connection_text"></param>
         private async void run_band(int time, BitArray control, Dictionary<string, int> map, TextBlock connection_text)
         {
+            tcpClient.create_socket();
+            tcpClient.connect(Tcp_Client.GetLocalIp());
 
             // Declare Objects
             MSBand2 band = new MSBand2();
@@ -129,7 +103,7 @@ namespace MediBalance
             int stat;
             string ipadd = IP_Box.Text;
             connection_text.Text = "Connecting...";
-            stat = await band.everything(time, samples, control, map, connection_text, clit);
+            stat = await band.everything(time, samples, control, map, connection_text, tcpClient);
 
             if (stat == 0) { connection_text.Text += string.Format("\nFinished Sampling"); }
             if (stat == -1) { connection_text.Text = "Microsoft Band cannot be found. Check Connection"; }
@@ -156,23 +130,13 @@ namespace MediBalance
             // Random Number Generator(s)
             await test.heartRate(time, hr);
 
-            //string ipadd = IP_Box.Text;
-            //Tcp_Client clit = new Tcp_Client();
-            //clit.create_socket();
-            //clit.connect(ipadd);
-            //await clit.send("hello world");
-            //string data_string;
-            // Simulate Wait Time
             for (int i = 0; i < hr.Count; i++)
             {
                 await Task.Delay(1000);
-                //data_string = string.Format("{0},Heartrate,{1};", DateTime.Now.ToString(timeFormat), hr[i].ToString());
                 samples.Add(string.Format("{0},Heartrate,{1};", DateTime.Now.ToString(timeFormat), hr[i].ToString()));
                 connection_text.Text += samples[i] + '\n';
-                await clit.send(samples[i]);
-                //string res = await clit.sendit("10.0.0.10", "8001", "hello world");
+                await tcpClient.send(samples[i]);
             }
-            //clit.close();
         }
 
         private void checkBox_Checked_hr(object sender, RoutedEventArgs e)
@@ -201,17 +165,3 @@ namespace MediBalance
         }
     }
 }
-//int a = 5;
-////int n = 5;
-//string Hb_arr = "Hb: ";
-//textBox.Text = "hello world";
-//string host = "10.109.97.195";
-//string port = "8001";
-//string serverresponse;
-////for (int i = 0; i < n; i++)
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//Hb_arr += band.Hb;
-//textBox.Text = Hb_arr;
-//Tcp_Client clnt = new Tcp_Client();
-//serverresponse = await clnt.sendit(host, port, Hb_arr);
-//clnt.close();

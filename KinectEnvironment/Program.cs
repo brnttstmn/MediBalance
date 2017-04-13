@@ -44,13 +44,12 @@ namespace KinectEnvironment
                     // Connect to Pipe
                     Console.WriteLine("Connecting....");
                     connectPipe();
-                    listen();
+                    Console.WriteLine(StreamRead.ReadLine());
                     startRead();
                     while (true)
                     {
                         if (connectionBroken) { connectionBroken = false; throw new IOException(); }
-                        //Thread.Sleep(1000);
-                        //StreamWrite.WriteLine();
+                        Thread.Sleep(5);
                     }
                 }
                 catch (IOException) { Console.WriteLine("Connection Terminated"); }
@@ -75,19 +74,6 @@ namespace KinectEnvironment
             Console.WriteLine("Pipe Connected.");
         }
 
-        static string listen()
-        {
-            var message = "";
-
-            while (true)
-            {
-                message = StreamRead.ReadLine();
-                if (message != null)
-                {
-                    return message;
-                }
-            }
-        }
 
         static void startRead()
         {

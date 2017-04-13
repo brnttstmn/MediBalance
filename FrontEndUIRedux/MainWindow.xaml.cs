@@ -18,23 +18,31 @@ namespace FrontEndUIRedux
         static Pipe guiClient = new Pipe("interface", true);
         static Pipe guiCommands = new Pipe("frominterface", true);
         Pipe[] pipes = { guiClient, guiCommands };
+
+        // GUI Status Variables
         static string status = "";
         static short time = 30;
         static short timeElapsed = 0;
 
+        // Ellipse initialization
+        Ellipse[] bodypoints = new Ellipse[18];
+        Ellipse COB = new Ellipse();
+        double[,] COBpoint = new double[1, 2];
+        double[,] joints = new double[18, 2];
+
         // Set Timers
-        Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
-        Timer timeTimer = new Timer() { Interval = 100, Enabled = false };
-        Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
-        Timer statusTimer = new Timer() { Interval = 1000, Enabled = true };
         Timer initalLoadTimer = new Timer() { Interval = 1500, Enabled = true };
+        Timer timeTimer = new Timer() { Interval = 100, Enabled = true };
+        Timer statusTimer = new Timer() { Interval = 1000, Enabled = true };
+        Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
+        Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
         Timer stopLoggingTimer = new Timer() { Interval = time * 1000, Enabled = false };
         Timer graphTimer = new Timer() { Interval = 1, Enabled = false };
 
         // Button Presses
         public void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            if (infoUpdateTimer.Enabled)
+            if (status.Contains("running")|| status.Contains("logging"))
             {
                 stop();
             }
@@ -48,34 +56,34 @@ namespace FrontEndUIRedux
             log();
         }
 
-        //Ellipse initialization
-        Ellipse[] bodypoints = new Ellipse[18];
-        Ellipse COB = new Ellipse();
-        double[,] COBpoint = new double[1, 2];
-        double[,] joints = new double[18, 2];
-        //double[,] balance = new double[4, 2];
+
         // Methods
         private void start()
         {
-            graphTimer.Enabled = true;
-            status = "running";
-            Pipe.connectPipes(pipes);
-            infoUpdateTimer.Enabled = true;
-            this.Dispatcher.Invoke(() =>
+            programhandler.runPrograms();
+            Dispatcher.Invoke(() =>
             {
                 StartButton.Content = "Stop";
                 ExportButton.IsEnabled = true;
             });
-            guiCommands.read.ReadLine();
+            status = "running";
+            Task.Run(() =>
+            {
+                Pipe.connectPipes(pipes);
+                guiCommands.read.ReadLine();
+                infoUpdateTimer.Enabled = true;
+                graphTimer.Enabled = true;
+            });           
         }
         private void stop()
         {
+            programhandler.stopPrograms();
             graphTimer.Enabled = false;
             status = "";
             infoUpdateTimer.Enabled = false;
             infoResetTimer.Enabled = true;
             Pipe.disconnectPipes(pipes);
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 StartButton.IsEnabled = false;
                 ExportButton.IsEnabled = false;
@@ -107,7 +115,13 @@ namespace FrontEndUIRedux
         }
         private void reset()
         {
+            foreach (Ellipse point in bodypoints)
+            {
+                PaintCanvas.Children.Remove(point);
+            }
             string blank = "";
+            HeartRateTextBlock.Text = blank;
+            GSRTextBlock.Text = blank;
             RWeight.Text = blank;
             TLeft.Text = blank;
             TRight.Text = blank;
@@ -349,36 +363,36 @@ namespace FrontEndUIRedux
             }
             catch (FormatException){ }
         }
-        //private void BalancePlot(EnvironmentVariableTarget TL)
-        //{
-        //    float naCorners = 0f;
-        //    var owTopLeft = ;
-        //    var owTopRight = ;
-        //    var owBottomLeft = ;
-        //    var owBottomRight = ;
+        private void BalancePlot(EnvironmentVariableTarget TL)
+        {
+            //    float naCorners = 0f;
+            //    var owTopLeft = ;
+            //    var owTopRight = ;
+            //    var owBottomLeft = ;
+            //    var owBottomRight = ;
 
 
-        //    var owrPercentage = 100 / (owTopLeft + owTopRight + owBottomLeft + owBottomRight);
-        //    var owrTopLeft = owrPercentage * owTopLeft;
-        //    var owrTopRight = owrPercentage * owTopRight;
-        //    var owrBottomLeft = owrPercentage * owBottomLeft;
-        //    var owrBottomRight = owrPercentage * owBottomRight;
+            //    var owrPercentage = 100 / (owTopLeft + owTopRight + owBottomLeft + owBottomRight);
+            //    var owrTopLeft = owrPercentage * owTopLeft;
+            //    var owrTopRight = owrPercentage * owTopRight;
+            //    var owrBottomLeft = owrPercentage * owBottomLeft;
+            //    var owrBottomRight = owrPercentage * owBottomRight;
 
-        //    var brX = owrBottomRight + owrTopRight;
-        //    var brY = owrBottomRight + owrBottomLeft;
-        //}
+            //    var brX = owrBottomRight + owrTopRight;
+            //    var brY = owrBottomRight + owrBottomLeft;
+        }
 
         //Events
         private void timeTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
-                RealTimeClock.Text = "Current Time: " + DateTime.Now.ToString("HH:mm:ss");
+                RealTimeClock.Text = DateTime.Now.ToString("HH:mm:ss");
             });
         }
         private void statusTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 switch (status)
                 {
@@ -410,7 +424,7 @@ namespace FrontEndUIRedux
         }
         private void initalLoadTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 StartButton.IsEnabled = true;
             });
@@ -419,7 +433,7 @@ namespace FrontEndUIRedux
         private void infoResetTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             infoResetTimer.Enabled = false;
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 reset();
                 System.Threading.Thread.Sleep(500);
@@ -432,53 +446,43 @@ namespace FrontEndUIRedux
             {
                 infoUpdateTimer.Enabled = false;
                 var line = guiClient.read.ReadLine();
-                this.Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
                 {
                     parse(line);
                 });
                 infoUpdateTimer.Enabled = true;
             }
-            catch (ObjectDisposedException) {  }
+            catch (ObjectDisposedException) { }
+            catch (TaskCanceledException) { }
         }
         private void graphTimer_Elapsed(object sender, EventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 for (int i = 0; i < bodypoints.Length; i++)
-            {
-                PaintCanvas.Children.Remove(bodypoints[i]);
-                bodypoints[i] = CreateAnEllipse(10, 10);
-                PaintCanvas.Children.Add(bodypoints[i]);
-                Canvas.SetLeft(bodypoints[i], joints[i, 0]);
-                Canvas.SetBottom(bodypoints[i], joints[i, 1]);
-            }
+                {
+                    try
+                    {
+                        PaintCanvas.Children.Remove(bodypoints[i]);
+                        bodypoints[i] = CreateAnEllipse(10, 10);
+                        PaintCanvas.Children.Add(bodypoints[i]);
+                        Canvas.SetLeft(bodypoints[i], joints[i, 0]);
+                        Canvas.SetBottom(bodypoints[i], joints[i, 1]);
+                    }
+                    catch (Exception) { }
+                    
+                }
 
-            PaintCanvas.Children.Remove(COB);
-            COB = CreateAnEllipse(10, 10);
-            PaintCanvas.Children.Add(COB);
-            Canvas.SetLeft(COB, COBpoint[0,0]);
-            Canvas.SetBottom(COB, COBpoint[0, 1]);
+            //PaintCanvas.Children.Remove(COB);
+            //COB = CreateAnEllipse(10, 10);
+            //PaintCanvas.Children.Add(COB);
+            //Canvas.SetLeft(COB, COBpoint[0,0]);
+            //Canvas.SetBottom(COB, COBpoint[0, 1]);
             });
 
         }
 
-        // Gui Default Events
-        /// <summary>
-        /// Initializes a new instance of the MainWindow class.
-        /// </summary>
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-        /// <summary>
-        /// Execute shutdown tasks
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
-        private void MainWindow_Closing(object sender, CancelEventArgs e)
-        {
-            stopPrograms();
-        }
+        // Start and Close Events
         /// <summary>
         /// Execute start up tasks
         /// </summary>
@@ -494,15 +498,17 @@ namespace FrontEndUIRedux
             initalLoadTimer.Elapsed += new ElapsedEventHandler(initalLoadTimer_Elapsed);
             statusTimer.Elapsed += new ElapsedEventHandler(statusTimer_Elapsed);
         }
-        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        /// <summary>
+        /// Execute shutdown tasks
+        /// </summary>
+        /// <param name="sender">object sending the event</param>
+        /// <param name="e">event arguments</param>
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
+            stopPrograms();
+        }
 
-        }
-        private void MenuItem_board_Click_1(object sender, RoutedEventArgs e)
-        {
-            BoardWindow popup = new BoardWindow();
-            popup.ShowDialog();
-        }
+        // Logging Options
         private void SingleLegRadio_Checked(object sender, RoutedEventArgs e)
         {
 
@@ -515,13 +521,16 @@ namespace FrontEndUIRedux
         {
 
         }
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+
+        // Menu Items
+        private void Help_Click(object sender, RoutedEventArgs e)
         {
 
         }
-        private void Connect_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_board_Click_1(object sender, RoutedEventArgs e)
         {
-
+            BoardWindow popup = new BoardWindow();
+            popup.ShowDialog();
         }
         public Ellipse CreateAnEllipse(int height, int width)
         {
@@ -538,6 +547,14 @@ namespace FrontEndUIRedux
             };
         }
 
+        // Default Gui Instantiation
+        /// <summary>
+        /// Initializes a new instance of the MainWindow class.
+        /// </summary>
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
     }
 }
 
