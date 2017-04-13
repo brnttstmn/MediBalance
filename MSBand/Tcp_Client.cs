@@ -31,7 +31,7 @@ namespace MediBalance
             }
         }
 
-        public async Task<bool> connect(string ip)
+        public async void connect(string ip)
         {
             HostName hostName = new HostName(ip);
             string port = "8001";
@@ -44,17 +44,16 @@ namespace MediBalance
             catch (Exception exception)
             {
                 switch (SocketError.GetStatus(exception.HResult))
-                {     
+                {
                     case SocketErrorStatus.HostNotFound:
-                        return false;
+                        return;
                         throw;
                     default:
-                        return false;
+                        return;
                 }
             }
-            return true;
         }
-        
+
         public async Task<string> sendit(string host, string port, string message)
         {
             HostName hostName;
@@ -96,11 +95,11 @@ namespace MediBalance
             }
 
         }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="message"></param>
-            /// <returns></returns>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public async Task send(string message)
         {
             DataWriter writer;
@@ -141,7 +140,7 @@ namespace MediBalance
                 writer.DetachStream();
             }
         }
-        
+
         public async Task<String> read()
         {
             DataReader reader;

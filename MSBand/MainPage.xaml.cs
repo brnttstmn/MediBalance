@@ -19,19 +19,12 @@ namespace MediBalance
     {
         string timeFormat = "HH:mm:ss:fff";
         Tcp_Client tcpClient = new Tcp_Client();
-        string ip;
 
         public MainPage()
         {
             this.InitializeComponent();
-        }
-
-        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
             tcpClient.create_socket();
-            ip = Tcp_Client.GetLocalIp();
-            while(!(await tcpClient.connect(ip)));
-            IP_Box.Text = ip;
+            tcpClient.connect(Tcp_Client.GetLocalIp());
         }
 
         public async void listen()
@@ -48,7 +41,7 @@ namespace MediBalance
             var preload = new bool[4] { false, false, false, false };
             var control = new BitArray(preload);
             var c = new Dictionary<string, int>() { { "hr", 0 }, { "gsr", 1 }, { "ls", 2 }, { "debug", 3 } };
-            
+
             // Only run if provide time is an integer
             if (Int32.TryParse(textBox.Text, out time))
             {
@@ -65,7 +58,7 @@ namespace MediBalance
             // Inform user that function requires integers
             else { connection_text.Text = "Please only enter intergers."; }
         }
-        
+
         /// <Main Method>
         /// This will be the main method of this module.
         /// </summary>
@@ -111,7 +104,7 @@ namespace MediBalance
             connection_text.Text = "Connecting...";
             stat = await band.everything(time, samples, control, map, connection_text, tcpClient);
 
-            if (stat == 0) { connection_text.Text += string.Format("\nFinished Sampling"); tcpClient.create_socket(); while (!(await tcpClient.connect(ip))) ; }
+            if (stat == 0) { connection_text.Text += string.Format("\nFinished Sampling"); }
             if (stat == -1) { connection_text.Text = "Microsoft Band cannot be found. Check Connection"; }
             if (stat == -2) { connection_text.Text = "Access to the heart rate sensor is denied."; }
 
@@ -135,14 +128,13 @@ namespace MediBalance
 
             // Random Number Generator(s)
             await test.heartRate(time, hr);
-            
+
             for (int i = 0; i < hr.Count; i++)
             {
                 await Task.Delay(1000);
                 samples.Add(string.Format("{0},Heartrate,{1};", DateTime.Now.ToString(timeFormat), hr[i].ToString()));
                 connection_text.Text += samples[i] + '\n';
-                try { await tcpClient.send(samples[i]); }
-                catch (Exception) {tcpClient.create_socket(); while (!(await tcpClient.connect(ip))); return; }
+                await tcpClient.send(samples[i]);
             }
         }
 
