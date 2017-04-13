@@ -77,7 +77,8 @@ namespace MediBalance
 
                                 OutputText.Text += data_string;
                                 samples.Add(data_string);
-                                await tcpClient.send(data_string);
+                                try { await tcpClient.send(string.Format(data_string)); }
+                                catch (Exception) { return; }
                             });
                         };
                         await bandClient.SensorManager.HeartRate.StartReadingsAsync();
@@ -92,7 +93,8 @@ namespace MediBalance
                                 var data_string = string.Format("{1},gsr,{0,0:D9};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat));
                                 OutputText.Text += data_string;
                                 samples.Add(data_string);
-                                await tcpClient.send(string.Format(data_string));
+                                try { await tcpClient.send(string.Format(data_string)); }
+                                catch (Exception) { return; }
                             });
                         };
                         await bandClient.SensorManager.Gsr.StartReadingsAsync();

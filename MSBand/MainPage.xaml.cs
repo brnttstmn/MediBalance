@@ -23,8 +23,7 @@ namespace MediBalance
         public MainPage()
         {
             this.InitializeComponent();
-            tcpClient.create_socket();
-            tcpClient.connect(Tcp_Client.GetLocalIp());
+            
         }
 
         public async void listen()
@@ -95,6 +94,8 @@ namespace MediBalance
         /// <param name="connection_text"></param>
         private async void run_band(int time, BitArray control, Dictionary<string, int> map, TextBlock connection_text)
         {
+            tcpClient.create_socket();
+            tcpClient.connect(Tcp_Client.GetLocalIp());
 
             // Declare Objects
             MSBand2 band = new MSBand2();
