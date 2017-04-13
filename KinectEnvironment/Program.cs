@@ -49,8 +49,7 @@ namespace KinectEnvironment
                     while (true)
                     {
                         if (connectionBroken) { connectionBroken = false; throw new IOException(); }
-                        //Thread.Sleep(1000);
-                        //StreamWrite.WriteLine();
+                        Thread.Sleep(5);
                     }
                 }
                 catch (IOException) { Console.WriteLine("Connection Terminated"); }
