@@ -62,7 +62,6 @@ namespace BackEnd
                 try
                 {
                     Pipe.connectPipes(pipelist);
-                    guiCommandsSetup();
                     multiSensorRead();
                 }
                 catch (IOException) { Console.WriteLine("Connection Terminated\n\n"); }
@@ -135,14 +134,15 @@ namespace BackEnd
             {
                 while (!endConnection)
                 {
-                    Parallel.ForEach(sensors, sensor =>
+                    foreach (Pipe sensor in sensors)
                     {
                         if (!sensor.thread.IsAlive)
                         {
                             sensor.startThread(() => readSensor(sensor));
                             sensor.thread.Start();
                         }
-                    });
+                        Thread.Sleep(5);
+                    }
                 }
             }
             catch (Exception ex) { Console.WriteLine(ex.ToString()); }
