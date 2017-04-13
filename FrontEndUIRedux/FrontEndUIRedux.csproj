@@ -37,6 +37,9 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>1492136503_Kinect.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="InTheHand.Net.Personal, Version=3.5.605.0, Culture=neutral, PublicKeyToken=ea38caa273134499, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -125,6 +128,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="1492136503_Kinect.ico" />
     <Content Include="lib\BalanceBoard\InTheHand.Net.Personal.dll" />
     <Content Include="lib\BalanceBoard\VJoy.dll" />
     <Content Include="lib\BalanceBoard\WiimoteLib.dll" />
