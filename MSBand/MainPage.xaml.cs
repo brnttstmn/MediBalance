@@ -19,12 +19,19 @@ namespace MediBalance
     {
         string timeFormat = "HH:mm:ss:fff";
         Tcp_Client tcpClient = new Tcp_Client();
+        string ip;
 
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
             tcpClient.create_socket();
-            tcpClient.connect(Tcp_Client.GetLocalIp());
+            ip = Tcp_Client.GetLocalIp();
+            while(!(await tcpClient.connect(ip)));
+            IP_Box.Text = ip;
         }
 
         public async void listen()
@@ -104,7 +111,7 @@ namespace MediBalance
             connection_text.Text = "Connecting...";
             stat = await band.everything(time, samples, control, map, connection_text, tcpClient);
 
-            if (stat == 0) { connection_text.Text += string.Format("\nFinished Sampling"); }
+            if (stat == 0) { connection_text.Text += string.Format("\nFinished Sampling"); tcpClient.create_socket(); while (!(await tcpClient.connect(ip))) ; }
             if (stat == -1) { connection_text.Text = "Microsoft Band cannot be found. Check Connection"; }
             if (stat == -2) { connection_text.Text = "Access to the heart rate sensor is denied."; }
 
@@ -134,7 +141,8 @@ namespace MediBalance
                 await Task.Delay(1000);
                 samples.Add(string.Format("{0},Heartrate,{1};", DateTime.Now.ToString(timeFormat), hr[i].ToString()));
                 connection_text.Text += samples[i] + '\n';
-                await tcpClient.send(samples[i]);
+                try { await tcpClient.send(samples[i]); }
+                catch (Exception) {tcpClient.create_socket(); while (!(await tcpClient.connect(ip))); return; }
             }
         }
 

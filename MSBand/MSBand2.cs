@@ -15,6 +15,7 @@ namespace MediBalance
          * Class Variables
          */
         private IBandClient bandClient = null;
+        private static bool tcpConnected;
 
         /*
         * TSK Everything(int time, TextBlock OutputText):
@@ -26,6 +27,7 @@ namespace MediBalance
         */
         public async Task<int> everything(int RunTime, List<string> samples, BitArray control, Dictionary<string, int> map, TextBlock OutputText, Tcp_Client tcpClient)
         {
+            tcpConnected = true;
             OutputText.Visibility = Visibility.Visible;
             try
             {
@@ -77,7 +79,9 @@ namespace MediBalance
 
                                 OutputText.Text += data_string;
                                 samples.Add(data_string);
-                                await tcpClient.send(data_string);
+                                try { await tcpClient.send(data_string); }
+                                catch (Exception) { tcpConnected = false; return; }
+                                
                             });
                         };
                         await bandClient.SensorManager.HeartRate.StartReadingsAsync();
@@ -91,7 +95,8 @@ namespace MediBalance
                             {
                                 OutputText.Text += string.Format("\n{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat));
                                 samples.Add(string.Format(string.Format("{1},gsr,{0};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat))));
-                                await tcpClient.send(string.Format("{1},gsr,{0,0:D9};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat)));
+                                try { await tcpClient.send(string.Format("{1},gsr,{0,0:D9};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat))); }
+                                catch (Exception) { tcpConnected = false; return; }
                             });
                         };
                         await bandClient.SensorManager.Gsr.StartReadingsAsync();
@@ -112,7 +117,7 @@ namespace MediBalance
 
 
                     // Run time to collect samples
-                    await Task.Delay(TimeSpan.FromSeconds(RunTime));
+                    while (tcpConnected) { }
 
 
                     // Shut off Sensors

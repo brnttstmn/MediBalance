@@ -84,10 +84,6 @@ namespace ConsoleApplication1
                 }
                 threadmanage();
             }
-
-
-            Console.WriteLine("Main: Finsihed");
-            Console.ReadKey();
         }
 
         public static void threadmanage()

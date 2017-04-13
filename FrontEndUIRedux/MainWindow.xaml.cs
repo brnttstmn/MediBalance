@@ -60,7 +60,8 @@ namespace FrontEndUIRedux
         // Methods
         private void start()
         {
-            this.Dispatcher.Invoke(() =>
+            programhandler.runPrograms();
+            Dispatcher.Invoke(() =>
             {
                 StartButton.Content = "Stop";
                 ExportButton.IsEnabled = true;
@@ -76,12 +77,13 @@ namespace FrontEndUIRedux
         }
         private void stop()
         {
+            programhandler.stopPrograms();
             graphTimer.Enabled = false;
             status = "";
             infoUpdateTimer.Enabled = false;
             infoResetTimer.Enabled = true;
             Pipe.disconnectPipes(pipes);
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 StartButton.IsEnabled = false;
                 ExportButton.IsEnabled = false;
@@ -383,14 +385,14 @@ namespace FrontEndUIRedux
         //Events
         private void timeTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 RealTimeClock.Text = DateTime.Now.ToString("HH:mm:ss");
             });
         }
         private void statusTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 switch (status)
                 {
@@ -422,7 +424,7 @@ namespace FrontEndUIRedux
         }
         private void initalLoadTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 StartButton.IsEnabled = true;
             });
@@ -431,7 +433,7 @@ namespace FrontEndUIRedux
         private void infoResetTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             infoResetTimer.Enabled = false;
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 reset();
                 System.Threading.Thread.Sleep(500);
@@ -444,17 +446,18 @@ namespace FrontEndUIRedux
             {
                 infoUpdateTimer.Enabled = false;
                 var line = guiClient.read.ReadLine();
-                this.Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
                 {
                     parse(line);
                 });
                 infoUpdateTimer.Enabled = true;
             }
-            catch (ObjectDisposedException) {  }
+            catch (ObjectDisposedException) { }
+            catch (TaskCanceledException) { }
         }
         private void graphTimer_Elapsed(object sender, EventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 for (int i = 0; i < bodypoints.Length; i++)
                 {

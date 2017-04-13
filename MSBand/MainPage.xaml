@@ -5,7 +5,8 @@
     xmlns:local="using:MediBalance"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Width="567" Height="375.5">
+    mc:Ignorable="d" Width="567" Height="375.5"
+    Loaded="MainWindow_Loaded">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Button x:Name="Connect_Button" Content="Connect" HorizontalAlignment="Left" Margin="15,118,0,0" VerticalAlignment="Top" Click="Connect_Click"/>
@@ -16,7 +17,7 @@
         <CheckBox x:Name="hr_checkBox" Content="Heart Rate" HorizontalAlignment="Left" Margin="110,71,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_hr" IsChecked="True"/>
         <CheckBox x:Name="gsr_checkBox" Content="Galvanic Skin Response" HorizontalAlignment="Left" Margin="110,103,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_gsr" IsChecked="True"/>
         <CheckBox x:Name="ls_checkBox" Content="Light Sensor" HorizontalAlignment="Left" Margin="110,135,0,0" VerticalAlignment="Top" Checked="checkBox_Checked_ls"/>
-        <TextBox x:Name="IP_Box" HorizontalAlignment="Left" Margin="15,213,0,0" TextWrapping="Wrap" Text="10.109.137.18" VerticalAlignment="Top" Height="5" Width="131" TextChanged="IP_Box_TextChanged" PlaceholderText="Enter IP Address"/>
+        <TextBox x:Name="IP_Box" HorizontalAlignment="Left" Margin="15,213,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="5" Width="131" TextChanged="IP_Box_TextChanged" PlaceholderText="Enter IP Address"/>
 
     </Grid>
 </Page>

@@ -53,8 +53,8 @@ namespace BackEnd
         static void run()
         {
             // Restart Programs
-            stopPrograms();
-            runPrograms();
+            //stopPrograms();
+            //runPrograms();
 
             // Start
             while (true)

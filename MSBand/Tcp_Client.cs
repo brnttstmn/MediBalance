@@ -31,7 +31,7 @@ namespace MediBalance
             }
         }
 
-        public async void connect(string ip)
+        public async Task<bool> connect(string ip)
         {
             HostName hostName = new HostName(ip);
             string port = "8001";
@@ -46,12 +46,13 @@ namespace MediBalance
                 switch (SocketError.GetStatus(exception.HResult))
                 {     
                     case SocketErrorStatus.HostNotFound:
-                        return;
+                        return false;
                         throw;
                     default:
-                        return;
+                        return false;
                 }
             }
+            return true;
         }
         
         public async Task<string> sendit(string host, string port, string message)
