@@ -13,7 +13,11 @@ namespace SharedLibraries
         protected Thread readWriteThread;
         protected bool streamActive;
         protected bool threadActive;
+        protected string commName;
+
         public Type commType { get { return type; } }
+        public Thread thread { get { return readWriteThread; } }
+        public string name { get { return commName; } }
 
         public Comm()
         {

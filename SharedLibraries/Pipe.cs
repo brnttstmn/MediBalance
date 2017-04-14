@@ -17,18 +17,18 @@ namespace SharedLibraries
         public bool isClient { get; }
         public bool streamStarted { get { return streamActive; } }
         public bool threadStarted { get { return threadActive; } }
-        public string name { get; }
+        
 
         // Accessors
         public StreamReader read { get { return streamRead; } }
         public StreamWriter write { get { return streamWrite; } }
-        public Thread thread { get { return readWriteThread; } }
+        
 
         // Constructors
         public Pipe(string name, bool isClient)
         {
             this.isClient = isClient;
-            this.name = name;
+            commName = name;
             streamActive = false;
             threadActive = false;
             type = typeof(Pipe);

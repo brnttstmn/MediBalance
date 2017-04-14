@@ -9,16 +9,16 @@ namespace SharedLibraries
     public class TCP:Comm
     {
         // Objects
-        protected IPAddress ip;
+        protected IPAddress ip = null;
         protected TcpListener listener = null;
         protected Socket socket = null;
         protected const int buffer_len = 27;
         protected byte[] b = new byte[buffer_len];
         protected string readresult = null;
 
-
-        public TCP()
+        public TCP(string name)
         {
+            commName = name;
             ip = GetLocalIPAddress();
             type = typeof(TCP);
             streamActive = false;
@@ -27,26 +27,28 @@ namespace SharedLibraries
         public async void start()
         {
             Console.WriteLine("CONNECTING TCP");
-            while (!streamActive)
+            try
             {
-                try
-                {
-                    /* Initializes the Listener */
-                    listener = new TcpListener(ip, 8001);
+                /* Initializes the Listener */
+                Console.WriteLine("get ip");
+                if (ip == null) { ip = GetLocalIPAddress(); }
+                Console.WriteLine("creating tcplistener");
+                listener = new TcpListener(ip, 8001);
 
-                    /* Start Listeneting at the specified port */
-                    listener.Start();
-                    Console.WriteLine("The server is running at port 8001...");
-                    Console.WriteLine("The local End point is  :" + listener.LocalEndpoint);
-                    Console.WriteLine("...Waiting for a connection...");
-                    socket = await listener.AcceptSocketAsync();
-                    Console.WriteLine("Connection accepted from " + socket.RemoteEndPoint);
-                    streamActive = true;
-                }
-                catch (SocketException connectexcept)
-                {
-                    Console.WriteLine("ERROR" + connectexcept.ToString());
-                }
+                /* Start Listeneting at the specified port */
+                Console.WriteLine("starting tcplistener");
+                listener.Start();
+                Console.WriteLine("The server is running at port 8001...");
+                Console.WriteLine("The local End point is  :" + listener.LocalEndpoint);
+                Console.WriteLine("...Waiting for a connection...");
+                socket = await listener.AcceptSocketAsync();
+                Console.WriteLine("Connection accepted from " + socket.RemoteEndPoint);
+                streamActive = true;
+            }
+            catch (SocketException connectexcept)
+            {
+                Console.WriteLine("ERROR" + connectexcept.ToString());
+                Console.ReadKey();
             }
         }
 

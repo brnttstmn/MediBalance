@@ -17,19 +17,12 @@ namespace BackEnd
         static Pipe board = new Pipe("board", true);
         static Pipe gui = new Pipe("interface", false);
         static Pipe fromgui = new Pipe("frominterface", false);
-        static Pipe tunnel = new Pipe("tunnel", true);
+        static TCP band = new TCP("band");
 
-        static Dictionary<Pipe, string> programList = new Dictionary<Pipe, string>()
-        {
-            {kinect, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\KinectEnvironment\\bin\\Debug\\KinectEnvironment.exe"},
-            {board, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\BalanceBoard\\bin\\Debug\\BalanceBoard.exe"},
-            {gui, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\FrontEndUIRedux\\bin\\Debug\\FrontEndUIRedux.exe"},
-            {tunnel, "C:\\Users\\" + Environment.UserName + "\\Source\\Repos\\MediBalance\\Bridge\\bin\\Debug\\Bridge.exe"},
-        };
         // Lists
         // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
-        static List<Pipe> pipelist = new List<Pipe>() { kinect, board, tunnel, gui, fromgui }; //kinect, board, tunnel, gui, fromgui
-        static List<Pipe> sensors = pipelist.Except(new List<Pipe>() { gui }).ToList();
+        static List<Comm> pipelist = new List<Comm>() { kinect, board, band, gui, fromgui }; //kinect, board, band, gui, fromgui
+        static List<Comm> sensors = pipelist.Except(new List<Comm>() { gui }).ToList();
         static ConcurrentBag<string> data_list = new ConcurrentBag<string>();
 
         //Logging and Data Array
@@ -52,40 +45,19 @@ namespace BackEnd
         /// </summary>
         static void run()
         {
-            // Restart Programs
-            //stopPrograms();
-            //runPrograms();
-
             // Start
-            while (true)
+            Comm.connectComm(pipelist);
+            multiSensorRead();
+            Comm.disconnectComm(pipelist);
+
+            // Log Applicable Data if Logging was Enabled
+            if (isLogging)
             {
-                try
-                {
-                    Pipe.connectPipes(pipelist);
-                    multiSensorRead();
-                }
-                catch (IOException) { Console.WriteLine("Connection Terminated\n\n"); }
-                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
-                finally
-                {
-                    Pipe.disconnectPipes(pipelist);
-                }
-
-                // Log Applicable Data if Logging was Enabled
-                if (isLogging)
-                {
-                    data_log = new Log(data_list.ToList(), start_time);
-                    data_log.logdata();
-                    data_log.writeCSV(fileName + append);
-                    isLogging = false;
-                }
+                data_log = new Log(data_list.ToList(), start_time);
+                data_log.logdata();
+                data_log.writeCSV(fileName + append);
+                isLogging = false;
             }
-        }
-
-        private static void guiCommandsSetup()
-        {
-            Thread listen = new Thread(() => awaitGuiCommands());
-            if (!listen.IsAlive) { listen.Start(); }
         }
 
         private static void awaitGuiCommands(string line = null)
@@ -127,6 +99,7 @@ namespace BackEnd
             // Create Threads per device
             Parallel.ForEach(sensors, sensor => {
                 sensor.startThread(() => readSensor(sensor));
+                sensor.thread.Start();
             });
 
             // Run Threads untill exception
@@ -134,15 +107,16 @@ namespace BackEnd
             {
                 while (!endConnection)
                 {
-                    foreach (Pipe sensor in sensors)
-                    {
-                        if (!sensor.thread.IsAlive)
-                        {
-                            sensor.startThread(() => readSensor(sensor));
-                            sensor.thread.Start();
-                        }
-                        Thread.Sleep(5);
-                    }
+                    //foreach (Pipe sensor in sensors)
+                    //{
+                    //    if (!sensor.thread.IsAlive)
+                    //    {
+                    //        sensor.startThread(() => readSensor(sensor));
+                    //        sensor.thread.Start();
+                    //    }
+                        
+                    //}
+                    Thread.Sleep(5);
                 }
             }
             catch (Exception ex) { Console.WriteLine(ex.ToString()); }
@@ -154,19 +128,24 @@ namespace BackEnd
         /// Single Pipe read. Exits gracefully on pipe closing.
         /// </summary>
         /// <param name="sensor"></param>
-        static void readSensor(Pipe sensor)
+        static void readSensor(Comm sensor)
         {
             try
             {
-                if (sensor == fromgui) { awaitGuiCommands(sensor.read.ReadLine()); }
-                else
+                while (true)
                 {
-                    var line = sensor.read.ReadLine();
-                    if (line != "/n")
+                    if (sensor == fromgui) { awaitGuiCommands(((Pipe)sensor).read.ReadLine()); }
+                    else if (sensor.commType == typeof(TCP))
                     {
+                        var line = ((TCP)sensor).readStream();
                         gui.write.WriteLine(line);
                         if (isLogging) { data_list.Add(line); }
-                        //Console.WriteLine(line);
+                    }
+                    else
+                    {
+                        var line = ((Pipe)sensor).read.ReadLine();
+                        gui.write.WriteLine(line);
+                        if (isLogging) { data_list.Add(line); }
                     }
                 }
             }
@@ -179,43 +158,14 @@ namespace BackEnd
         /// </summary>
         static void startSensors()
         {
-            foreach (Pipe sensor in sensors)
+            foreach (Comm sensor in sensors)
             {
-                Console.WriteLine("starting: " + sensor.name);
-                sensor.sendcommand("Start");
+                if (sensor.commType == typeof(Pipe))
+                {
+                    Console.WriteLine("starting: " + ((Pipe)sensor).name);
+                    ((Pipe)sensor).sendcommand("Start");
+                }
             }
         }
-
-        /// <summary>
-        /// Start all of the programs
-        /// </summary>
-        static void runPrograms()
-        {
-            Parallel.ForEach(pipelist, program => {
-                if (programList.ContainsKey(program))
-                {
-                    Process.Start(programList[program]);
-                }
-            });
-        }
-
-        /// <summary>
-        /// Kills all processes
-        /// </summary>
-        static void stopPrograms()
-        {
-            char[] del = { '\\', '.' };
-            Parallel.ForEach(pipelist, program => {
-                if (programList.ContainsKey(program))
-                {
-                    string name = programList[program].Split(del)[programList[program].Split(del).Length - 2];
-                    foreach (var process in Process.GetProcessesByName(name))
-                    {
-                        process.Kill();
-                    }
-                }
-            });
-        }
-
     }
 }
