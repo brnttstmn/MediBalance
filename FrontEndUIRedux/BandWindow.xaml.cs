@@ -47,17 +47,14 @@ namespace FrontEndUIRedux
                         ConnectionText.Text += "Removing existing bluetooth devices...\n";
                     });
 
-                    if (true)//checkBox_RemoveExisting.Checked
+                    var btExistingList = btClient.DiscoverDevices(255, false, true, false);
+
+                    foreach (var btItem in btExistingList)
                     {
-                        var btExistingList = btClient.DiscoverDevices(255, false, true, false);
+                        if (!btItem.DeviceName.Contains("MSFT Band")) continue;
 
-                        foreach (var btItem in btExistingList)
-                        {
-                            if (!btItem.DeviceName.Contains("MSFT Band")) continue;
-
-                            BluetoothSecurity.RemoveDevice(btItem.DeviceAddress);
-                            btItem.SetServiceState(BluetoothService.HumanInterfaceDevice, false);
-                        }
+                        BluetoothSecurity.RemoveDevice(btItem.DeviceAddress);
+                        btItem.SetServiceState(BluetoothService.HumanInterfaceDevice, false);
                     }
 
                     // Find unknown bluetooth devices.                        
@@ -70,15 +67,13 @@ namespace FrontEndUIRedux
 
                     foreach (var btItem in btDiscoveredList)
                     {
-                        // Just in-case any non Wii devices are waiting to be paired.
 
-                        if (true && !btItem.DeviceName.Contains("MSFT Band")) //!checkBox_SkipNameCheck.Checked
+                        if (true && !btItem.DeviceName.Contains("MSFT Band"))
                         {
                             btIgnored += 1;
                             continue;
                         }
-
-
+                        
                         this.Dispatcher.Invoke(() =>
                         {
                             ConnectionText.Text += "Adding: " + btItem.DeviceName + " ( " + btItem.DeviceAddress + " )\n";
@@ -86,8 +81,8 @@ namespace FrontEndUIRedux
 
 
                         // Install as a HID device and allow some time for it to finish.
-                        //BluetoothSecurity.PairRequest(btItem.DeviceAddress, DEVICE_PIN);
-                        btItem.SetServiceState(BluetoothService.HumanInterfaceDevice, true);
+                        BluetoothSecurity.PairRequest(btItem.DeviceAddress, null);
+                        //btItem.SetServiceState(BluetoothService.HumanInterfaceDevice, true);
                     }
 
                     // Allow slow computers to finish installation before connecting.
