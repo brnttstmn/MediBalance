@@ -457,6 +457,7 @@ namespace FrontEndUIRedux
         }
         private void graphTimer_Elapsed(object sender, EventArgs e)
         {
+            graphTimer.Enabled = false;
             Dispatcher.Invoke(() =>
             {
                 for (int i = 0; i < bodypoints.Length; i++)
@@ -479,6 +480,7 @@ namespace FrontEndUIRedux
             //Canvas.SetLeft(COB, COBpoint[0,0]);
             //Canvas.SetBottom(COB, COBpoint[0, 1]);
             });
+            graphTimer.Enabled = true;
 
         }
 
