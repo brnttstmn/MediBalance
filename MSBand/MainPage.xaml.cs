@@ -119,6 +119,9 @@ namespace MediBalance
         /// <param name="time"></param>
         private async void sim_band(int time, BitArray control, Dictionary<string, int> map)
         {
+            tcpClient.create_socket();
+            tcpClient.connect(Tcp_Client.GetLocalIp());
+
             // Declare Objects
             var test = new TestVectors.TestBand();
             var hr = new List<int>();
