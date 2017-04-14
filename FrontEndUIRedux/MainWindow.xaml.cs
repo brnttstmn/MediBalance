@@ -532,6 +532,11 @@ namespace FrontEndUIRedux
             BoardWindow popup = new BoardWindow();
             popup.ShowDialog();
         }
+        private void MenuItem_band_Click_1(object sender, RoutedEventArgs e)
+        {
+            BandWindow popup = new BandWindow();
+            popup.ShowDialog();
+        }
         public Ellipse CreateAnEllipse(int height, int width)
         {
             SolidColorBrush fillBrush = new SolidColorBrush() { Color = Colors.Red };

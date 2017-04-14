@@ -188,7 +188,7 @@
                     <MenuItem Header="_Save"/>
                 </MenuItem>
                 <MenuItem Header="_Connect">
-                    <MenuItem Header="_Band"/>
+                    <MenuItem Header="_Band" Click="MenuItem_band_Click_1"/>
                     <MenuItem Header="_Board" Click="MenuItem_board_Click_1"/>
                     <MenuItem Header="_Kinect"/>
                 </MenuItem>
