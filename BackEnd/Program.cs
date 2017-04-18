@@ -130,20 +130,5 @@ namespace BackEnd
             catch (IOException) { endConnection = true; }
             catch (ObjectDisposedException) { }
         }
-
-        /// <summary>
-        /// Sends start signal to all Sensors
-        /// </summary>
-        static void startSensors()
-        {
-            foreach (Comm sensor in sensors)
-            {
-                if (sensor.commType == typeof(Pipe))
-                {
-                    Console.WriteLine("starting: " + ((Pipe)sensor).name);
-                    ((Pipe)sensor).sendcommand("Start");
-                }
-            }
-        }
     }
 }
