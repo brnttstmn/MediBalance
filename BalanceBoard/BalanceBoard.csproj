@@ -40,6 +40,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\BalanceBoard\InTheHand.Net.Personal.dll</HintPath>
     </Reference>
+    <Reference Include="SharedLibraries">
+      <HintPath>..\SharedLibraries\bin\Debug\SharedLibraries.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using SharedLibraries;
@@ -12,20 +11,19 @@ namespace BackEnd
 {
     class Program
     {
-        // Instantiate Named Pipes
+        // Initialize interprocess communication
         static Pipe kinect = new Pipe("kinect", true);
         static Pipe board = new Pipe("board", true);
         static Pipe gui = new Pipe("interface", false);
         static Pipe fromgui = new Pipe("frominterface", false);
         static TCP band = new TCP("band");
 
-        // Lists
-        // You can remove any device/program you do not plan on using from this list... It will take care of the rest.
-        static List<Comm> pipelist = new List<Comm>() { kinect, board, band, gui, fromgui }; //kinect, board, band, gui, fromgui
-        static List<Comm> sensors = pipelist.Except(new List<Comm>() { gui }).ToList();
-        static ConcurrentBag<string> data_list = new ConcurrentBag<string>();
+        // Make interporcess communications iterable
+        static List<Comm> commList = new List<Comm>() { kinect, board, band, gui, fromgui };
+        static List<Comm> sensors = commList.Except(new List<Comm>() { gui }).ToList();
 
-        //Logging and Data Array
+        // Logging and Data Array
+        static ConcurrentBag<string> data_list = new ConcurrentBag<string>();
         static bool endConnection = false, isLogging = false;
         static Log data_log;
         static DateTime start_time;
@@ -37,18 +35,14 @@ namespace BackEnd
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            run();
-        }
+            // Connect TCP/IP and Named Pipes
+            Comm.connectComm(commList);
 
-        /// <summary>
-        /// Runs program
-        /// </summary>
-        static void run()
-        {
-            // Start
-            Comm.connectComm(pipelist);
+            // Start Reading from each sensor (each sensor has a thread allocated to it)
             multiSensorRead();
-            Comm.disconnectComm(pipelist);
+
+            // Disconnect TCP/IP and Named Pipes
+            Comm.disconnectComm(commList);
 
             // Log Applicable Data if Logging was Enabled
             if (isLogging)
@@ -60,7 +54,7 @@ namespace BackEnd
             }
         }
 
-        private static void awaitGuiCommands(string line = null)
+        private static void guiCommands(string line = null)
         {
             if (line != null)
             {
@@ -94,7 +88,6 @@ namespace BackEnd
         /// </summary>
         static void multiSensorRead()
         {
-            startSensors();
 
             // Create Threads per device
             Parallel.ForEach(sensors, sensor => {
@@ -103,25 +96,10 @@ namespace BackEnd
             });
 
             // Run Threads untill exception
-            try
+            while (!endConnection)
             {
-                while (!endConnection)
-                {
-                    //foreach (Pipe sensor in sensors)
-                    //{
-                    //    if (!sensor.thread.IsAlive)
-                    //    {
-                    //        sensor.startThread(() => readSensor(sensor));
-                    //        sensor.thread.Start();
-                    //    }
-                        
-                    //}
-                    Thread.Sleep(5);
-                }
+                Thread.Sleep(5);
             }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
-            finally { endConnection = false; }
-            throw new IOException();
         }
 
         /// <summary>
@@ -134,7 +112,7 @@ namespace BackEnd
             {
                 while (true)
                 {
-                    if (sensor == fromgui) { awaitGuiCommands(((Pipe)sensor).read.ReadLine()); }
+                    if (sensor == fromgui) { guiCommands(((Pipe)sensor).read.ReadLine()); }
                     else if (sensor.commType == typeof(TCP))
                     {
                         var line = ((TCP)sensor).readStream();
