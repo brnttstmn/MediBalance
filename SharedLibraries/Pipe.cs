@@ -69,6 +69,10 @@ namespace SharedLibraries
             write.WriteLine(command);
             Console.WriteLine("sent: " + command);
         }
+        public void send(string line)
+        {
+            write.WriteLine(line);
+        }
         public string readStream()
         {
             return streamRead.ReadLine();
