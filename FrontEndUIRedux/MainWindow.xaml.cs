@@ -76,7 +76,7 @@ namespace FrontEndUIRedux
         }
         private void stop()
         {
-            programhandler.stopPrograms();
+            //programhandler.stopPrograms();
             graphTimer.Enabled = false;
             status = "";
             infoUpdateTimer.Enabled = false;
