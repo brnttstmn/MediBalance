@@ -70,7 +70,6 @@ namespace FrontEndUIRedux
             Task.Run(() =>
             {
                 Pipe.connectPipes(pipes);
-                guiCommands.read.ReadLine();
                 infoUpdateTimer.Enabled = true;
                 graphTimer.Enabled = true;
             });           
