@@ -451,7 +451,7 @@ namespace FrontEndUIRedux
                         bodypoints[i] = CreateAnEllipse(10, 10);
                         kinect.Children.Add(bodypoints[i]);
                         Canvas.SetLeft(bodypoints[i], joints[i, 0]);
-                        Canvas.SetBottom(bodypoints[i], joints[i, 1]);
+                        Canvas.SetTop(bodypoints[i], joints[i, 1]);
                     }
                     catch (Exception) { }
                     
