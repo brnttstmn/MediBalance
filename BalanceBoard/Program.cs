@@ -1,25 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using WiimoteLib;
-using System.IO.Pipes;
 using System.IO;
 using System.Threading;
+using SharedLibraries;
 
 namespace BalanceBoard
 {
     class Program
     {
         // Pipe Instantiation
-        static NamedPipeServerStream BoardServer;
-        static StreamWriter StreamWrite = null;
-        static StreamReader StreamRead = null;
-        static bool isConnected = false;
+        static Pipe bserver = new Pipe("board", false);
 
         // Wii Board
-        static Wiimote wiiDevice = null;
-        static string Timingformat = "HH:mm:ss:fff";
+        static Wiimote wiiDevice;
 
-        // Offsets
+        // Weight Offsets
         static float oWeight;
         static float oTopLeft;
         static float oTopRight;
@@ -27,102 +23,40 @@ namespace BalanceBoard
         static float oBottomRight;
         
         static void Main(string[] args)
-        {    
-            // If called in Debug mode, run DEBUG, else run program
-            if (args.Length > 0) { if (args[0] == "Debug") { startDebug(); } }
-            else { run(); }
-        }
-
-        static void run()
         {
-            // Initialize Variables
-            var run = true;
-
-            Console.WriteLine("Connecting....");
-
-            // Run untill closed or unexpected Exception
-            while (run)
+            try
             {
-                try
-                {
-                    // Initialize and start pipe
-                    connectPipe(); 
+                // Initialize and start pipe
+                bserver.start();
 
-                    // Listen for start command
-                    listen(); 
+                // Initialize Board variable
+                connectBoard();
 
-                    // Initialize Board variable (Only do once)
-                    if (isConnected==false) { connect(); }                
-
-                    // Start reading from sensors and send to pipe
-                    start(); 
-                }
-
-                // Catch IOException when pipe is closed and restart pipe connection
-                catch (IOException) { Console.WriteLine("Connection Terminated"); }
-
-                // Catch all other unexpected exceptions, write to terminal and close program
-                catch (Exception ex) { Console.WriteLine(ex.ToString()); run = false; }
-
-                // Dispose thread 
-                finally { BoardServer.Dispose(); }
+                // Start reading sensors and send to Named Pipe
+                run();
             }
-        }
 
-        /// <summary>
-        /// Listen to Pipe Connection and return value
-        /// </summary>
-        /// <returns></returns>
-        static string listen()
-        {
-            while (true)
-            {
-                var message = StreamRead.ReadLine();
-                if (message != null)
-                {
-                    return message;
-                }
-            }
+            // Catch IOException when pipe is closed and restart pipe connection
+            catch (IOException) { Console.WriteLine("Connection Terminated"); }
+
+            // Catch all other unexpected exceptions, write to terminal and close program
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+
+            // Dispose thread 
+            finally { bserver.stop(); }
         }
 
         /// <summary>
         /// Read Data from sensors and send to Pipe
         /// </summary>
         /// <returns></returns>
-        static string start()
+        static string run()
         {
             while (true)
             {
-                var a = InfoUpdate();
-                print(a);
-                send(a);
-            }
-        }
-
-        /// <summary>
-        /// Debug Mode
-        /// </summary>
-        /// <param name="mode"></param>
-        static void startDebug(int mode=1)
-        {
-            List<string> a;
-
-            connect();
-            switch (mode)
-            {
-                case 0:
-                    start();
-                    while (true)
-                    {
-                        a = InfoUpdate();
-                        print(a);
-                    }
-                default:
-                    a = InfoUpdate();
-                    print(a);
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
-                    break;
+                var data = InfoUpdate();
+                print(data);
+                send(data);
             }
         }
 
@@ -146,14 +80,14 @@ namespace BalanceBoard
         {
             foreach (string line in data)
             {
-                StreamWrite.WriteLine(line);
+                bserver.send(line);
             }
         }
 
         /// <summary>
         /// Verifies that Balance board is connected, then initializes board object
         /// </summary>
-        private static void connect()
+        private static void connectBoard()
         {
             try
             {
@@ -161,30 +95,27 @@ namespace BalanceBoard
                 wiiDevice = new Wiimote();
                 var deviceCollection = new WiimoteCollection();
 
-                // Check for Connected Board
-                bool again = true;
-                while (again)
+                // Verify board is connected. If not, repeat until board is connected.
+                do
                 {
                     try
                     {
                         Console.WriteLine("Searching for connected board...");
                         deviceCollection.FindAllWiimotes();
                         Console.WriteLine("Board Found!");
-                        again = false;
                     }
                     catch
                     {
                         Console.WriteLine("No boards are connected...");
                         Thread.Sleep(1000);
-                        //BluetoothBoard.add_device();
                     }
                 }
+                while (deviceCollection.Count<1);
 
-                //Conneect to BalanceBoard
+                // Set wiiDevice variable
                 wiiDevice = deviceCollection[0];      
                 wiiDevice.Connect();
-                isConnected = true;
-                wiiDevice.SetReportType(InputReport.IRAccel, false); // FALSE = DEVICE ONLY SENDS UPDATES WHEN VALUES CHANGE!
+                wiiDevice.SetReportType(InputReport.IRAccel, false);
                 wiiDevice.SetLEDs(true, false, false, false);
             }
             catch (Exception ex)
@@ -192,19 +123,6 @@ namespace BalanceBoard
                 Console.WriteLine(ex.Message, "Error");
             }
 
-        }
-
-        /// <summary>
-        /// Initialize and Connect to Pipe
-        /// </summary>
-        private static void connectPipe() {
-            // Start and Connect to Pipe
-            BoardServer = new NamedPipeServerStream("board", PipeDirection.InOut);
-            Console.WriteLine("Waiting for Connection...");
-            BoardServer.WaitForConnection();
-            StreamRead = new StreamReader(BoardServer);
-            StreamWrite = new StreamWriter(BoardServer) { AutoFlush = true };
-            Console.WriteLine("Pipe Connected.");
         }
 
         /// <summary>
@@ -230,7 +148,7 @@ namespace BalanceBoard
             if (rwBottomRight + oBottomRight < 0.0) { oBottomRight = -rwBottomRight; }
 
             // Format Raw Data
-            string Timing = DateTime.Now.ToString(Timingformat);
+            string Timing = DateTime.Now.ToString("HH:mm:ss:fff");
             var weight = (oWeight+rwWeight).ToString("0.0");
             var topleft = (oTopLeft+rwTopLeft).ToString("0.0");
             var topright = (oTopRight+rwTopRight).ToString("0.0");

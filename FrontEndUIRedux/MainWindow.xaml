@@ -188,7 +188,7 @@
                     <MenuItem Header="_Save"/>
                 </MenuItem>
                 <MenuItem Header="_Connect">
-                    <MenuItem Header="_Band"/>
+                    <MenuItem Header="_Band" Click="MenuItem_band_Click_1"/>
                     <MenuItem Header="_Board" Click="MenuItem_board_Click_1"/>
                     <MenuItem Header="_Kinect"/>
                 </MenuItem>
@@ -197,7 +197,7 @@
             <StackPanel></StackPanel>
         </DockPanel>
         <GroupBox x:Name="groupBox1" Header="Skeletal Data" HorizontalAlignment="Left" Margin="515,50,0,0" VerticalAlignment="Top" Height="300" Width="300">
-            <Canvas Name="PaintCanvas" Height="128" VerticalAlignment="Top" Grid.Column="1" Margin="147,0,-2.667,0" Grid.RowSpan="2"/>
+            <local:CartesianCanvas x:Name="kinect" Grid.Column="1" Margin="-3,0,-3.8,-8.6" Grid.RowSpan="2" HorizontalAlignment="Right" Width="294" Height="286" VerticalAlignment="Bottom"/>
         </GroupBox>
         <GroupBox x:Name="Balance_Data" Header="Balance Distribution" HorizontalAlignment="Left" Margin="515,355,0,0" VerticalAlignment="Top" Height="208" Width="300">
             <Grid HorizontalAlignment="Left" Height="187" VerticalAlignment="Top" Width="290" Margin="0,0,-2.667,-3">
@@ -210,7 +210,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Canvas Name="BalanceCanvas" HorizontalAlignment="Left" Height="93" VerticalAlignment="Top" Width="145" Grid.ColumnSpan="2" Margin="145,0,0,0"/>
+                <local:CartesianCanvas x:Name="BalanceCanvas" HorizontalAlignment="Left" Height="186" VerticalAlignment="Top" Width="286" Grid.ColumnSpan="2" Margin="2,1,0,0" Grid.RowSpan="2"/>
             </Grid>
         </GroupBox>
         <TextBlock x:Name="RealTimeClock" HorizontalAlignment="Left" Margin="747,28,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="23" Width="67"/>
