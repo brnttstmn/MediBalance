@@ -138,6 +138,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="1492136503_Kinect.ico" />
+    <Resource Include="favicon.ico" />
+    <Resource Include="grid.png" />
     <Content Include="lib\BalanceBoard\InTheHand.Net.Personal.dll" />
     <Content Include="lib\BalanceBoard\VJoy.dll" />
     <Content Include="lib\BalanceBoard\WiimoteLib.dll" />
