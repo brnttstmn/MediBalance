@@ -22,11 +22,17 @@ namespace SharedLibraries
         {
             Parallel.ForEach(programList, program => {
 
+                
                     string name = program.Split(del)[program.Split(del).Length - 2];
                     foreach (var process in Process.GetProcessesByName(name))
                     {
-                        process.Kill();
+                        try
+                        {
+                            process.Kill();
+                        }
+                        catch (Exception) { }
                     }
+                
             });
         }
         public static void stopProgramsExcept(string except)

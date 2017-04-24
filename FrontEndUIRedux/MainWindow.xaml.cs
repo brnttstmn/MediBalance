@@ -56,7 +56,6 @@ namespace FrontEndUIRedux
             log();
         }
 
-
         // Methods
         private void start()
         {
@@ -119,6 +118,7 @@ namespace FrontEndUIRedux
             {
                 kinect.Children.Remove(point);
             }
+            BalanceCanvas.Children.Remove(COB);
             string blank = "";
             HeartRateTextBlock.Text = blank;
             GSRTextBlock.Text = blank;
@@ -127,60 +127,6 @@ namespace FrontEndUIRedux
             TRight.Text = blank;
             BRight.Text = blank;
             BLeft.Text = blank;
-            SpineBaseX.Text = blank;
-            SpineBaseY.Text = blank;
-            SpineBaseZ.Text = blank;
-            MidSpineX.Text = blank;
-            MidSpineY.Text = blank;
-            MidSpineZ.Text = blank;
-            NeckX.Text = blank;
-            NeckY.Text = blank;
-            NeckZ.Text = blank;
-            ShoulderLeftX.Text = blank;
-            ShoulderLeftY.Text = blank;
-            ShoulderLeftZ.Text = blank;
-            ElbowLeftX.Text = blank;
-            ElbowLeftY.Text = blank;
-            ElbowLeftZ.Text = blank;
-            WristLeftX.Text = blank;
-            WristLeftY.Text = blank;
-            WristLeftZ.Text = blank;
-            HandLeftX.Text = blank;
-            HandLeftY.Text = blank;
-            HandLeftZ.Text = blank;
-            HeadX.Text = blank;
-            HeadY.Text = blank;
-            HeadZ.Text = blank;
-            ShoulderRightX.Text = blank;
-            ShoulderRightY.Text = blank;
-            ShoulderRightZ.Text = blank;
-            ElbowRightX.Text = blank;
-            ElbowRightY.Text = blank;
-            ElbowRightZ.Text = blank;
-            HandRightX.Text = blank;
-            HandRightY.Text = blank;
-            HandRightZ.Text = blank;
-            HipLeftX.Text = blank;
-            HipLeftY.Text = blank;
-            HipLeftZ.Text = blank;
-            KneeLeftX.Text = blank;
-            KneeLeftY.Text = blank;
-            KneeLeftZ.Text = blank;
-            FootLeftX.Text = blank;
-            FootLeftY.Text = blank;
-            FootLeftZ.Text = blank;
-            HipRightX.Text = blank;
-            HipRightY.Text = blank;
-            HipRightZ.Text = blank;
-            KneeRightX.Text = blank;
-            KneeRightY.Text = blank;
-            KneeRightZ.Text = blank;
-            FootRightX.Text = blank;
-            FootRightY.Text = blank;
-            FootRightZ.Text = blank;
-            WristRightX.Text = blank;
-            WristRightY.Text = blank;
-            WristRightZ.Text = blank;
         }
         private void parse(string line)
         {
@@ -195,150 +141,96 @@ namespace FrontEndUIRedux
                         switch (words[1])
                         {
                             case "Heartrate":
-                                HeartRateTextBlock.Text = words[2];
+                                HeartRateTextBlock.Text = Convert.ToDouble(words[2]).ToString();
                                 break;
                             case "gsr":
-                                GSRTextBlock.Text = words[2];
+                                GSRTextBlock.Text = Convert.ToDouble(words[2]).ToString();
                                 break;
                             case "RWeight":
-                                RWeight.Text = words[2];
+                                RWeight.Text = Convert.ToDouble(words[2]).ToString();
                                 break;
                             case "TopLeft":
-                                TLeft.Text = words[2];
+                                TLeft.Text = Convert.ToDouble(words[2]).ToString();
 
                                 break;
                             case "TopRight":
-                                TRight.Text = words[2];
+                                TRight.Text = Convert.ToDouble(words[2]).ToString();
                                 break;
                             case "BottomRight":
-                                BRight.Text = words[2];
+                                BRight.Text = Convert.ToDouble(words[2]).ToString();
                                 break;
                             case "BottomLeft":
-                                BLeft.Text = words[2];
+                                BLeft.Text = Convert.ToDouble(words[2]).ToString();
                                 break;
                             case "spinebase":
-                                SpineBaseX.Text = words[2];
-                                SpineBaseY.Text = words[3];
-                                SpineBaseZ.Text = words[4];
                                 joints[0, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[0, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "midspine":
-                                MidSpineX.Text = words[2];
-                                MidSpineY.Text = words[3];
-                                MidSpineZ.Text = words[4];
                                 joints[1, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[1, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "neck":
-                                NeckX.Text = words[2];
-                                NeckY.Text = words[3];
-                                NeckZ.Text = words[4];
                                 joints[2, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[2, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "shoulderleft":
-                                ShoulderLeftX.Text = words[2];
-                                ShoulderLeftY.Text = words[3];
-                                ShoulderLeftZ.Text = words[4];
                                 joints[3, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[3, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "elbowleft":
-                                ElbowLeftX.Text = words[2];
-                                ElbowLeftY.Text = words[3];
-                                ElbowLeftZ.Text = words[4];
                                 joints[4, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[4, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "wristleft":
-                                WristLeftX.Text = words[2];
-                                WristLeftY.Text = words[3];
-                                WristLeftZ.Text = words[4];
                                 joints[5, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[5, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "handleft":
-                                HandLeftX.Text = words[2];
-                                HandLeftY.Text = words[3];
-                                HandLeftZ.Text = words[4];
                                 joints[6, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[6, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "head":
-                                HeadX.Text = words[2];
-                                HeadY.Text = words[3];
-                                HeadZ.Text = words[4];
                                 joints[7, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[7, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "shoulderright":
-                                ShoulderRightX.Text = words[2];
-                                ShoulderRightY.Text = words[3];
-                                ShoulderRightZ.Text = words[4];
                                 joints[8, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[8, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "elbowright":
-                                ElbowRightX.Text = words[2];
-                                ElbowRightY.Text = words[3];
-                                ElbowRightZ.Text = words[4];
                                 joints[9, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[9, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "handright":
-                                HandRightX.Text = words[2];
-                                HandRightY.Text = words[3];
-                                HandRightZ.Text = words[4];
                                 joints[10, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[10, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "hipleft":
-                                HipLeftX.Text = words[2];
-                                HipLeftY.Text = words[3];
-                                HipLeftZ.Text = words[4];
                                 joints[11, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[11, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "kneeleft":
-                                KneeLeftX.Text = words[2];
-                                KneeLeftY.Text = words[3];
-                                KneeLeftZ.Text = words[4];
                                 joints[12, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[12, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "footleft":
-                                FootLeftX.Text = words[2];
-                                FootLeftY.Text = words[3];
-                                FootLeftZ.Text = words[4];
                                 joints[13, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[13, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "hipright":
-                                HipRightX.Text = words[2];
-                                HipRightY.Text = words[3];
-                                HipRightZ.Text = words[4];
                                 joints[14, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[14, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "kneeright":
-                                KneeRightX.Text = words[2];
-                                KneeRightY.Text = words[3];
-                                KneeRightZ.Text = words[4];
                                 joints[15, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[15, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "footright":
-                                FootRightX.Text = words[2];
-                                FootRightY.Text = words[3];
-                                FootRightZ.Text = words[4];
                                 joints[16, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[16, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
                             case "wristright":
-                                WristRightX.Text = words[2];
-                                WristRightY.Text = words[3];
-                                WristRightZ.Text = words[4];
                                 joints[17, 0] = Convert.ToDouble(words[2]) * 100;
                                 joints[17, 1] = Convert.ToDouble(words[3]) * 100;
                                 break;
