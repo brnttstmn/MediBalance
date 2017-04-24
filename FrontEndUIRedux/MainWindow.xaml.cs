@@ -60,6 +60,7 @@ namespace FrontEndUIRedux
         // Methods
         private void start()
         {
+            programhandler.stopPrograms();
             programhandler.runPrograms();
             Dispatcher.Invoke(() =>
             {

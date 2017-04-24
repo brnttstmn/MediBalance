@@ -127,8 +127,7 @@ namespace BackEnd
                     }
                 }
             }
-            catch (IOException) { endConnection = true; }
-            catch (ObjectDisposedException) { }
+            catch (Exception) { endConnection = true; }
         }
     }
 }

@@ -54,8 +54,10 @@ namespace SharedLibraries
 
         public void stop()
         {
-            listener.Stop();
-            socket.Close();
+            try { listener.Stop(); }
+            catch (Exception) { }
+            finally { socket.Dispose(); }
+            Console.WriteLine("Disconnected: " + name);
         }
 
         private void readNstream()
@@ -80,22 +82,15 @@ namespace SharedLibraries
         {
             while (socket == null) Thread.Sleep(1000);
 
-            try
+            int k = socket.Receive(b);
+            string rev = "Received " + k + " bytes...";
+            if (k > 0)
             {
-                int k = socket.Receive(b);
-                string rev = "Received " + k + " bytes...";
-                if (k > 0)
-                {
-                    Console.WriteLine(rev);
-                }
-                else
-                {
-                    Console.WriteLine("Error no bytes");
-                }
+                Console.WriteLine(rev);
             }
-            catch (SocketException readexcept)
+            else
             {
-                Console.WriteLine("ERROR" + readexcept.ToString());
+                Console.WriteLine("Error no bytes");
             }
             readresult = Encoding.UTF8.GetString(b);
 
