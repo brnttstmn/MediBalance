@@ -31,27 +31,21 @@ namespace MediBalance
             }
         }
 
-        public async void connect(string ip)
+        public async Task<Boolean> connect(string ip, string port = "8001")
         {
             HostName hostName = new HostName(ip);
-            string port = "8001";
 
             try
             {
                 // Connect to the server
                 await socket.ConnectAsync(hostName, port);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                switch (SocketError.GetStatus(exception.HResult))
-                {
-                    case SocketErrorStatus.HostNotFound:
-                        return;
-                        throw;
-                    default:
-                        return;
-                }
+                return false;
             }
+
+            return true;
         }
 
         public async Task<string> sendit(string host, string port, string message)
@@ -122,17 +116,9 @@ namespace MediBalance
                 {
                     await writer.StoreAsync();
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
-                    switch (SocketError.GetStatus(exception.HResult))
-                    {
-                        case SocketErrorStatus.HostNotFound:
-                            // Handle HostNotFound Error
-                            throw;
-                        default:
-                            // If this is an unknown status it means that the error is fatal and retry will likely fail.
-                            throw;
-                    }
+                    throw ex;
                 }
 
                 await writer.FlushAsync();

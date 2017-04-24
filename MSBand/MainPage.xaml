@@ -2,17 +2,12 @@
     x:Class="MediBalance.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:MediBalance"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Width="329" Height="280" Margin="0,-126,0,126">
+    mc:Ignorable="d" Width="10" Height="10" Margin="0,-126,0,126"
+    Loaded="MainWindow_Loaded">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Height="138" Margin="0,144,10,-2" VerticalAlignment="Top">
-        <Button x:Name="Connect_Button" Content="Connect" HorizontalAlignment="Left" Margin="6,46,0,0" VerticalAlignment="Top" Click="Connect_Click"/>
-        <TextBlock x:Name="connection_text" HorizontalAlignment="Left" TextWrapping="WrapWholeWords" Text="This is a MS Band Test Application. To start, input a time in seconds, then click connect." VerticalAlignment="Top" MaxHeight="360" Width="230" TextAlignment="Center" Height="74" Margin="86,4,0,0" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="6,4,0,0" TextWrapping="Wrap" Text="500" VerticalAlignment="Top" Width="75" PlaceholderText="Run Time [s]"/>
-        <TextBlock x:Name="textBlock" Margin="169,26,170,308" Text="Microsoft Band" FontSize="24" TextWrapping="WrapWholeWords" TextAlignment="Center" FontWeight="Bold"/>
-        <TextBox x:Name="IP_Box" HorizontalAlignment="Left" Margin="41,83,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="5" Width="131" TextChanged="IP_Box_TextChanged" PlaceholderText="Enter IP Address"/>
-
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,0,10,-134" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Bottom">
+        <TextBlock x:Name="connection_text" HorizontalAlignment="Left" TextWrapping="WrapWholeWords" Text="This is a MS Band Test Application. To start, input a time in seconds, then click connect." VerticalAlignment="Top" MaxHeight="360" Width="230" TextAlignment="Center" Height="74" Margin="10,26,0,0" ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.RowSpan="2"/>
     </Grid>
 </Page>

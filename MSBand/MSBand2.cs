@@ -11,21 +11,11 @@ namespace MediBalance
     class MSBand2
     {
         string timeFormat = "HH:mm:ss:fff";
-        /*
-         * Class Variables
-         */
         private IBandClient bandClient = null;
 
-        /*
-        * TSK Everything(int time, TextBlock OutputText):
-        *  This method takes in an interger time and a textblock. The method will run for the given time
-        *  and output the results live in the textbox. 
-        *  
-        *  **Note: Currently only running one sensor at a time (It can run all but not sure how we should output it...)
-        * 
-        */
         public async Task<int> everything(int RunTime, TextBlock OutputText, Tcp_Client tcpClient)
         {
+            bool connected = true;
             OutputText.Visibility = Visibility.Visible;
             try
             {
@@ -60,9 +50,9 @@ namespace MediBalance
                             {
                                 var data_string = string.Format("{0},Heartrate,{1,0:D3};", DateTime.Now.ToString(timeFormat), args.SensorReading.HeartRate);
 
-                                OutputText.Text += data_string;
+                                OutputText.Text = data_string;
                                 try { await tcpClient.send(string.Format(data_string)); }
-                                catch (Exception) { return; }
+                                catch (Exception) { connected = false; OutputText.Text = "TCP Disconnected"; return; }
                             });
                         };
                         await bandClient.SensorManager.HeartRate.StartReadingsAsync();
@@ -73,9 +63,9 @@ namespace MediBalance
                             await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                             {
                                 var data_string = string.Format("{1},gsr,{0,0:D9};", args.SensorReading.Resistance, DateTime.Now.ToString(timeFormat));
-                                OutputText.Text += data_string;
+                                OutputText.Text = data_string;
                                 try { await tcpClient.send(string.Format(data_string)); }
-                                catch (Exception) { return; }
+                                catch (Exception) { connected = false; OutputText.Text = "TCP Disconnected"; return; }
                             });
                         };
                         await bandClient.SensorManager.Gsr.StartReadingsAsync();
@@ -83,7 +73,9 @@ namespace MediBalance
 
 
                     // Run time to collect samples
-                    await Task.Delay(TimeSpan.FromSeconds(RunTime));
+                    //await Task.Delay(TimeSpan.FromSeconds(RunTime));
+                    while (connected) { await Task.Delay(5); }
+                    OutputText.Text = "Band Time Complete";
 
 
                     // Shut off Sensors
