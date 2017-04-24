@@ -99,7 +99,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <local:CartesianCanvas x:Name="BalanceCanvas" HorizontalAlignment="Left" Height="186" VerticalAlignment="Top" Width="286" Grid.ColumnSpan="2" Margin="2,1,0,0" Grid.RowSpan="2"/>
+                <local:CartesianCanvas x:Name="BalanceCanvas" HorizontalAlignment="Left" Height="180" VerticalAlignment="Top" Width="280" Grid.ColumnSpan="2" Margin="4,4,0,0" Grid.RowSpan="2"/>
             </Grid>
         </GroupBox>
         <TextBlock x:Name="RealTimeClock" HorizontalAlignment="Left" Margin="509,25,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="23" Width="67"/>

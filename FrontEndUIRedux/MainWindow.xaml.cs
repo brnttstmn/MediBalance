@@ -151,7 +151,6 @@ namespace FrontEndUIRedux
                                 break;
                             case "TopLeft":
                                 TLeft.Text = Convert.ToDouble(words[2]).ToString();
-
                                 break;
                             case "TopRight":
                                 TRight.Text = Convert.ToDouble(words[2]).ToString();
@@ -244,6 +243,10 @@ namespace FrontEndUIRedux
         }
         private void BalancePlot()
         {
+            // Dimension of Board (in mm)
+            var x = 280;
+            var y = 180;
+
             var owTopLeft = Convert.ToDouble(TLeft.Text);
             var owTopRight = Convert.ToDouble(TRight.Text);
             var owBottomLeft = Convert.ToDouble(BLeft.Text);
@@ -254,8 +257,8 @@ namespace FrontEndUIRedux
             var owrTopRight = owrPercentage * owTopRight;
             var owrBottomLeft = owrPercentage * owBottomLeft;
             var owrBottomRight = owrPercentage * owBottomRight;
-            COBpoint[0] = owrBottomRight + owrTopRight;
-            COBpoint[1] = owrBottomRight + owrBottomLeft;
+            COBpoint[0] = (x / 2) * ((owTopRight+owBottomRight) - (owTopLeft + owBottomLeft)) /(owTopLeft+owTopRight+owBottomLeft+owBottomRight);
+            COBpoint[1] = (y / 2) * ((owTopRight + owTopLeft)-(owBottomLeft+owBottomRight)) / (owTopLeft + owTopRight + owBottomLeft + owBottomRight);
         }
 
         //Events
@@ -341,7 +344,7 @@ namespace FrontEndUIRedux
                     try
                     {
                         kinect.Children.Remove(bodypoints[i]);
-                        bodypoints[i] = CreateAnEllipse(10, 10);
+                        bodypoints[i] = CreateAnEllipse(8, 8);
                         kinect.Children.Add(bodypoints[i]);
                         Canvas.SetLeft(bodypoints[i], joints[i, 0]);
                         Canvas.SetTop(bodypoints[i], joints[i, 1]);
@@ -358,7 +361,7 @@ namespace FrontEndUIRedux
                 COB = CreateAnEllipse(10, 10);
                 BalanceCanvas.Children.Add(COB);
                 Canvas.SetLeft(COB, COBpoint[0]);
-                Canvas.SetBottom(COB, COBpoint[1]);
+                Canvas.SetTop(COB, COBpoint[1]);
             });
             graphTimer.Enabled = true;
 
