@@ -37,7 +37,6 @@ namespace FrontEndUIRedux
         Timer infoUpdateTimer = new Timer() { Interval = 1, Enabled = false };
         Timer infoResetTimer = new Timer() { Interval = 500, Enabled = false };
         Timer stopLoggingTimer = new Timer() { Interval = time * 1000, Enabled = false };
-        Timer graphTimer = new Timer() { Interval = 1, Enabled = false };
 
         // Button Presses
         public void StartButton_Click(object sender, RoutedEventArgs e)
@@ -71,13 +70,10 @@ namespace FrontEndUIRedux
             {
                 Pipe.connectPipes(pipes);
                 infoUpdateTimer.Enabled = true;
-                graphTimer.Enabled = true;
             });           
         }
         private void stop()
         {
-            //programhandler.stopPrograms();
-            graphTimer.Enabled = false;
             status = "";
             infoUpdateTimer.Enabled = false;
             infoResetTimer.Enabled = true;
@@ -128,118 +124,125 @@ namespace FrontEndUIRedux
             BRight.Text = blank;
             BLeft.Text = blank;
         }
-        private void parse(string line)
+        private void parse(string lines)
         {
             try
             {
-                if (line != null)
+                if (lines != null)
                 {
+                    char[] split = { ';' };
                     char[] delim = { ',', ';' };
-                    string[] words = line.Split(delim);
-                    if (words.Length > 2)
+                    foreach (string line in lines.Split(split))
                     {
-                        switch (words[1])
+                        string[] words = line.Split(delim);
+                        if (words.Length > 2)
                         {
-                            case "Heartrate":
-                                HeartRateTextBlock.Text = Convert.ToDouble(words[2]).ToString();
-                                break;
-                            case "gsr":
-                                GSRTextBlock.Text = Convert.ToDouble(words[2]).ToString();
-                                break;
-                            case "RWeight":
-                                RWeight.Text = Convert.ToDouble(words[2]).ToString();
-                                break;
-                            case "TopLeft":
-                                TLeft.Text = Convert.ToDouble(words[2]).ToString();
-                                break;
-                            case "TopRight":
-                                TRight.Text = Convert.ToDouble(words[2]).ToString();
-                                break;
-                            case "BottomRight":
-                                BRight.Text = Convert.ToDouble(words[2]).ToString();
-                                break;
-                            case "BottomLeft":
-                                BLeft.Text = Convert.ToDouble(words[2]).ToString();
-                                break;
-                            case "spinebase":
-                                joints[0, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[0, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "midspine":
-                                joints[1, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[1, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "neck":
-                                joints[2, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[2, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "shoulderleft":
-                                joints[3, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[3, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "elbowleft":
-                                joints[4, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[4, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "wristleft":
-                                joints[5, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[5, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "handleft":
-                                joints[6, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[6, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "head":
-                                joints[7, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[7, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "shoulderright":
-                                joints[8, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[8, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "elbowright":
-                                joints[9, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[9, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "handright":
-                                joints[10, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[10, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "hipleft":
-                                joints[11, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[11, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "kneeleft":
-                                joints[12, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[12, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "footleft":
-                                joints[13, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[13, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "hipright":
-                                joints[14, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[14, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "kneeright":
-                                joints[15, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[15, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "footright":
-                                joints[16, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[16, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            case "wristright":
-                                joints[17, 0] = Convert.ToDouble(words[2]) * 100;
-                                joints[17, 1] = Convert.ToDouble(words[3]) * 100;
-                                break;
-                            default:
-                                break;
+                            Console.WriteLine(words[1] + " : " + words[2]);
+                            switch (words[1])
+                            {
+                                case "Heartrate":
+                                    HeartRateTextBlock.Text = Convert.ToDouble(words[2]).ToString();
+                                    break;
+                                case "gsr":
+                                    GSRTextBlock.Text = Convert.ToDouble(words[2]).ToString();
+                                    break;
+                                case "RWeight":
+                                    RWeight.Text = Convert.ToDouble(words[2]).ToString();
+                                    break;
+                                case "TopLeft":
+                                    TLeft.Text = Convert.ToDouble(words[2]).ToString();
+                                    break;
+                                case "TopRight":
+                                    TRight.Text = Convert.ToDouble(words[2]).ToString();
+                                    break;
+                                case "BottomRight":
+                                    BRight.Text = Convert.ToDouble(words[2]).ToString();
+                                    break;
+                                case "BottomLeft":
+                                    BLeft.Text = Convert.ToDouble(words[2]).ToString();
+                                    break;
+                                case "spinebase":
+                                    joints[0, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[0, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "midspine":
+                                    joints[1, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[1, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "neck":
+                                    joints[2, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[2, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "shoulderleft":
+                                    joints[3, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[3, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "elbowleft":
+                                    joints[4, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[4, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "wristleft":
+                                    joints[5, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[5, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "handleft":
+                                    joints[6, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[6, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "head":
+                                    joints[7, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[7, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "shoulderright":
+                                    joints[8, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[8, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "elbowright":
+                                    joints[9, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[9, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "handright":
+                                    joints[10, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[10, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "hipleft":
+                                    joints[11, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[11, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "kneeleft":
+                                    joints[12, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[12, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "footleft":
+                                    joints[13, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[13, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "hipright":
+                                    joints[14, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[14, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "kneeright":
+                                    joints[15, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[15, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "footright":
+                                    joints[16, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[16, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                case "wristright":
+                                    joints[17, 0] = Convert.ToDouble(words[2]) * 100;
+                                    joints[17, 1] = Convert.ToDouble(words[3]) * 100;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     }
+
                 }
             }
-            catch (FormatException){ }
+            catch (FormatException) { }
+            catch (IndexOutOfRangeException) { }
         }
         private void BalancePlot()
         {
@@ -328,43 +331,34 @@ namespace FrontEndUIRedux
                 Dispatcher.Invoke(() =>
                 {
                     parse(line);
+                    for (int i = 0; i < bodypoints.Length; i++)
+                    {
+                        try
+                        {
+                            kinect.Children.Remove(bodypoints[i]);
+                            bodypoints[i] = CreateAnEllipse(8, 8);
+                            kinect.Children.Add(bodypoints[i]);
+                            Canvas.SetLeft(bodypoints[i], joints[i, 0]);
+                            Canvas.SetTop(bodypoints[i], joints[i, 1]);
+                        }
+                        catch (Exception) { }
+
+                    }
+                    try
+                    {
+                        BalancePlot();
+                    }
+                    catch (Exception) { }
+                    BalanceCanvas.Children.Remove(COB);
+                    COB = CreateAnEllipse(10, 10);
+                    BalanceCanvas.Children.Add(COB);
+                    Canvas.SetLeft(COB, COBpoint[0]);
+                    Canvas.SetTop(COB, COBpoint[1]);
                 });
                 infoUpdateTimer.Enabled = true;
             }
             catch (ObjectDisposedException) { }
             catch (TaskCanceledException) { }
-        }
-        private void graphTimer_Elapsed(object sender, EventArgs e)
-        {
-            graphTimer.Enabled = false;
-            Dispatcher.Invoke(() =>
-            {
-                for (int i = 0; i < bodypoints.Length; i++)
-                {
-                    try
-                    {
-                        kinect.Children.Remove(bodypoints[i]);
-                        bodypoints[i] = CreateAnEllipse(8, 8);
-                        kinect.Children.Add(bodypoints[i]);
-                        Canvas.SetLeft(bodypoints[i], joints[i, 0]);
-                        Canvas.SetTop(bodypoints[i], joints[i, 1]);
-                    }
-                    catch (Exception) { }
-                    
-                }
-                try
-                {
-                    BalancePlot();
-                }
-                catch (Exception) { }
-                BalanceCanvas.Children.Remove(COB);
-                COB = CreateAnEllipse(10, 10);
-                BalanceCanvas.Children.Add(COB);
-                Canvas.SetLeft(COB, COBpoint[0]);
-                Canvas.SetTop(COB, COBpoint[1]);
-            });
-            graphTimer.Enabled = true;
-
         }
 
         // Start and Close Events
@@ -376,7 +370,6 @@ namespace FrontEndUIRedux
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             //Initialize the timer class
-            graphTimer.Elapsed += new ElapsedEventHandler(graphTimer_Elapsed);
             timeTimer.Elapsed += new ElapsedEventHandler(timeTimer_Elapsed);
             infoUpdateTimer.Elapsed += new ElapsedEventHandler(infoUpdateTimer_Elapsed);
             infoResetTimer.Elapsed += new ElapsedEventHandler(infoResetTimer_Elapsed);

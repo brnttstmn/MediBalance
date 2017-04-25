@@ -55,7 +55,6 @@ namespace BalanceBoard
             while (true)
             {
                 var data = InfoUpdate();
-                print(data);
                 send(data);
             }
         }
@@ -78,10 +77,13 @@ namespace BalanceBoard
         /// <param name="data"></param>
         static void send(List<string> data)
         {
+            string lines = "";
             foreach (string line in data)
             {
-                bserver.send(line);
+                lines += line;
             }
+            Console.WriteLine(lines);
+            bserver.send(lines);
         }
 
         /// <summary>
