@@ -118,16 +118,18 @@ namespace KinectEnvironment
                             string timestamp = DateTime.Now.ToString("HH:mm:ss:fff");
                             try
                             {
+                                string newLine = "";
                                 foreach (KeyValuePair<Joint, string> joint in jointName)
                                 {
-                                    var newLine = string.Format("{0},{1},{2},{3},{4};", timestamp, joint.Value,
+                                    newLine += string.Format("{0},{1},{2},{3},{4};", timestamp, joint.Value,
                                     joint.Key.Position.X.ToString(), joint.Key.Position.Y.ToString(),
                                     joint.Key.Position.Z.ToString());
-                                    kserver.send(newLine);
-                                    Console.WriteLine(newLine);
                                 }
+                                kserver.send(newLine);
+                                Console.WriteLine(newLine);
                             }
                             catch (IOException) { connectionBroken = true; }
+                            catch (Exception ex) { Console.WriteLine(ex.ToString()); Console.ReadKey(); }
                         }
                     }
                 }

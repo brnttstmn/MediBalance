@@ -107,7 +107,7 @@
         <TextBlock x:Name="Status_Bar" HorizontalAlignment="Left" Margin="10,577,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="805"><Run Text="Statu"/><Run Text="s Bar"/></TextBlock>
         <Label x:Name="S" Content="s" HorizontalAlignment="Left" Margin="106,23,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="SubjectName" HorizontalAlignment="Left" Height="25" Margin="94,372,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="173"/>
-        <Label x:Name="SubjectNameLabel" Content="Subject Name: " HorizontalAlignment="Left" Margin="8,373,0,0" VerticalAlignment="Top" Width="90" Height="22" Padding="5,2,5,5"/>
+        <Label x:Name="SubjectNameLabel" Content="Subject ID: " HorizontalAlignment="Left" Margin="8,373,0,0" VerticalAlignment="Top" Width="90" Height="22" Padding="5,2,5,5"/>
         <TextBlock x:Name="CurrentTime" HorizontalAlignment="Left" Margin="436,25,0,0" TextWrapping="Wrap" Text="Current Time:" VerticalAlignment="Top" Height="23" Width="73"/>
     </Grid>
 </Window>

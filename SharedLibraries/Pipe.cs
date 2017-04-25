@@ -71,7 +71,9 @@ namespace SharedLibraries
         }
         public void send(string line)
         {
-            write.WriteLine(line);
+            try { write.WriteLine(line); }
+            catch (ArgumentOutOfRangeException) { }
+            
         }
         public string readStream()
         {
