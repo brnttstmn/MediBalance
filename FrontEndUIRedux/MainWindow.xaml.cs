@@ -21,7 +21,7 @@ namespace FrontEndUIRedux
         // GUI Status Variables
         static string status = "";
         static short time = 30;
-        static short timeElapsed = 0;
+        DateTime logTime;
 
         // Ellipse initialization
         Ellipse[] bodypoints = new Ellipse[18];
@@ -99,6 +99,7 @@ namespace FrontEndUIRedux
             stopLoggingTimer = new Timer() { Interval = time * 1000, Enabled = false };
             stopLoggingTimer.Elapsed += new ElapsedEventHandler(stopLoggingTimer_Elapsed);
             stopLoggingTimer.Enabled = true;
+            logTime = (DateTime.Now).AddSeconds(time);
             
             foreach (KeyValuePair<string, bool> stance in stances)
             {
@@ -277,14 +278,14 @@ namespace FrontEndUIRedux
                         else if (Status_Bar.Text.Equals("Running..")) { Status_Bar.Text = "Running..."; }
                         break;
                     case "logging":
-                        if (Status_Bar.Text.Contains("Running")|| Status_Bar.Text.Contains("Logging...")) { Status_Bar.Text = "Logging\t\t" + (time - timeElapsed++).ToString(); }
-                        else if (Status_Bar.Text.Contains("Logging..")) { Status_Bar.Text = "Logging...\t" + (time - timeElapsed++).ToString(); }
-                        else if (Status_Bar.Text.Contains("Logging.")) { Status_Bar.Text = "Logging..\t" + (time - timeElapsed++).ToString(); }
-                        else if (Status_Bar.Text.Contains("Logging")) { Status_Bar.Text = "Logging.\t\t" + (time - timeElapsed++).ToString(); }
+                        var timer = logTime - DateTime.Now;
+                        if (Status_Bar.Text.Contains("Running")|| Status_Bar.Text.Contains("Logging...")) { Status_Bar.Text = "Logging\t\t" + timer.Seconds; }
+                        else if (Status_Bar.Text.Contains("Logging..")) { Status_Bar.Text = "Logging...\t" + timer.Seconds; }
+                        else if (Status_Bar.Text.Contains("Logging.")) { Status_Bar.Text = "Logging..\t" + timer.Seconds; }
+                        else if (Status_Bar.Text.Contains("Logging")) { Status_Bar.Text = "Logging.\t\t" + timer.Seconds; }
                         break;
                     case "":
                     default:
-                        timeElapsed = 0;
                         Status_Bar.Text = "";
                         break;
                 }
