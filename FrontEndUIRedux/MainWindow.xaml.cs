@@ -113,6 +113,7 @@ namespace FrontEndUIRedux
             {
                 kinect.Children.Remove(point);
             }
+            joints = new double[18, 2];
             BalanceCanvas.Children.Remove(COB);
             string blank = "";
             HeartRateTextBlock.Text = blank;
@@ -331,7 +332,7 @@ namespace FrontEndUIRedux
                             kinect.Children.Remove(bodypoints[i]);
                             bodypoints[i] = CreateAnEllipse(8, 8);
                             kinect.Children.Add(bodypoints[i]);
-                            Canvas.SetLeft(bodypoints[i], joints[i, 0]);
+                            Canvas.SetLeft(bodypoints[i], -joints[i, 0]);
                             Canvas.SetTop(bodypoints[i], joints[i, 1]);
                         }
                         catch (Exception) { }

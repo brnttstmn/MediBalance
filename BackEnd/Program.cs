@@ -53,8 +53,6 @@ namespace BackEnd
                 data_log.writeCSV(fileName + append);
                 isLogging = false;
             }
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
         }
 
         private static void guiCommands(string line = null)
