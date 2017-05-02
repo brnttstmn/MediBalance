@@ -55,7 +55,6 @@ namespace BalanceBoard
             while (true)
             {
                 var data = InfoUpdate();
-                print(data);
                 send(data);
             }
         }
@@ -78,10 +77,13 @@ namespace BalanceBoard
         /// <param name="data"></param>
         static void send(List<string> data)
         {
+            string lines = "";
             foreach (string line in data)
             {
-                bserver.send(line);
+                lines += line;
             }
+            Console.WriteLine(lines);
+            bserver.send(lines);
         }
 
         /// <summary>
@@ -141,11 +143,23 @@ namespace BalanceBoard
             var rwBottomRight = wiiDevice.WiimoteState.BalanceBoardState.SensorValuesLb.BottomRight;
 
             // Auto Calibrate
-            if (rwWeight + oWeight < 0.0) { oWeight = -rwWeight; }
-            if (rwTopLeft + oTopLeft < 0.0) { oTopLeft = -rwTopLeft; }
-            if (rwTopRight + oTopRight < 0.0) { oTopRight = -rwTopRight; }
-            if (rwBottomLeft + oBottomLeft < 0.0) { oBottomLeft = -rwBottomLeft; }
-            if (rwBottomRight + oBottomRight < 0.0) { oBottomRight = -rwBottomRight; }
+            if (rwWeight < 1)
+            {
+                // Scale up to Zero
+                if (rwWeight + oWeight < 0.0) { oWeight = -rwWeight; }
+                if (rwTopLeft + oTopLeft < 0.0) { oTopLeft = -rwTopLeft; }
+                if (rwTopRight + oTopRight < 0.0) { oTopRight = -rwTopRight; }
+                if (rwBottomLeft + oBottomLeft < 0.0) { oBottomLeft = -rwBottomLeft; }
+                if (rwBottomRight + oBottomRight < 0.0) { oBottomRight = -rwBottomRight; }
+
+                // Scale down to Zero
+                if (rwWeight + oWeight > 0.0) { oWeight += ( 0 -(rwWeight + oWeight)); }
+                if (rwTopLeft + oTopLeft > 0.0) { oTopLeft += (0 - (rwTopLeft + oTopLeft)); }
+                if (rwTopRight + oTopRight > 0.0) { oTopRight += (0 - (rwTopRight + oTopRight)); }
+                if (rwBottomLeft + oBottomLeft > 0.0) { oBottomLeft += (0 - (rwBottomLeft + oBottomLeft)); }
+                if (rwBottomRight + oBottomRight > 0.0) { oBottomRight += (0 - (rwBottomRight + oBottomRight)); }
+            }
+
 
             // Format Raw Data
             string Timing = DateTime.Now.ToString("HH:mm:ss:fff");

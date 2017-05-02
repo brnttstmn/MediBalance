@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using SharedLibraries;
 using System.Collections.Concurrent;
+using System.Net.Sockets;
 
 namespace BackEnd
 {
@@ -116,19 +117,21 @@ namespace BackEnd
                     else if (sensor.commType == typeof(TCP))
                     {
                         var line = ((TCP)sensor).readStream();
-                        gui.write.WriteLine(line);
+                        gui.send(line);
                         if (isLogging) { data_list.Add(line); }
                     }
                     else
                     {
                         var line = ((Pipe)sensor).read.ReadLine();
-                        gui.write.WriteLine(line);
+                        gui.send(line);
                         if (isLogging) { data_list.Add(line); }
                     }
                 }
             }
             catch (IOException) { endConnection = true; }
             catch (ObjectDisposedException) { }
+            catch (SocketException) { }
+            catch (IndexOutOfRangeException) { }
         }
     }
 }
